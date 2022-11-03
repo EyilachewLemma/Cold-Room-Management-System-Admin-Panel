@@ -1,0 +1,23 @@
+.yellowColor:hover{
+    color: #ff5100!important;
+    }
+.yellowColor{
+    color: #ff7e00!important;
+}
+.aploadBtn{
+    color: #ff7e00!important;
+    border: 1px solid grey!important;
+}
+.aploadBtn:hover{
+    color: #ff5100!important;
+}
+.selectedImg{
+    max-width: 8rem!important;
+    max-height: 8rem;
+}
+.errorBorder{
+    border-color: red!important;
+}
+.errorText{
+    color: red!important;
+}

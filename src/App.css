@@ -1,0 +1,11 @@
+.sideBar{
+    min-width: 23%;
+    min-height: 100vh;
+    border-right: 2px solid gainsboro;
+  }
+  @media(min-width:992px){
+    .sideBar{
+        min-width: 18%;
+        max-width: 18%;
+    }
+  }
