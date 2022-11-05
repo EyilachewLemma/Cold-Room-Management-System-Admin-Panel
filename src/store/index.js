@@ -11,7 +11,7 @@ const store = configureStore({
     reducer:{
         coldroom:coldroomReducer,
         isLoading:isLoadingReducer,
-        isSaving:ButtonSpinerReducer,
+        btn:ButtonSpinerReducer,
         product:productReducer,
     }
 })

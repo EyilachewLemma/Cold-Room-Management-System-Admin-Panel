@@ -2,13 +2,13 @@ import {createSlice} from '@reduxjs/toolkit'
 
 const productSlice = createSlice({
     name:'coldroomList',
-    initialState:[],
+    initialState:{products:[]},
     reducers:{
         setProduct(state,action){
-           return state.coldRooms = action.payload
+           return state.products = action.payload
         },
         addProduct(state,action){
-            state.coldRooms.push(action.payload)
+            state.products.push(action.payload)
         },
 
 

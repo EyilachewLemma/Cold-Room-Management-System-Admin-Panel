@@ -1,28 +1,26 @@
 import { Fragment,useEffect,useRef } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
 import { coldRoomAction } from "../../store/slices/coldroomSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
-import Button from 'react-bootstrap/Button';
 import ReactToPrint from "react-to-print";
 import apiClient from "../../url/index";
-import { useNavigate } from "react-router-dom";
-import classes from "./Farmers.module.css";
+import classes from "./WholeSalers.module.css";
 
 
-const ProductHistory = () => {
+const OrderHistory = () => {
 
   const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
-  const coldRooms = useSelector(state =>state.coldroom)
   const navigate = useNavigate()
   const componentRef = useRef()
+  const coldRooms = useSelector(state =>state.coldroom)
   useEffect( ()=>{
     async function  featchOrder(){
-      // dispatch(isLoadingAction.setIsLoading(true))
     try{
      var response = await apiClient.get('api/cold_rooms')
      if(response.status === 200){
@@ -39,49 +37,26 @@ const ProductHistory = () => {
   return (
     <Fragment>
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
-    <div ref={componentRef}>
-    <div className="fw-bold">Farmers Product History</div>
-    <div className="d-flex align-items-center">
-    <div>
-      <div className="mt-3">
-        <span className="fw-bold">Farmer</span>: Demeke Gelaw
-      </div>
-      <div className="mt-3">
-        <span className="fw-bold">Total Product Instock</span>: 2000Kg
-      </div>
-    </div>
-    <div className="ms-5 ps-5"><span className="fw-bold">Date</span>: 10-02-2022</div>  
-   
-  </div>
+    <div ref={componentRef}>  
+    <h6 className="fw-bold">Wholesaler's Order History</h6>
+      <div className="mt-3"><span className="fw-bold">Wholesaler Name</span>: <span className="fs-5">Azimeraw Amare</span></div>
       <div className={`${classes.bottomBorder} mt-5`}></div>
         <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>
         <InputGroup className="w-50 border rounded onPrintDnone">
-          <InputGroup.Text id="searchbyproductName" className={classes.searchIcon}>
+          <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
             <span>
               <i className="fas fa-search"></i>
             </span>
           </InputGroup.Text>
           <Form.Control
             className={classes.searchInput}
-            placeholder="search by Product name"
-            aria-label="search by product name"
-            aria-describedby="searchbyproductName"
+            placeholder="search orders by wholsaler name"
+            aria-label="Username"
+            aria-describedby="basic-addon1"
           />
-        </InputGroup>
-        <div className="ms-3 onPrintDnone">
-        <Form.Select aria-label="Default select example">
-        <option value='all'>All</option>
-        <option value="1">Type 1</option>
-        <option value="2">Type 2</option>
-        <option value="3">Type 3</option>
-      </Form.Select>
-        </div>
-      <div className="ms-3 me-3 onPrintDnone">
-      <Form.Group controlId="search-by-date">
-      <Form.Control type="date" />
-    </Form.Group>
-      </div>
-        <div>
+        </InputGroup>        
+      
+        <div className="ms-auto">
         <ReactToPrint
         trigger={()=><Button variant='none' className="exportbtn onPrintDnone py-1"><span><i className="fas fa-file-export"></i></span> Export</Button>}
         content={()=>componentRef.current}       
@@ -95,28 +70,28 @@ const ProductHistory = () => {
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
-              <th>Product-ID</th>
-              <th>Product Name</th>
-              <th>Product Type</th>
-              <th>Cold Room</th>
-              <th>Added Date(GC)</th>
-              <th>Sold Stock(Kg)</th>
-              <th>Current Stock(Kg)</th>
-              <th>Price Per Kg(ETB)</th>
+              <th>Order id</th>
+              <th>Order Date</th>
+              <th>Cold room</th>
+              <th>Order Price(ETB)</th>
+              <th>Order Status</th>
+              <th>Payment Status</th>
+              <th>Paid Amount</th>
+              <th>Remaining Amount</th>
             </tr>
           </thead>
           <tbody>
           {
             products.map((product,index) =>(
               <tr className={classes.row} key={index}>
-              <td className="p-3">32</td>
-              <td className="p-3">Tomato</td>
-              <td className="p-3">Type 1</td>
-              <td className="p-3">Dahir Dar</td>
-              <td className="p-3">10-02-2022</td>
-              <td className="p-3 text-center">100</td>
-              <td className="p-3 text-center">1500</td>
-            <td className="p-3 text-center">30</td>
+              <td className="p-3">#213</td>
+              <td className="p-3">11-04-2022</td>
+              <td className="p-3">ColdRoom01</td>
+              <td className="p-3 text-center">2000</td>
+              <td className="p-3">Completed</td>
+              <td className="p-3">Partially Paid</td>
+              <td className="p-3 text-center">1000</td>
+              <td className="p-3 text-center">1000</td>
             </tr>
             ))
           }
@@ -129,4 +104,4 @@ const ProductHistory = () => {
     </Fragment>
   );
 };
-export default ProductHistory;
+export default OrderHistory;

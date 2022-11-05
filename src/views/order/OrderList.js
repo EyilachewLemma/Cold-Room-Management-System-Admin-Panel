@@ -1,4 +1,4 @@
-import { Fragment,useEffect,useState } from "react";
+import { useEffect,useState,useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
 import { coldRoomAction } from "../../store/slices/coldroomSlice";
@@ -6,11 +6,11 @@ import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
-import ExportBtn from "../../components/ExportBtn";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import apiClient from "../../url/index";
 import { useNavigate } from "react-router-dom";
+import ReactToPrint from "react-to-print";
 import OrderStatus from "./OrderStatus";
 import PaymentStatus from "./PaymentStatus";
 import classes from "./Orders.module.css";
@@ -22,6 +22,7 @@ const OrderList = () => {
   const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
   const coldRooms = useSelector(state =>state.coldroom)
+  const componentRef = useRef()
   const navigate = useNavigate()
   useEffect( ()=>{
     async function  featchOrder(){
@@ -56,7 +57,7 @@ const handlPaymentStatusModalClose = () =>{
   setIsPayMentStatusOpen(false)
 }
   return (
-    <Fragment>
+    <div ref={componentRef}>
       <h5 className="text-bold">Orders List</h5>
       <p className={`${classes.titleP} fw-bold small`}>
         In the Orders section you can review and manage all orders with
@@ -65,7 +66,7 @@ const handlPaymentStatusModalClose = () =>{
       </p>
       <div className={`${classes.bottomBorder} mt-5`}></div>
         <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>
-        <InputGroup className="w-50 border rounded">
+        <InputGroup className="w-50 border rounded onPrintDnone">
           <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
             <span>
               <i className="fas fa-search"></i>
@@ -78,7 +79,7 @@ const handlPaymentStatusModalClose = () =>{
             aria-describedby="basic-addon1"
           />
         </InputGroup>
-        <div className="ms-auto me-3">
+        <div className="ms-auto me-3 onPrintDnone">
         <Form.Select aria-label="Default select example">
         <option value='all'>All</option>
         <option value="1">Completed orders</option>
@@ -87,13 +88,18 @@ const handlPaymentStatusModalClose = () =>{
         <option value="3">Unpaid Orders</option>
       </Form.Select>
         </div>
-      <div className="me-3">
+      <div className="me-3 onPrintDnone">
       <Form.Group controlId="exampleForm.ControlInput1">
       <Form.Control type="date" />
     </Form.Group>
       </div>
         <div>
-          <ExportBtn />
+        <ReactToPrint
+        trigger={()=><Button variant='none' className="exportbtn py-1 onPrintDnone"><span><i className="fas fa-file-export"></i></span> Export</Button>}
+        content={()=>componentRef.current}       
+        documentTitle='new document'
+        pageStyle='print'
+        />
         </div>
       </div>
       
@@ -122,7 +128,7 @@ const handlPaymentStatusModalClose = () =>{
               <td className="p-3">21,300</td>
               <td className="p-3 text-center">completed</td>
               <td className="p-3 text-center">Unpaid</td>
-            <td className="p-3">
+            <td className="p-3 onPrintDnone">
               <Dropdown>
       <Dropdown.Toggle variant="none" id="dropdown-basic">
       <i className="fas fa-ellipsis-v"></i>
@@ -154,7 +160,7 @@ const handlPaymentStatusModalClose = () =>{
       </div>
       <OrderStatus show={isOrderStatusOpen} onClose={handlOrderModalClose} />
       <PaymentStatus show={isPayMentStatusOpen} onClose={handlPaymentStatusModalClose} />
-    </Fragment>
+    </div>
   );
 };
 export default OrderList;

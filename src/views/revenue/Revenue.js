@@ -1,19 +1,18 @@
 import { Fragment,useEffect,useRef } from "react";
-// import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
 import { coldRoomAction } from "../../store/slices/coldroomSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
-import Button from 'react-bootstrap/Button';
 import ReactToPrint from "react-to-print";
+import Button from 'react-bootstrap/Button';
 import apiClient from "../../url/index";
 import { useNavigate } from "react-router-dom";
-import classes from "./Farmers.module.css";
+import classes from "./Revenue.module.css";
 
 
-const ProductHistory = () => {
+const Revenue = () => {
 
   const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
@@ -40,17 +39,20 @@ const ProductHistory = () => {
     <Fragment>
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
     <div ref={componentRef}>
-    <div className="fw-bold">Farmers Product History</div>
+    <div className="fw-bold">Farmers Balance History</div>
     <div className="d-flex align-items-center">
     <div>
       <div className="mt-3">
         <span className="fw-bold">Farmer</span>: Demeke Gelaw
       </div>
       <div className="mt-3">
-        <span className="fw-bold">Total Product Instock</span>: 2000Kg
+        <span className="fw-bold">Total Balance(ETB)</span>: 2000
       </div>
     </div>
-    <div className="ms-5 ps-5"><span className="fw-bold">Date</span>: 10-02-2022</div>  
+    <div className="ms-5 ps-5">
+    <div><span className="fw-bold">Cold Room</span>: Bahir Dar</div>
+    <div><span className="fw-bold">Date</span>: 10-02-2022</div>
+    </div>  
    
   </div>
       <div className={`${classes.bottomBorder} mt-5`}></div>
@@ -95,28 +97,28 @@ const ProductHistory = () => {
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
-              <th>Product-ID</th>
+              <th>Order-ID</th>
               <th>Product Name</th>
               <th>Product Type</th>
-              <th>Cold Room</th>
-              <th>Added Date(GC)</th>
-              <th>Sold Stock(Kg)</th>
-              <th>Current Stock(Kg)</th>
-              <th>Price Per Kg(ETB)</th>
+              <th>Order Date(GC)</th>
+              <th>Quantity(Kg)</th>
+              <th>Price(ETB)</th>
+              <th>Rent Fee(ETB)</th>
+              <th>Withdraw Status</th>
             </tr>
           </thead>
           <tbody>
           {
             products.map((product,index) =>(
               <tr className={classes.row} key={index}>
-              <td className="p-3">32</td>
+              <td className="p-3">#32</td>
               <td className="p-3">Tomato</td>
               <td className="p-3">Type 1</td>
-              <td className="p-3">Dahir Dar</td>
               <td className="p-3">10-02-2022</td>
-              <td className="p-3 text-center">100</td>
-              <td className="p-3 text-center">1500</td>
-            <td className="p-3 text-center">30</td>
+              <td className="p-3">200</td>
+              <td className="p-3 text-center">1100</td>
+              <td className="p-3 text-center">300</td>
+            <td className="p-3 text-center">no</td>
             </tr>
             ))
           }
@@ -129,4 +131,4 @@ const ProductHistory = () => {
     </Fragment>
   );
 };
-export default ProductHistory;
+export default Revenue;

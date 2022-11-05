@@ -9,3 +9,21 @@
         max-width: 18%;
     }
   }
+  .exportbtn{
+    color: #ff4800!important;
+    border: 1px solid gray!important;
+}
+.exportbtn:hover{
+    background-color: #ff7e00!important;
+    color: #fff!important;
+}
+  @media print{
+    .onPrintDnone{
+        display:none!important;
+    }
+    .onPrintBg{
+      background-color: #fff;
+      border: none;
+      color: #fff;
+    }
+}

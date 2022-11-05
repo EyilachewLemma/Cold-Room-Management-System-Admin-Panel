@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import classes from "./Button.module.css";
 
 const ButtonCard = (props) => {
-  const isLoading = useSelector((state) => state.isSaving);
+  const isLoading = useSelector((state) => state.btn.isLoading);
   const createColdRoomHandler = () => {
     props.onSave();
   };
@@ -14,7 +14,7 @@ const ButtonCard = (props) => {
       <div className="d-flex align-items-center">
         <span>{props.title}</span>
         <span className="ms-2">
-          {isLoading && <Spinner animation="border" variant="info" />}
+          {isLoading && <Spinner animation="border" variant="light" size='sm' />}
         </span>
       </div>
     </Button>

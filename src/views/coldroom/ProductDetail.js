@@ -1,12 +1,13 @@
-import React from "react";
+import React,{useRef} from "react";
 import Modal from "react-bootstrap/Modal";
-import ExportBtn from "../../components/ExportBtn";
 import Form from 'react-bootstrap/Form';
 import Table from "react-bootstrap/Table";
-import CancelButton from "../../components/CancelButton";
+import Button from "react-bootstrap/Button";
+import ReactToPrint from "react-to-print";
 import classes from './ProductDetail.module.css'
 
 const ProductDetail = (props) => {
+  const componentRef = useRef()
     const products = [1,2,3,4,5,6,7,8,9,10,11]
   const closeModalHandler = () => {
     props.onClose();
@@ -20,7 +21,9 @@ const ProductDetail = (props) => {
         backdrop="static"
         keyboard={false}
       >
-        <Modal.Body>
+      <Modal.Header closeButton>
+        </Modal.Header>
+        <Modal.Body ref={componentRef}>
           <h6 className="fw-bold px-3 pt-3">Product Stock Listing</h6>
           <div className="d-flex justify-content-between px-3 pt-2">
             <div>
@@ -41,7 +44,7 @@ const ProductDetail = (props) => {
             </div>
           </div>
           <div className="d-flex px-3 mt-4 align-items-center">
-          <div className="me-3">
+          <div className="me-3 onPrintDnone">
           <div className="ms-2 py-2">Filter By product type</div>
           <Form.Select aria-label="Default select example">
           <option value='all'>All</option>
@@ -50,17 +53,22 @@ const ProductDetail = (props) => {
           <option value="3">type 3</option>
         </Form.Select>
           </div>
-        <div className="ms-5 mt-3">
+        <div className="ms-5 mt-3 onPrintDnone">
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
         <Form.Label>Filter by Date</Form.Label>
         <Form.Control type="date" />
       </Form.Group>
         </div>
            <div className="ms-auto mt-4">
-           <ExportBtn />
+           <ReactToPrint
+           trigger={()=><Button variant='none' className="exportbtn py-1 onPrintDnone"><span><i className="fas fa-file-export"></i></span> Export</Button>}
+           content={()=>componentRef.current}       
+           documentTitle='new document'
+           pageStyle='print'
+           />
            </div>
           </div>
-          <div className={`${classes.borderTop} mt-4`}>
+          <div className={`${classes.borderTop} mt-4`} >
           <Table responsive="md">
             <thead className=''>
               <tr>
@@ -94,9 +102,6 @@ const ProductDetail = (props) => {
             </tbody>
           </Table>
         </div>
-        <di className='d-flex justify-content-end'>
-        <CancelButton title='Close' onClose={closeModalHandler} />
-        </di>
         </Modal.Body>       
        
       </Modal>

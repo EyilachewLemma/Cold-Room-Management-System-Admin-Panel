@@ -1,4 +1,4 @@
-import { Fragment,useEffect } from "react";
+import { useEffect,useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
 import { coldRoomAction } from "../../store/slices/coldroomSlice";
@@ -6,7 +6,7 @@ import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
-import ExportBtn from "../../components/ExportBtn";
+import ReactToPrint from "react-to-print";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import apiClient from "../../url/index";
@@ -20,6 +20,7 @@ const FarmersList = () => {
   const dispatch = useDispatch()
   const coldRooms = useSelector(state =>state.coldroom)
   const navigate = useNavigate()
+  const componentRef = useRef()
   useEffect( ()=>{
     async function  featchOrder(){
       // dispatch(isLoadingAction.setIsLoading(true))
@@ -48,7 +49,7 @@ const handlProductHistory = () =>{
 }
 
   return (
-    <Fragment>
+    <div ref={componentRef}>
       <h5 className="text-bold">Farmers List</h5>
       <p className={`${classes.titleP} fw-bold small`}>
         In the Farmers section you can view  all farmers related information with
@@ -56,7 +57,7 @@ const handlProductHistory = () =>{
       </p>
       <div className={`${classes.bottomBorder} mt-5`}></div>
         <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>
-        <InputGroup className="w-50 border rounded">
+        <InputGroup className="w-50 border rounded onPrintDnone">
           <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
             <span>
               <i className="fas fa-search"></i>
@@ -71,7 +72,12 @@ const handlProductHistory = () =>{
         </InputGroup>        
       
         <div className="ms-auto">
-          <ExportBtn />
+        <ReactToPrint
+        trigger={()=><Button variant='none' className="exportbtn onPrintDnone py-1"><span><i className="fas fa-file-export"></i></span> Export</Button>}
+        content={()=>componentRef.current}       
+        documentTitle='new document'
+        pageStyle='print'
+        />
         </div>
       </div>
       
@@ -98,7 +104,7 @@ const handlProductHistory = () =>{
               <td className="p-3 text-center">2000</td>
               <td className="p-3 text-center">200</td>
               <td className="p-3 text-center">5500</td>
-            <td className="p-3">
+            <td className="p-3 onPrintDnone">
               <Dropdown>
       <Dropdown.Toggle variant="none" id="dropdown-basic">
       <i className="fas fa-ellipsis-v"></i>
@@ -128,7 +134,7 @@ const handlProductHistory = () =>{
           </tbody>
         </Table>
       </div>
-    </Fragment>
+      </div>
   );
 };
 export default FarmersList;

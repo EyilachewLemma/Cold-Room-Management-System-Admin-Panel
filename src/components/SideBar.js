@@ -35,7 +35,7 @@ const SideBar = () =>{
             </NavLink>
         </div>
         <div className='mb-3'>     
-        <NavLink to={'/whole-salers'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-4 py-2" : classes.inactive+' px-4 py-2'}>
+        <NavLink to={'/wholesalers/list'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-4 py-2" : classes.inactive+' px-4 py-2'}>
         <span className="fs-5 me-3"><i className="fa-solid fa-people-carry-box"></i></span>            
         <span>Wholesalers</span>
             </NavLink>

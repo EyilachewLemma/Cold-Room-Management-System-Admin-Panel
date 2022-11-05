@@ -1,12 +1,14 @@
-import React from "react";
+import React,{useRef} from "react";
 import Modal from "react-bootstrap/Modal";
-import ExportBtn from "../../components/ExportBtn";
 import Form from 'react-bootstrap/Form';
 import Table from "react-bootstrap/Table";
+import ReactToPrint from "react-to-print";
+import Button from "react-bootstrap/Button";
 import CancelButton from "../../components/CancelButton";
 import classes from './Orders.module.css'
 
 const PaymentStatus = (props) => {
+  const componentRef = useRef()
     const products = [1,2,3,4,5]
   const closeModalHandler = () => {
     props.onClose();
@@ -21,12 +23,12 @@ const PaymentStatus = (props) => {
         keyboard={false}        
       >
         <Modal.Body className={classes.modalBg}>
-        <div className="px-4 py-3">
+        <div className="px-4 py-3" ref={componentRef}>
           <div className="fw-bold px-3">Payment Status</div>
           <div className="fw-bold px-3 pt-3">Order id: #1232123</div>
           <div className=" fw-bold mt-3 px-3">Payment Status : Fully Paid</div>
           <div className="d-flex align-items-center px-3 pt-2">              
-            <div className="me-5">
+            <div className="me-5 onPrintDnone">
             <Form.Select aria-label="Default select example">
             <option value='0'>Change Payment Status</option>
             <option value="1">Unpaid</option>
@@ -35,7 +37,12 @@ const PaymentStatus = (props) => {
           </Form.Select>
             </div>
             <div className="ms-auto">
-           <ExportBtn />
+            <ReactToPrint
+            trigger={()=><Button variant='none' className="exportbtn onPrintDnone py-1"><span><i className="fas fa-file-export"></i></span> Export</Button>}
+            content={()=>componentRef.current}       
+            documentTitle='new document'
+            pageStyle='print'
+            />
            </div>
           </div>
           <div className={`${classes.borderTop} mt-4 border rounded-3 bg-white`}>
@@ -67,9 +74,11 @@ const PaymentStatus = (props) => {
             </tbody>
           </Table>
         </div>
-        <di className='d-flex justify-content-end mt-3'>
+        <div className="onPrintDnone">
+        <div className='d-flex justify-content-end mt-3'>
         <CancelButton title='Close' onClose={closeModalHandler} />
-        </di>
+        </div>
+        </div>
         </div>
         </Modal.Body>       
        

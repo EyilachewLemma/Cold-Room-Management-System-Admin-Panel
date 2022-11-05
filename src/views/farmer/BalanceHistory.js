@@ -1,4 +1,4 @@
-import { Fragment,useEffect } from "react";
+import { Fragment,useEffect,useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
 import { coldRoomAction } from "../../store/slices/coldroomSlice";
@@ -6,7 +6,7 @@ import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
-import ExportBtn from "../../components/ExportBtn";
+import ReactToPrint from "react-to-print";
 import Button from 'react-bootstrap/Button';
 import apiClient from "../../url/index";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,7 @@ const BalanceHistory = () => {
   const dispatch = useDispatch()
   const coldRooms = useSelector(state =>state.coldroom)
   const navigate = useNavigate()
+  const componentRef = useRef()
   useEffect( ()=>{
     async function  featchOrder(){
       // dispatch(isLoadingAction.setIsLoading(true))
@@ -38,6 +39,7 @@ const BalanceHistory = () => {
   return (
     <Fragment>
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
+    <div ref={componentRef}>
     <div className="fw-bold">Farmers Balance History</div>
     <div className="d-flex align-items-center">
     <div>
@@ -56,7 +58,7 @@ const BalanceHistory = () => {
   </div>
       <div className={`${classes.bottomBorder} mt-5`}></div>
         <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>
-        <InputGroup className="w-50 border rounded">
+        <InputGroup className="w-50 border rounded onPrintDnone">
           <InputGroup.Text id="searchbyproductName" className={classes.searchIcon}>
             <span>
               <i className="fas fa-search"></i>
@@ -69,7 +71,7 @@ const BalanceHistory = () => {
             aria-describedby="searchbyproductName"
           />
         </InputGroup>
-        <div className="ms-3">
+        <div className="ms-3 onPrintDnone">
         <Form.Select aria-label="Default select example">
         <option value='all'>All</option>
         <option value="1">Type 1</option>
@@ -77,13 +79,18 @@ const BalanceHistory = () => {
         <option value="3">Type 3</option>
       </Form.Select>
         </div>
-      <div className="ms-3 me-3">
+      <div className="ms-3 me-3 onPrintDnone">
       <Form.Group controlId="search-by-date">
       <Form.Control type="date" />
     </Form.Group>
       </div>
         <div>
-          <ExportBtn />
+        <ReactToPrint
+        trigger={()=><Button variant='none' className="exportbtn onPrintDnone py-1"><span><i className="fas fa-file-export"></i></span> Export</Button>}
+        content={()=>componentRef.current}       
+        documentTitle='new document'
+        pageStyle='print'
+        />
         </div>
       </div>
       
@@ -120,6 +127,7 @@ const BalanceHistory = () => {
            
           </tbody>
         </Table>
+      </div>
       </div>
     </Fragment>
   );

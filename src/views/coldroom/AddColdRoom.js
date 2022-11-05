@@ -9,7 +9,7 @@ import apiClient from '../../url';
 import validate from './validate';
 import { useDispatch } from "react-redux";
 import { coldRoomAction } from "../../store/slices/coldroomSlice";
-import { buttonSpinerAction } from '../../store/slices/ButtonSpinerSlice';
+import { buttonAction } from '../../store/slices/ButtonSpinerSlice';
 import classes from './AddColdRoom.module.css'
 const  AddColdRoom = (props) => { 
   const [coldroomData,setColdroomData] = useState({name:'',region:'',zone:'',woreda:'',kebele:'',price:'',latitude:'',longitude:''}) 
@@ -45,7 +45,7 @@ const  AddColdRoom = (props) => {
     console.log('data sent to server =',coldroomData)
     const errorValues = setErrors(validate(coldroomData))
     if(!errorValues){
-    dispatch(buttonSpinerAction.setButtonSpiner(true))
+    dispatch(buttonAction.setBtnSpiner(true))
     try{
     let response = await apiClient.post('admin/coldRooms',coldroomData)
     if(response.status === 200){
@@ -59,7 +59,7 @@ const  AddColdRoom = (props) => {
       console.log('err',err)
     }
     finally {
-      dispatch(buttonSpinerAction.setButtonSpiner(false))
+      dispatch(buttonAction.setBtnSpiner(false))
     }
   }
    }

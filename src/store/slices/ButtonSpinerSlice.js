@@ -1,15 +1,15 @@
 import {createSlice} from '@reduxjs/toolkit'
 
 const buttonSpiner = createSlice({
-    name:'isLoading',
-    initialState:false,
+    name:'isLoadingbuton',
+    initialState:{isLoading:false},
     reducers:{
-        setButtonSpiner(__,action){
-            return action.payload
+        setBtnSpiner:(state,action)=>{
+           state.isLoading = action.payload
         },
 
 
     }
 })
-export const buttonSpinerAction = buttonSpiner.actions
+export const buttonAction = buttonSpiner.actions
 export default buttonSpiner.reducer

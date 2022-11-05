@@ -1,23 +1,51 @@
-import { Fragment,useState,useCallback } from "react";
+import { useState,useCallback,useRef } from "react";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
-import ExportBtn from "../../components/ExportBtn";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Avocado from '../../assetes/avocado.jpg'
 import Button from 'react-bootstrap/Button';
 import AddProduct from "./AddProduct";
+import ProductDetail from "./ProductDetail";
+import ReactToPrint from "react-to-print";
+import { useSelector } from "react-redux";
 import classes from "./Products.module.css";
 
 
 const Products = () => {
   const [togleModal,setTogleModal] = useState(false)
+  const [show,setShow] = useState(false)
+  const [modalTitle,setModalTitle] = useState('')
+  const [product,setProduct] = useState([])
+  const [isPrinting,setIsPrinting] = useState(false)
+  const componentRef = useRef()
+  useSelector(state=>state.product.products)
   const products = [1,2,3,4,5,6,7,8,9,10,11]
-  const handleCloseModal = useCallback((value) =>{
-     setTogleModal(value)
+  console.log('isPrinting=',isPrinting)
+
+   const handelAddProduct = () =>{
+    setModalTitle('Add Product')
+    setTogleModal(true)
+    
+   }
+  const closeAddandEditModalHandler = useCallback(() =>{
+     setTogleModal(false)
   },[])
+  const closeDetailModalHandler = useCallback(() =>{
+    setShow(false)
+ },[])
+  const ViewDetailHandler = (selectedProduct) =>{
+    setShow(true)
+    setProduct(selectedProduct)
+  }
+  const deleteProductHandler = () =>{}
+  const editProductHandler = () =>{
+    setModalTitle('Edit Product')
+    setTogleModal(true)
+    
+  }
   return (
-    <Fragment>
+    <div ref={componentRef}>
       <h5 className="text-bold">Product List</h5>
       <p className={`${classes.titleP} fw-bold small`}>
         In the products section you can review and manage all products with
@@ -29,7 +57,7 @@ const Products = () => {
        
       </div>
       <div className="d-flex justify-content-between mt-4">
-        <InputGroup className="mb-3 w-50 border rounded">
+        <InputGroup className="mb-3 w-50 border rounded onPrintDnone">
           <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
             <span>
               <i className="fas fa-search"></i>
@@ -42,11 +70,19 @@ const Products = () => {
             aria-describedby="basic-addon1"
           />
         </InputGroup>
-        <div className="ms-auto me-5">
-        <Button className={classes.btn} onClick={()=>{setTogleModal(true)}}>Add Product</Button>
+        <div className="ms-auto me-5 onPrintDnone">
+        <Button className={classes.btn} onClick={handelAddProduct}>Add Product</Button>
         </div>
         <div>
-          <ExportBtn />
+        <ReactToPrint
+        trigger={()=><Button variant='none' className="exportbtn py-1 onPrintDnone"><span><i className="fas fa-file-export"></i></span> Export</Button>}
+        onBeforeGetContent={()=>setIsPrinting(true)}
+        content={()=>componentRef.current}       
+        onAfterPrint={()=>setIsPrinting(false)}
+        documentTitle='new document'
+        pageStyle='print'
+        />
+          
         </div>
       </div>
       <div className="mt-4">
@@ -57,7 +93,7 @@ const Products = () => {
               <th>Product Name</th>
               <th>Product Image</th>
               <th>Amount(KG)</th>
-              <th className="sr-only">action</th>
+              <th className={isPrinting?'d-none':''}></th>
             </tr>
           </thead>
           <tbody>
@@ -70,22 +106,15 @@ const Products = () => {
                 <img src={Avocado} alt="Avocado_image" className={`${classes.img} img-fluid`} />
               </td>
               <td className="p-4">1234</td>
-              <td className="">
+              <td className={`onPrintDnone`}>
               <Dropdown>
       <Dropdown.Toggle variant="none" id="dropdown-basic">
       <i className="fas fa-ellipsis-v"></i>
       </Dropdown.Toggle>
-
       <Dropdown.Menu className={classes.dropdownBg}>
-      <Dropdown.Item className="p-0">
-      <Button variant="none" className="border-bottom w-100 rounded-0">View Detail</Button>
-      </Dropdown.Item>
-        <Dropdown.Item className="p-0">
-        <Button variant="none" className="border-bottom w-100 rounded-0">Edit</Button>
-        </Dropdown.Item>
-        <Dropdown.Item className="p-0">
-        <Button variant="none" className="w-100 rounded-0">Delete</Button>
-        </Dropdown.Item>
+      <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={event=>ViewDetailHandler({})}>Products Detail</Button>
+      <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={editProductHandler}>Edit Product</Button>
+      <Button  variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={deleteProductHandler}>Delete Product</Button>
         </Dropdown.Menu>
     </Dropdown>
               </td>
@@ -97,8 +126,9 @@ const Products = () => {
           </tbody>
         </Table>
       </div>
-      <AddProduct isOpen={togleModal} closeModal={handleCloseModal}></AddProduct>
-    </Fragment>
+      <AddProduct show={togleModal} onClose={closeAddandEditModalHandler} title={modalTitle} product={product}></AddProduct>
+      <ProductDetail show={show} onClose={closeDetailModalHandler} />
+    </div>
   );
 };
 export default Products;

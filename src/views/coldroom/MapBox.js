@@ -1,5 +1,6 @@
 
 import React from 'react'
+import Spinner from 'react-bootstrap/Spinner';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 const containerStyle = {
     width: '100%',
@@ -17,7 +18,11 @@ function MapBox(props) {
   })
 
   if(!isLoaded){
-    return <div> loading ...</div>
+    return <div> loading
+     <Spinner animation="grow" size="sm" />
+     <Spinner animation="grow" size="sm" />
+     <Spinner animation="grow" size="sm" />
+    </div>
   }
   console.log('map box running...')
   if (loadError) {

@@ -1,10 +1,10 @@
-import { Fragment,useEffect } from "react";
+import { Fragment,useEffect,useRef } from "react";
 import { useSelector,useDispatch } from "react-redux";
 import { coldRoomAction } from "../../store/slices/coldroomSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button"
-import ExportBtn from "../../components/ExportBtn";
+import ReactToPrint from "react-to-print";
 import apiClient from "../../url/index";
 import {useNavigate } from "react-router-dom";
 import classes from "./Orders.module.css";
@@ -16,6 +16,7 @@ const OrderDetail = () => {
   const dispatch = useDispatch()
   const coldRooms = useSelector(state =>state.coldroom)
   const navigate = useNavigate()
+  const componentRef = useRef()
   
   useEffect( ()=>{
     async function  featchOrder(){
@@ -37,6 +38,7 @@ const OrderDetail = () => {
   return (
     <Fragment>
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
+    <div ref={componentRef}>
       <div className="fw-bold">Order Details</div>
       <div className="d-flex justify-content-between">
       <div>
@@ -67,7 +69,12 @@ const OrderDetail = () => {
       <div className={`${classes.bottomBorder} mt-5`}></div>
         <div className={`${classes.grayBg} d-flex justify-content-end mt-3 p-2`}>
         <div>
-          <ExportBtn />
+        <ReactToPrint
+        trigger={()=><Button variant='none' className="exportbtn onPrintDnone py-1"><span><i className="fas fa-file-export"></i></span> Export</Button>}
+        content={()=>componentRef.current}       
+        documentTitle='new document'
+        pageStyle='print'
+        />
         </div>
       </div>
       
@@ -104,6 +111,7 @@ const OrderDetail = () => {
            
           </tbody>
         </Table>
+      </div>
       </div>
     </Fragment>
   );

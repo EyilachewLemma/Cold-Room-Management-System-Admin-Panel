@@ -56,7 +56,7 @@ const AddProductItem = (props) =>{
   const errorArr = Object.keys(errorValue)
   if(!errorArr?.length){
     props.onAddItem(type)
-    setType({image:'',typeTitle:''})
+    setType({image:'',typeTitle:'',description:''})
     imgInput.current.value = ''
   }
       

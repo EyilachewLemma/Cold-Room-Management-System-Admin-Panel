@@ -9,8 +9,11 @@ import BalanceHistory from '../views/farmer/BalanceHistory';
 import RentFee from '../views/farmer/RentFee';
 import FarmersList from '../views/farmer/FarmersList';
 import ProductHistory from '../views/farmer/ProductHistory';
+import WholeSalers from '../views/wholesaler/WholeSalers';
+import WholeSalerList from '../views/wholesaler/WholeSalerList';
+import OrderHistory from '../views/wholesaler/OrderHistry';
 import Employees from '../views/Employees'
-import Revenue from '../views/Revenue'
+import Revenue from '../views/revenue/Revenue'
 import Saleses from '../views/Saleses'
 import Products from '../views/product/Products'
 import Settings from '../views/Settings'
@@ -36,6 +39,10 @@ const Router = () =>{
     <Route path='rent-fee' element={<RentFee />} />
     <Route path='balance' element={<BalanceHistory />} />
      </Route>
+     <Route path='/wholesalers' element={<WholeSalers />}>
+     <Route path='list' element={<WholeSalerList />} />
+     <Route path='order-history' element={<OrderHistory />} />
+      </Route>
      <Route path='/employees' element={<Employees />}>
      </Route>
      <Route path='/revenue' element={<Revenue />}>

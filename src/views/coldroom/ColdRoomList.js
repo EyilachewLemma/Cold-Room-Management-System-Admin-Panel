@@ -1,4 +1,4 @@
-import { Fragment,useState,useCallback,useEffect } from "react";
+import { Fragment,useState,useCallback,useEffect,useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
 import { coldRoomAction } from "../../store/slices/coldroomSlice";
@@ -6,10 +6,10 @@ import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
-import ExportBtn from "../../components/ExportBtn";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import AddColdRoom from "./AddColdRoom";
+import ReactToPrint from "react-to-print";
 import apiClient from "../../url/index";
 import classes from "./ColdRoomLists.module.css";
 
@@ -19,13 +19,14 @@ const ColdRoomLists = () => {
   const [togleModal,setTogleModal] = useState(false)
   const [modalTitle,setModalTitle] = useState({})
   const [coldRoomData,setColdRoom] = useState({})
+  const componentRef = useRef()
   const navigate = useNavigate()
   const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
   const coldRooms = useSelector(state =>state.coldroom)
   useEffect( ()=>{
     async function  featchColdRooms(){
-      dispatch(isLoadingAction.setIsLoading(true))
+      dispatch(isLoadingAction.setIsLoading(false))
     try{
      var response = await apiClient.get('admin/address')
      if(response.status === 200){
@@ -84,11 +85,16 @@ const ColdRoomLists = () => {
         <Button className={`${classes.btn} py-1`} onClick={addColdRoomHandler}>Add Cold Room</Button>
         </div>
         <div>
-          <ExportBtn />
+        <ReactToPrint
+        trigger={()=><Button variant='none' className="exportbtn py-1"><span><i className="fas fa-file-export"></i></span> Export</Button>}
+        content={()=>componentRef.current}       
+        documentTitle='new document'
+        pageStyle='print'
+        />
         </div>
       </div>
       <div className={classes.bottomBorder}></div>
-      <div className="mt-4">
+      <div className="mt-4" ref={componentRef}>
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
@@ -117,7 +123,7 @@ const ColdRoomLists = () => {
               <td className="p-2 text-center">21,200</td>
               <td className="p-2 text-center"> 2 ETB</td>
               <td className="p-2">Admasu Welde</td>
-              <td className="p-2">
+              <td className="p-2 onPrintDnone">
               <Dropdown>
       <Dropdown.Toggle variant="none" id="dropdown-basic">
       <i className="fas fa-ellipsis-v"></i>

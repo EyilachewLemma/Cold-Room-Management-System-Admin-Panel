@@ -1,19 +1,20 @@
 
-import { Fragment,useState } from "react";
+import { Fragment,useState,useRef } from "react";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
-import ExportBtn from "../../components/ExportBtn";
 import Avocado from '../../assetes/avocado.jpg'
 import Button from 'react-bootstrap/Button';
 import {useNavigate} from 'react-router-dom'
 import ProductDetail from "./ProductDetail";
+import ReactToPrint from "react-to-print";
 import classes from "../../views/product/Products.module.css";
 
 
 const ColdRoomProducts = () => {
   const [show, setShow] = useState(false)
     const navigate = useNavigate()
+    const componentRef = useRef()
   const products = [1,2,3,4,5,6,7,8,9,10,11]
   const openModalHandler = () =>{
     setShow(true)
@@ -23,13 +24,14 @@ const ColdRoomProducts = () => {
   }
   return (
     <Fragment>
-    <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button>   
+    <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
+    <div ref={componentRef}>  
       <h6 className="fw-bold">Product Listing in cold room</h6>
         <div className="mt-3"><span className="fw-bold">Cold Room</span>: Bahir Dar</div>
         <div className="mt-3"><span className="fw-bold">Date</span>: 10-31-2022</div>
       <div className={`${classes.bottomBorder} mt-3`}></div>
       <div className="d-flex justify-content-between mt-4">
-        <InputGroup className="mb-3 w-50 border rounded">
+        <InputGroup className="mb-3 w-50 border rounded onPrintDnone">
           <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
             <span>
               <i className="fas fa-search"></i>
@@ -43,7 +45,12 @@ const ColdRoomProducts = () => {
           />
         </InputGroup>
           <div>
-          <ExportBtn />
+          <ReactToPrint
+          trigger={()=><Button variant='none' className="exportbtn py-1 onPrintDnone"><span><i className="fas fa-file-export"></i></span> Export</Button>}
+          content={()=>componentRef.current}       
+          documentTitle='new document'
+          pageStyle='print'
+          />
         </div>
       </div>
       <div className="mt-4">
@@ -71,7 +78,7 @@ const ColdRoomProducts = () => {
               <td className="p-4">1234</td>
               <td className="p-4 text-center">500</td>
               <td className="p-4 text-center">3 ETB</td>
-              <td className="p-4">
+              <td className="p-4 onPrintDnone">
              <Button className={classes.borderedBtn} variant="none" onClick={openModalHandler}>View Detail</Button>
               </td>
             </tr>
@@ -83,6 +90,7 @@ const ColdRoomProducts = () => {
         </Table>
       </div>
       <ProductDetail show={show} onClose={closeModalHandler} />
+      </div>
     </Fragment>
   );
 };
