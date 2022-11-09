@@ -30,10 +30,10 @@ export default function validate(values){
     else if(values.kebele?.trim()?.length > 50){
         errors.kebele = 'kebele name must be lessthan 30 letters'
     }
-    if(!values.price?.trim()){
+    if(!values.price){
         errors.price = 'rent_fee in this cold room per Kg  is required !'
     }
-    else if(values.price?.trim().length > 50){
+    else if(values.price.length > 50){
         errors.price = 'rent fee must be lessthan 5 digits'
     }
     if(!values.latitude || !values.longitude){

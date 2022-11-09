@@ -1,7 +1,7 @@
 import { useEffect,useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
-import { coldRoomAction } from "../../store/slices/coldroomSlice";
+import { wholesalerAction } from "../../store/slices/WholesalerSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -14,31 +14,43 @@ import classes from "./WholeSalers.module.css";
 
 
 const WholeSalerList = () => {
-
   const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
-  const coldRooms = useSelector(state =>state.coldroom)
+  const wholesalers = useSelector(state =>state.wholesaler.wholesalers)
   const navigate = useNavigate()
   const componentRef = useRef()
-  useEffect( ()=>{
-    async function  featchOrder(){
-      // dispatch(isLoadingAction.setIsLoading(true))
-    try{
-     var response = await apiClient.get('api/cold_rooms')
-     if(response.status === 200){
-      dispatch(coldRoomAction.setColdRooms(response.data || []))
-     }
-    }
-    catch(err){}
-    finally {dispatch(isLoadingAction.setIsLoading(false))}
-  }
-  featchOrder()
-  },[dispatch])
+  const searchBy = useRef()
 
-  console.log('coldrooms from',coldRooms)
+  const featchWholesalers = async() =>{
+    dispatch(isLoadingAction.setIsLoading(true))
+  try{
+   var response = await apiClient.get(`admin/wholesalers?search=${searchBy.current.value}`)
+   if(response.status === 200){
+    dispatch(wholesalerAction.setWholesalers(response.data || []))
+   }
+  }
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
+}
+  useEffect( ()=>{   
+  featchWholesalers()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
+  console.log('wholesalers from',wholesalers)
 
   const orderHistoryHandler = () =>{
     navigate('/wholesalers/order-history')
+  }
+  const enterKeyHandler = (event) =>{
+    if(event.key === 'Enter' || !event.target.value){
+      featchWholesalers()
+      console.log('event value',event.target.value)
+    }
+  }
+  const searchHandler = () =>{
+    featchWholesalers()
+    console.log('search value',searchBy.current.value)
   }
   return (
     <div ref={componentRef}>
@@ -50,7 +62,7 @@ const WholeSalerList = () => {
         <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>
         <InputGroup className="w-50 border rounded onPrintDnone">
           <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
-            <span>
+            <span onClick={searchHandler}>
               <i className="fas fa-search"></i>
             </span>
           </InputGroup.Text>
@@ -59,6 +71,8 @@ const WholeSalerList = () => {
             placeholder="search orders by wholsaler name"
             aria-label="Username"
             aria-describedby="basic-addon1"
+            onKeyUp={enterKeyHandler}
+            ref={searchBy }
           />
         </InputGroup>        
       

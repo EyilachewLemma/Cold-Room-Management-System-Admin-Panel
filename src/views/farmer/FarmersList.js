@@ -1,7 +1,6 @@
 import { useEffect,useRef } from "react";
-// import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
-import { coldRoomAction } from "../../store/slices/coldroomSlice";
+import { farmerAction } from "../../store/slices/FarmerSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -18,25 +17,29 @@ const FarmersList = () => {
 
   const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
-  const coldRooms = useSelector(state =>state.coldroom)
+  const farmers = useSelector(state =>state.farmer.farmers)
   const navigate = useNavigate()
   const componentRef = useRef()
-  useEffect( ()=>{
-    async function  featchOrder(){
-      // dispatch(isLoadingAction.setIsLoading(true))
-    try{
-     var response = await apiClient.get('api/cold_rooms')
-     if(response.status === 200){
-      dispatch(coldRoomAction.setColdRooms(response.data || []))
-     }
-    }
-    catch(err){}
-    finally {dispatch(isLoadingAction.setIsLoading(false))}
-  }
-  featchOrder()
-  },[dispatch])
+  const searchBy = useRef()
 
-  console.log('coldrooms from',coldRooms)
+  const featchFarmers = async() =>{
+    dispatch(isLoadingAction.setIsLoading(true))
+  try{
+   var response = await apiClient.get(`admin/farmers?search=${searchBy.current.value}`)
+   if(response.status === 200){
+    dispatch(farmerAction.setFarmers(response.data || []))
+   }
+  }
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
+}
+  useEffect( ()=>{
+   
+  featchFarmers()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
+  console.log('farmers from',farmers)
 
   const handlBalanceHistory = () =>{
     navigate('/farmers/balance')
@@ -47,7 +50,16 @@ const FarmersList = () => {
 const handlProductHistory = () =>{
     navigate('/farmers/product-history')
 }
-
+const enterKeyHandler = (event) =>{
+  if(event.key === 'Enter' || !event.target.value){
+    featchFarmers()
+    console.log('event value',event.target.value)
+  }
+}
+const searchHandler = () =>{
+  featchFarmers()
+  console.log('search value',searchBy.current.value)
+}
   return (
     <div ref={componentRef}>
       <h5 className="text-bold">Farmers List</h5>
@@ -59,15 +71,17 @@ const handlProductHistory = () =>{
         <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>
         <InputGroup className="w-50 border rounded onPrintDnone">
           <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
-            <span>
+            <span onClick={searchHandler}>
               <i className="fas fa-search"></i>
             </span>
           </InputGroup.Text>
           <Form.Control
             className={classes.searchInput}
             placeholder="search orders by wholsaler name"
+            ref={searchBy}
             aria-label="Username"
             aria-describedby="basic-addon1"
+            onKeyUp={enterKeyHandler}
           />
         </InputGroup>        
       

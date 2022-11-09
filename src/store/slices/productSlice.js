@@ -1,16 +1,19 @@
 import {createSlice} from '@reduxjs/toolkit'
 
 const productSlice = createSlice({
-    name:'coldroomList',
+    name:'product',
     initialState:{products:[]},
     reducers:{
-        setProduct(state,action){
-           return state.products = action.payload
+        setProducts:(state,action)=>{
+            state.products = action.payload
         },
-        addProduct(state,action){
+        addProduct:(state,action)=>{
             state.products.push(action.payload)
         },
-
+        deleteProduct:(state,action)=>{
+            state = state.map(product=>product.id*1 !==action.payload*1)
+        }
+        
 
     }
 })

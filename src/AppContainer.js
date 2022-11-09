@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import TheHeader from './components/TheHeader';
 import SideBar from './components/SideBar';
-import Router from './routes/index';
+import { Outlet } from "react-router-dom"
 
 const AppContainer = () =>{
     return <Fragment>
@@ -11,7 +11,7 @@ const AppContainer = () =>{
          <SideBar />
          </div>
         <div className='flex-fill px-3 px-lg-5 py-4 mb-4'>     
-        <Router />
+        <Outlet />
         </div>
          </div>
        </Fragment>

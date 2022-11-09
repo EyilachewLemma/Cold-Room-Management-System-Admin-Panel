@@ -1,34 +1,51 @@
 
-import { Fragment,useState,useRef } from "react";
+import { Fragment,useRef,useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
-import Avocado from '../../assetes/avocado.jpg'
 import Button from 'react-bootstrap/Button';
-import {useNavigate} from 'react-router-dom'
-import ProductDetail from "./ProductDetail";
+import {useNavigate,useParams} from 'react-router-dom'
 import ReactToPrint from "react-to-print";
+import { useDispatch,useSelector } from "react-redux";
+import { coldRoomProductAction } from "../../store/slices/ColdroomProductSlice";
+import { isLoadingAction } from "../../store/slices/spinerSlice";
+import apiClient from "../../url/index";
 import classes from "../../views/product/Products.module.css";
 
 
 const ColdRoomProducts = () => {
-  const [show, setShow] = useState(false)
     const navigate = useNavigate()
     const componentRef = useRef()
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
-  const openModalHandler = () =>{
-    setShow(true)
+    const {crId} = useParams()
+    const dispatch =useDispatch()
+    const products = useSelector(state=>state.coldroomProduct.products)
+    console.log(crId)
+  const featchColdRoomProducts = async() =>{
+    dispatch(isLoadingAction.setIsLoading(false))
+    try{
+     var response = await apiClient.get(`admin/coldroom-products/${crId}`)
+     if(response.status === 200){
+      console.log('cold room product',response.data)
+      dispatch(coldRoomProductAction.setProducts(response.data || []))
+     }
+    }
+    catch(err){}
+    finally {dispatch(isLoadingAction.setIsLoading(false))}
   }
-  const closeModalHandler = () =>{
-    setShow(false)
+  useEffect(()=>{
+    featchColdRoomProducts()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+  const viewProductDetail = (productId,amount) =>{
+    navigate(`/cold-rooms/${crId}/product/${productId}/prduct-detail/${amount}`)
   }
   return (
     <Fragment>
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
     <div ref={componentRef}>  
       <h6 className="fw-bold">Product Listing in cold room</h6>
-        <div className="mt-3"><span className="fw-bold">Cold Room</span>: Bahir Dar</div>
-        <div className="mt-3"><span className="fw-bold">Date</span>: 10-31-2022</div>
+        <div className="mt-3"><span className="fw-bold">Cold Room</span>: {products[0]?.coldRoom?.name}</div>
+        <div className="mt-3"><span className="fw-bold">Date</span>: null</div>
       <div className={`${classes.bottomBorder} mt-3`}></div>
       <div className="d-flex justify-content-between mt-4">
         <InputGroup className="mb-3 w-50 border rounded onPrintDnone">
@@ -69,17 +86,17 @@ const ColdRoomProducts = () => {
           <tbody>
           {
             products.map((product,index) =>(
-              <tr key={index}>
-              <td className="p-4">1</td>
-              <td className="p-4">Avocado</td>
+              <tr key={product.productId}>
+              <td className="p-4">{index+1}</td>
+              <td className="p-4">{product.Product?.name}</td>
               <td className="p-2">
-                <img src={Avocado} alt="Avocado_image" className={`${classes.img} img-fluid`} />
+                <img src={product.Product.imageUrl} alt="product_image" className={`${classes.img} img-fluid`} />
               </td>
-              <td className="p-4">1234</td>
+              <td className="p-4">{product.totalProduct}</td>
               <td className="p-4 text-center">500</td>
               <td className="p-4 text-center">3 ETB</td>
               <td className="p-4 onPrintDnone">
-             <Button className={classes.borderedBtn} variant="none" onClick={openModalHandler}>View Detail</Button>
+             <Button className={classes.borderedBtn} variant="none" onClick={()=>viewProductDetail(product.productId,product.totalProduct)}>View Detail</Button>
               </td>
             </tr>
             ))
@@ -89,7 +106,6 @@ const ColdRoomProducts = () => {
           </tbody>
         </Table>
       </div>
-      <ProductDetail show={show} onClose={closeModalHandler} />
       </div>
     </Fragment>
   );

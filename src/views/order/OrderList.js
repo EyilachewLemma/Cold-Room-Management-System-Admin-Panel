@@ -1,7 +1,6 @@
 import { useEffect,useState,useRef } from "react";
-// import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
-import { coldRoomAction } from "../../store/slices/coldroomSlice";
+import { orderAction } from "../../store/slices/OrderSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -19,27 +18,30 @@ import classes from "./Orders.module.css";
 const OrderList = () => {
   const [isOrderStatusOpen,setIsOrderStatusOpen] = useState(false)
   const [isPayMentStatusOpen,setIsPayMentStatusOpen] = useState(false)
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
-  const coldRooms = useSelector(state =>state.coldroom)
+  const orders = useSelector(state =>state.order.orders)
   const componentRef = useRef()
+  const searchBy = useRef()
   const navigate = useNavigate()
-  useEffect( ()=>{
-    async function  featchOrder(){
-      // dispatch(isLoadingAction.setIsLoading(true))
-    try{
-     var response = await apiClient.get('api/cold_rooms')
-     if(response.status === 200){
-      dispatch(coldRoomAction.setColdRooms(response.data || []))
-     }
-    }
-    catch(err){}
-    finally {dispatch(isLoadingAction.setIsLoading(false))}
+   
+  const  featchOrders = async () =>{
+    dispatch(isLoadingAction.setIsLoading(false))
+  try{
+   var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}`)
+   if(response.status === 200){
+    dispatch(orderAction.setOrders(response.data || []))
+   }
   }
-  featchOrder()
-  },[dispatch])
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
+}
+  useEffect( ()=>{
+   
+  featchOrders()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
 
-  console.log('coldrooms from',coldRooms)
+  console.log('coldrooms from',orders)
 
   const handlOrderItem = () =>{
     navigate('/orders/items')
@@ -56,6 +58,22 @@ const handlPaymentStatus = () =>{
 const handlPaymentStatusModalClose = () =>{
   setIsPayMentStatusOpen(false)
 }
+const enterKeyHandler = (event) =>{
+  if(event.key === 'Enter' || !event.target.value){
+    featchOrders()
+    console.log('event value',event.target.value)
+  }
+}
+const searchHandler = () =>{
+  featchOrders()
+  console.log('search value',searchBy.current.value)
+}
+  const filterOrderHandler =(e)=>{
+    console.log('option=', e.target.value)
+  }
+  const filterByDateHandler = (e) =>{
+    console.log('date=',e.target.value)
+  }
   return (
     <div ref={componentRef}>
       <h5 className="text-bold">Orders List</h5>
@@ -65,35 +83,40 @@ const handlPaymentStatusModalClose = () =>{
         and payment status of an order. 
       </p>
       <div className={`${classes.bottomBorder} mt-5`}></div>
-        <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>
-        <InputGroup className="w-50 border rounded onPrintDnone">
+        <div className={`${classes.grayBg} d-flex  mt-3 p-2`}>
+        <InputGroup className="w-50 border rounded align-self-center onPrintDnone">
           <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
-            <span>
+            <span onClick={searchHandler}>
               <i className="fas fa-search"></i>
             </span>
           </InputGroup.Text>
           <Form.Control
             className={classes.searchInput}
             placeholder="search orders by wholsaler name"
+            ref={searchBy}
             aria-label="Username"
             aria-describedby="basic-addon1"
+            onKeyUp={enterKeyHandler}
           />
         </InputGroup>
-        <div className="ms-auto me-3 onPrintDnone">
-        <Form.Select aria-label="Default select example">
+        <div className="ms-auto me-3 align-self-center onPrintDnone">
+        <Form.Select aria-label="Default select example" onChange={filterOrderHandler}>
         <option value='all'>All</option>
         <option value="1">Completed orders</option>
         <option value="2">pending orders</option>
         <option value="3">Payed Orders</option>
-        <option value="3">Unpaid Orders</option>
+        <option value="4">Unpaid Orders</option>
       </Form.Select>
         </div>
-      <div className="me-3 onPrintDnone">
+      <div className="me-3 align-self-center onPrintDnone">
       <Form.Group controlId="exampleForm.ControlInput1">
-      <Form.Control type="date" />
+      <Form.Control
+       type="date"
+       onChange={filterByDateHandler}
+        />
     </Form.Group>
       </div>
-        <div>
+        <div className="align-self-center">
         <ReactToPrint
         trigger={()=><Button variant='none' className="exportbtn py-1 onPrintDnone"><span><i className="fas fa-file-export"></i></span> Export</Button>}
         content={()=>componentRef.current}       
@@ -119,15 +142,15 @@ const handlPaymentStatusModalClose = () =>{
           </thead>
           <tbody>
           {
-            products.map((product,index) =>(
-              <tr className={classes.row} key={index}>
-              <td className="p-3">814</td>
-              <td className="p-3">Bahir Dar</td>
-              <td className="p-3">Dagne Menberu</td>
-              <td className="p-3">10-30-2022</td>
-              <td className="p-3">21,300</td>
-              <td className="p-3 text-center">completed</td>
-              <td className="p-3 text-center">Unpaid</td>
+            orders.map((order) =>(
+              <tr className={classes.row} key={order.id}>
+              <td className="p-3">{order.code}</td>
+              <td className="p-3">{order.coldRoom.name}</td>
+              <td className="p-3">{order.wholeSaler?.fName+' '+order.wholeSaler?.lName}</td>
+              <td className="p-3">{order.createdAt.slice(0,10)}</td>
+              <td className="p-3">{order.totalPrice}</td>
+              <td className="p-3 text-center">{order.orderStatus}</td>
+              <td className="p-3 text-center">{order.paymentStatus}</td>
             <td className="p-3 onPrintDnone">
               <Dropdown>
       <Dropdown.Toggle variant="none" id="dropdown-basic">

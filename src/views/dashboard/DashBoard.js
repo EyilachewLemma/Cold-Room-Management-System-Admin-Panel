@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
-import SalesOverviewChart from '../components/SalesOverviewChart'
-import SalesPieChart from '../components/SalespieChart';
-import RecentOrders from '../components/RecentOrders';
+import SalesOverviewChart from '../../components/SalesOverviewChart'
+import SalesPieChart from '../../components/SalespieChart';
+import RecentOrders from '../../components/RecentOrders';
 
 import Form from 'react-bootstrap/Form';
 import classes from './DashBoard.module.css'

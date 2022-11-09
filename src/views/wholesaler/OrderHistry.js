@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
 import { coldRoomAction } from "../../store/slices/coldroomSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
-import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
 import ReactToPrint from "react-to-print";
 import apiClient from "../../url/index";
@@ -41,20 +39,7 @@ const OrderHistory = () => {
     <h6 className="fw-bold">Wholesaler's Order History</h6>
       <div className="mt-3"><span className="fw-bold">Wholesaler Name</span>: <span className="fs-5">Azimeraw Amare</span></div>
       <div className={`${classes.bottomBorder} mt-5`}></div>
-        <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>
-        <InputGroup className="w-50 border rounded onPrintDnone">
-          <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
-            <span>
-              <i className="fas fa-search"></i>
-            </span>
-          </InputGroup.Text>
-          <Form.Control
-            className={classes.searchInput}
-            placeholder="search orders by wholsaler name"
-            aria-label="Username"
-            aria-describedby="basic-addon1"
-          />
-        </InputGroup>        
+        <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>    
       
         <div className="ms-auto">
         <ReactToPrint

@@ -2,7 +2,7 @@ import {createSlice} from '@reduxjs/toolkit'
 
 const coldRoomSlice = createSlice({
     name:'coldroomList',
-    initialState:[],
+    initialState:{coldRooms:[]},
     reducers:{
         setColdRooms(state,action){
             state.coldRooms = action.payload

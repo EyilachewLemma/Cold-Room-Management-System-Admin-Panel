@@ -1,45 +1,56 @@
-import React,{useRef} from "react";
-import Modal from "react-bootstrap/Modal";
+import React,{useRef,useEffect} from "react";
 import Form from 'react-bootstrap/Form';
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import ReactToPrint from "react-to-print";
+import { isLoadingAction } from "../../store/slices/spinerSlice";
+import { useParams } from "react-router-dom";
+import { useDispatch,useSelector } from "react-redux";
+import { crProAction } from "../../store/slices/ColdRoomProductDetailSlice";
+import apiClient from "../../url/index";
 import classes from './ProductDetail.module.css'
 
 const ProductDetail = (props) => {
   const componentRef = useRef()
-    const products = [1,2,3,4,5,6,7,8,9,10,11]
-  const closeModalHandler = () => {
-    props.onClose();
-  };
+    const {crId,proId,amount} = useParams()
+    const dispatch = useDispatch()
+    const products = useSelector(state=>state.crProDetail.products)
+
+
+
+    const featchColdRoomProductDetails = async() =>{
+      dispatch(isLoadingAction.setIsLoading(false))
+      try{
+       var response = await apiClient.get(`admin/coldroom-products/product/${proId}?coldRoomId=${crId}`)
+       if(response.status === 200){
+        console.log('cold room product details',response.data)
+        dispatch(crProAction.setProducts(response.data))
+       }
+      }
+      catch(err){}
+      finally {dispatch(isLoadingAction.setIsLoading(false))}
+    }
+    useEffect(()=>{
+      featchColdRoomProductDetails()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
   return (
     <>
-      <Modal
-        show={props.show}
-        size="xl"
-        onHide={closeModalHandler}
-        backdrop="static"
-        keyboard={false}
-      >
-      <Modal.Header closeButton>
-        </Modal.Header>
-        <Modal.Body ref={componentRef}>
+      
+        <div ref={componentRef}>
           <h6 className="fw-bold px-3 pt-3">Product Stock Listing</h6>
           <div className="d-flex justify-content-between px-3 pt-2">
             <div>
               <div className="mt-3">
-                <span className="fw-bold">Product</span>: Avocado
+                <span className="fw-bold">Product</span>: {products[0]?.Product.name}
               </div>
               <div className="mt-3">
-                <span className="fw-bold">Total product in stock(kg)</span>: 100
+                <span className="fw-bold">Total product in stock(kg)</span>: {amount}
               </div>
             </div>
             <div className="me-5">
               <div className="mt-3">
-                <span className="fw-bold">Cold room name</span>: Bahir Dar
-              </div>
-              <div className="mt-3">
-                <span className="fw-bold">Date</span>: 10-31-2022
+                <span className="fw-bold">Cold room name</span>: {products[0]?.coldRoom.name}
               </div>
             </div>
           </div>
@@ -86,14 +97,14 @@ const ProductDetail = (props) => {
             {
               products.map((product,index) =>(
                 <tr className={classes.tdPadding} key={index}>
-                <td className='py-3'>#232</td>
-                <td className="p-2">Type 1</td>
-                <td className="p-2 text-center">tefera kassie</td>
-                <td className="p-2">10-31-1011</td>
-                <td className="p-2 text-center">2000</td>
-                <td className="p-2 text-center">1000</td>            
-                <td className="p-2 text-center">1000</td>
-                <td className="p-2 text-center">Tewodross Hayile</td>
+                <td className='py-3'>{product.warehousePosition}</td>
+                <td className="p-2">{product.ProductType.title}</td>
+                <td className="p-2 text-center">{product.farmer.fName+' '+product.farmer.lName}</td>
+                <td className="p-2">{product.createdAt.slice(0,10)}</td>
+                <td className="p-2 text-center">{product.oldQuantity}</td>
+                <td className="p-2 text-center">{product.soldQuantity}</td>            
+                <td className="p-2 text-center">{product.currentQuantity}</td>
+                <td className="p-2 text-center">{'null'}</td>
               </tr>
               ))
             }
@@ -102,9 +113,8 @@ const ProductDetail = (props) => {
             </tbody>
           </Table>
         </div>
-        </Modal.Body>       
+        </div>       
        
-      </Modal>
     </>
   );
 };

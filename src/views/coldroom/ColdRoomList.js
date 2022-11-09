@@ -21,25 +21,28 @@ const ColdRoomLists = () => {
   const [coldRoomData,setColdRoom] = useState({})
   const componentRef = useRef()
   const navigate = useNavigate()
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
+  // const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
-  const coldRooms = useSelector(state =>state.coldroom)
-  useEffect( ()=>{
-    async function  featchColdRooms(){
-      dispatch(isLoadingAction.setIsLoading(false))
-    try{
-     var response = await apiClient.get('admin/address')
-     if(response.status === 200){
-      dispatch(coldRoomAction.setColdRooms(response.data || []))
-     }
-    }
-    catch(err){}
-    finally {dispatch(isLoadingAction.setIsLoading(false))}
-  }
-  featchColdRooms()
-  },[dispatch])
+  const coldRooms = useSelector(state =>state.coldroom.coldRooms)
+  const searchBy = useRef()
+  
 
-  console.log('coldrooms from',coldRooms)
+  const featchColdRooms = async() => {
+    dispatch(isLoadingAction.setIsLoading(false))
+  try{
+   var response = await apiClient.get(`admin/coldRooms`)
+   if(response.status === 200){
+    dispatch(coldRoomAction.setColdRooms(response.data || []))
+   }
+  }
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
+}
+  useEffect( ()=>{   
+  featchColdRooms()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
 
   const handleCloseModal = useCallback((value) =>{
      setTogleModal(value)
@@ -50,14 +53,23 @@ const ColdRoomLists = () => {
     setModalTitle({title:'Add Cold Room',isEdit:false})
     setTogleModal(true)
   }
-  const editColdRoomHandler = (index) =>{
+  const editColdRoomHandler = (coldRoom) =>{
     setModalTitle({title:'Edit Cold Room Information',isEdit:true})
     setTogleModal(true)
-    setColdRoom(index)
-    console.log('index = ',index)
+    setColdRoom(coldRoom)
   }
-  const handlViewProduct = () =>{
-      navigate('/cold-rooms/products')
+  const handlViewProduct = (crId) =>{
+      navigate(`/cold-rooms/${crId}/products`)
+  }
+  const enterKeyHandler = (event) =>{
+    if(event.key === 'Enter' || !event.target.value){
+      featchColdRooms()
+      console.log('event value',event.target.value)
+    }
+  }
+  const searchHandler = () =>{
+    featchColdRooms()
+    console.log('search value',searchBy.current.value)
   }
   return (
     <Fragment>
@@ -70,7 +82,7 @@ const ColdRoomLists = () => {
       <div className="d-flex justify-content-between mt-5">
         <InputGroup className="mb-3 w-50 border rounded">
           <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
-            <span>
+            <span onClick={searchHandler}>
               <i className="fas fa-search"></i>
             </span>
           </InputGroup.Text>
@@ -79,6 +91,8 @@ const ColdRoomLists = () => {
             placeholder="Username"
             aria-label="Username"
             aria-describedby="basic-addon1"
+            ref={searchBy}
+            onKeyUp={enterKeyHandler}
           />
         </InputGroup>
         <div className="ms-auto me-5">
@@ -112,17 +126,17 @@ const ColdRoomLists = () => {
           </thead>
           <tbody>
           {
-            products.map((product,index) =>(
-              <tr className={classes.row} key={index}>
-              <td className="p-2">232</td>
-              <td className="p-2">Bahir Dar</td>
-              <td className="p-2">Amhara</td>
-              <td className="p-2">South Gonder</td>
-              <td className="p-2">Gaint</td>
-              <td className="p-2">Kebele 02</td>            
-              <td className="p-2 text-center">21,200</td>
-              <td className="p-2 text-center"> 2 ETB</td>
-              <td className="p-2">Admasu Welde</td>
+            coldRooms.map((coldRoom) =>(
+              <tr className={classes.row} key={coldRoom.id}>
+              <td className="p-2">{coldRoom.id}</td>
+              <td className="p-2">{coldRoom.name}</td>
+              <td className="p-2">{coldRoom.address.region}</td>
+              <td className="p-2">{coldRoom.address.zone}</td>
+              <td className="p-2">{coldRoom.address.woreda}</td>
+              <td className="p-2">{coldRoom.address.kebele}</td>            
+              <td className="p-2 text-center">{coldRoom.stockProduct}</td>
+              <td className="p-2 text-center">{coldRoom.rent?.price}</td>
+              <td className="p-2">{coldRoom.employee?.name}</td>
               <td className="p-2 onPrintDnone">
               <Dropdown>
       <Dropdown.Toggle variant="none" id="dropdown-basic">
@@ -130,9 +144,9 @@ const ColdRoomLists = () => {
       </Dropdown.Toggle>
 
       <Dropdown.Menu className={classes.dropdownBg}>
-      <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={event=>handlViewProduct()}>View Products</Button>
+      <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={event=>handlViewProduct(coldRoom.id)}>View Products</Button>
       <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}>View Location</Button>
-      <Button  variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>editColdRoomHandler(index)}>Edit Cold Room</Button>
+      <Button  variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>editColdRoomHandler(coldRoom)}>Edit Cold Room</Button>
         <Button variant="none" className={`${classes.dropdownItem} w-100 rounded-0 text-start ps-3`}>Assign Manager</Button>
         </Dropdown.Menu>
     </Dropdown>

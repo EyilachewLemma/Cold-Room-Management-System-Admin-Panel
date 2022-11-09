@@ -3,21 +3,19 @@ import SaveButton from "../../components/Button";
 import CancelButton from "../../components/CancelButton";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import AddProductType from "./AddProductType";
-import AddedProductTypes from "./AddedProductTypes";
 import { useDispatch } from "react-redux";
 import { productAction } from "../../store/slices/productSlice";
 import { buttonAction } from "../../store/slices/ButtonSpinerSlice";
-// import apiClient from "../../url/index";
 import fileApiClient from "../../url/fileApiClient";
 import classes from "./AddProduct.module.css";
 
-const AddProduct = (props) => {
-  const [productTypes, setProductTypes] = useState([]);
+const EditProduct = (props) => {
   const [productTitle, setProductTitle] = useState("");
   const [prImage, setprImage] = useState("");
   const [errors, setErrors] = useState({ prTitle: "", prImage: "" });
   const dispatch = useDispatch();
+
+
   const titleChangeHandler = (e) => {
     setProductTitle(e.target.value);
     if (e.target.value) {
@@ -49,14 +47,6 @@ const AddProduct = (props) => {
     setErrors(errorsValue);
     return errorsValue;
   };
-  const addProductTypeHandler = (item) => {
-    setProductTypes((previousTypes) => [...previousTypes, item]);
-  };
-  const removeProductItem = (index) => {
-    const remainingType = [...productTypes];
-    remainingType.splice(index, 1);
-    setProductTypes(remainingType);
-  };
   const handleClose = () => {
     props.onClose(false);
   };
@@ -67,15 +57,7 @@ const AddProduct = (props) => {
       dispatch(buttonAction.setBtnSpiner(true));
       let formData = new FormData();
       formData.append('name',productTitle)
-      formData.append('product_image',prImage)
-      productTypes.forEach((type,index)=>{
-        formData.append(`title${index}`,type.typeTitle)
-        formData.append(`description${index}`,type.description)
-        formData.append(`image${index}`,type.image)
-      })
-      formData.append('size',productTypes.length)
-     
-      console.log('formdata=',formData.getAll('image[]'))
+      formData.append('product_image',prImage)     
       try {
         let response = await fileApiClient.post("admin/products", formData);
         if (response.status === 200) {
@@ -146,14 +128,8 @@ const AddProduct = (props) => {
               )}
             </div>
 
-            <div className="mt-5 mb-2">Add Product Type</div>
-            <AddProductType onAddItem={addProductTypeHandler} />
           </Form>
         </Modal.Body>
-        <AddedProductTypes
-          prductTypes={productTypes}
-          onRemoveItem={removeProductItem}
-        />
         <Modal.Footer>
           <CancelButton title={"Cancel"} onClose={handleClose} />
           <SaveButton title={"Save Product"} onSave={addProductHandler} />
@@ -163,4 +139,4 @@ const AddProduct = (props) => {
   );
 };
 
-export default React.memo(AddProduct)
+export default React.memo(EditProduct)

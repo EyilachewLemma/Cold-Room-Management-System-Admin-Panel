@@ -1,6 +1,6 @@
 import { Fragment,useEffect,useRef } from "react";
 import { useSelector,useDispatch } from "react-redux";
-import { revenueAction } from "../../store/slices/RevenueSlice";
+import { salesAction } from "../../store/slices/SalesSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -8,42 +8,42 @@ import Table from "react-bootstrap/Table";
 import ReactToPrint from "react-to-print";
 import Button from 'react-bootstrap/Button';
 import apiClient from "../../url/index";
-import classes from "./Revenue.module.css";
+import classes from "./Sales.module.css";
 
 
-const Revenue = () => {
+const Sales = () => {
 
   const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
-  const revenues = useSelector(state =>state.revenue.revenues)
+  const saleses = useSelector(state =>state.sales.saleses)
   const componentRef = useRef()
   const searchBy = useRef()
-
-  const  featchRevenues = async() =>{
+   const  featchSaleses = async() =>{
     // dispatch(isLoadingAction.setIsLoading(true))
   try{
-   var response = await apiClient.get(`admin/revenues?search=${searchBy.current.value}`)
+   var response = await apiClient.get(`admin/sales?search=${searchBy.current.value}`)
    if(response.status === 200){
-    dispatch(revenueAction.setRevenues(response.data || []))
+    dispatch(salesAction.setSaleses(response.data || []))
    }
   }
   catch(err){}
   finally {dispatch(isLoadingAction.setIsLoading(false))}
 }
   useEffect( ()=>{
-      featchRevenues()
+    
+  featchSaleses()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
-  console.log('revenues from',revenues)
+  console.log('saleses from',saleses)
   const enterKeyHandler = (event) =>{
     if(event.key === 'Enter' || !event.target.value){
-      featchRevenues()
+      featchSaleses()
       console.log('event value',event.target.value)
     }
   }
   const searchHandler = () =>{
-    featchRevenues()
+    featchSaleses()
     console.log('search value',searchBy.current.value)
   }
     const filterByColdRoomHandler =(e)=>{
@@ -55,7 +55,7 @@ const Revenue = () => {
   return (
     <Fragment>
     <div ref={componentRef}>
-    <div className="fw-bold">Rent Revenue List</div>
+    <div className="fw-bold">Sales List</div>
       <div className={`${classes.bottomBorder} mt-5`}></div>
         <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>
         <InputGroup className="w-50 border rounded onPrintDnone">
@@ -66,7 +66,7 @@ const Revenue = () => {
           </InputGroup.Text>
           <Form.Control
             className={classes.searchInput}
-            placeholder="search orders by farmer name"
+            placeholder="search orders by wholesaler's name"
             aria-label="search by product name"
             aria-describedby="searchbyproductName"
             ref={searchBy}
@@ -83,10 +83,10 @@ const Revenue = () => {
         </div>
       <div className="ms-3 me-3 onPrintDnone">
       <Form.Group controlId="search-by-date">
-      <Form.Control
-       type="date"
-       onChange={filterByDateHandler}
-        />
+      <Form.Control 
+      type="date"
+      onChange={filterByDateHandler}
+       />
     </Form.Group>
       </div>
         <div>
@@ -103,30 +103,28 @@ const Revenue = () => {
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
-              <th>Farmer Name</th>
-              <th>Product Name</th>
-              <th>Product SQU</th>
-              <th>Product Type</th>
+              <th>Order Id</th>
+              <th>Wholesaler Name</th>
               <th>Cold Room</th>
-              <th>Added Date(GC)</th>
-              <th>Sold Date(GC)</th>
-              <th>Quantity(Kg)</th>
-              <th>Amount(ETB)</th>
+              <th>Order Date</th>
+              <th>Total Price</th>
+              <th>Payment Status</th>
+              <th>Paid Amount(ETB)</th>
+              <th>Remaining Amount(ETB)</th>
             </tr>
           </thead>
           <tbody>
           {
             products.map((product,index) =>(
               <tr className={classes.row} key={index}>
-              <td className="p-3">Fentahun Wale</td>
-              <td className="p-3">Tomato</td>
-              <td className="p-3">#324</td>
-              <td className="p-3">Type 1</td>
-              <td className="p-3">Cold room 1</td>
-              <td className="p-3">10-02-2022</td>
-              <td className="p-3">10-8-2022</td>
-              <td className="p-3 text-center">200</td>
-              <td className="p-3 text-center">100</td>
+              <td className="px-2 py-3 text-center">#765</td>
+              <td className="px-2 py-3 text-center">Gashaw Emiru</td>
+              <td className="px-2 py-3 text-center">Cold Room 2</td>
+              <td className="px-2 py-3 text-center">10-02-2022</td>
+              <td className="px-2 py-3 text-center">1300</td>
+              <td className="px-2 py-3 text-center">Partially Paid</td>
+              <td className="px-2 py-3 text-center">900</td>
+              <td className="px-2 py-3 text-center">400</td>
               
             </tr>
             ))
@@ -140,4 +138,4 @@ const Revenue = () => {
     </Fragment>
   );
 };
-export default Revenue;
+export default Sales;

@@ -1,10 +1,19 @@
+import {Fragment} from 'react'
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
 import profileImage from '../assetes/eyilachew.jpg'
+import { useNavigate } from 'react-router-dom';
 import classes from './TheHeader.module.css'
 
 const TheHeader = () =>{
-  return <div className={classes.headerNav+' d-flex px-3 px-lg-5 py-2 align-items-center'}>
+  const navigate = useNavigate()
+  const logoutHandler = () =>{}
+  const accountHandler = () =>{
+    navigate('/account')
+  }
+  
+  return <Fragment>
+  <div className={classes.headerNav+' d-flex px-3 px-lg-5 py-2 align-items-center'}>
        <div>
         <span className={classes.yellowText+' fw-bold fs-4'}>RENSYS</span>
         <span className={classes.greenText+' fw-bold fs-4'}>ENGINEERING</span>
@@ -29,15 +38,15 @@ const TheHeader = () =>{
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Item>
-            <Button className={classes.profileBtn+' text-dark'}>My Account</Button>            
+            <Button className={classes.profileBtn+' text-dark'} onClick={accountHandler}>My Account</Button>            
             </Dropdown.Item>
           <Dropdown.Item>
-          <Button className={classes.profileBtn+' text-dark'}>Logout</Button>            
+          <Button className={classes.profileBtn+' text-dark'} onClick={logoutHandler}>Logout</Button>            
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
-      </div>
-        
+      </div>        
        </div>
+       </Fragment>
 }
 export default TheHeader

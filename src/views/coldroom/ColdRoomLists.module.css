@@ -6,6 +6,8 @@
 .searchInput{
     box-shadow: none!important;
     border-left: none!important;
+    z-index: 0!important;
+    outline: none;
 }
 .btn{
     background-color: #FF7F00!important;
