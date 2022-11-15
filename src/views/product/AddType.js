@@ -71,7 +71,7 @@ return err
       try {
         let response = await fileApiClient.post("admin/products", formData);
         if (response.status === 200) {
-          dispatch(productDetailAction.editProductType({id:'',type:response.data}));
+          dispatch(productDetailAction.addProductType(response.data));
         }
       } catch (err) {
         console.log("err", err);

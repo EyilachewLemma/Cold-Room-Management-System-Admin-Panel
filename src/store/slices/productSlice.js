@@ -11,7 +11,8 @@ const productSlice = createSlice({
             state.products.push(action.payload)
         },
         editProduct:(state,action)=>{
-            const index = state.findIndex(product=>product.id===action.payload.id)
+            const index = state.findIndex(product=>product.id*1===action.payload.id*1)
+            console.log('edited index=',index)
             state[index] = action.payload.product
         },
         deleteProduct:(state,action)=>{

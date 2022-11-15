@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import AddProduct from "./AddProduct";
 import EditProduct from "./EditProduct";
 import ReactToPrint from "react-to-print";
+import ConfirmModal from "../../components/ConfirmModal";
 import { useSelector,useDispatch } from "react-redux";
 import {productAction} from '../../store/slices/productSlice'
 import { isLoadingAction } from "../../store/slices/spinerSlice";
@@ -18,6 +19,7 @@ const ProductList = () => {
   const [togleModal,setTogleModal] = useState(false)
   const [show,setShow] = useState(false)
   const [producttoedit,setProducttoedit] = useState({})
+  const [showConfirm,setShowConfirm] = useState(false)
   const componentRef = useRef()
   const searchBy = useRef()
  const products = useSelector(state=>state.product.products)
@@ -61,6 +63,12 @@ const ProductList = () => {
   }
   const closeEditModal = ()=>{
     setShow(false)
+  }
+  const openConfirmModal = () =>{
+    setShowConfirm(true)
+  }
+  const closeConfirmModal = () =>{
+    setShowConfirm(false)
   }
   const deleteProductHandler = async (id) =>{
     try{
@@ -150,9 +158,9 @@ const ProductList = () => {
       <i className="fas fa-ellipsis-v"></i>
       </Dropdown.Toggle>
       <Dropdown.Menu className={classes.dropdownBg}>
-      <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={event=>ViewDetailHandler(product.id)}>Product Type</Button>
+      <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>ViewDetailHandler(product.id)}>Product Type</Button>
       <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>editProduct(product)}>Edit Product</Button>
-      <Button  variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={event=>deleteProductHandler(product.id)}>Delete Product</Button>
+      <Button  variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>openConfirmModal(product.id)}>Delete Product</Button>
         </Dropdown.Menu>
     </Dropdown>
               </td>
@@ -166,6 +174,7 @@ const ProductList = () => {
       </div>
       <AddProduct show={togleModal} onClose={closeAddandEditModalHandler} title='Add Product'></AddProduct>
       <EditProduct show={show} onClose={closeEditModal} product={producttoedit} />
+      <ConfirmModal show={showConfirm} onClose={closeConfirmModal} onDelete={deleteProductHandler} message='Are you sure to delete product ?' title='Delete Product' />
     </div>
   );
 };

@@ -8,6 +8,7 @@ import {productDetailAction} from '../../store/slices/ProductDetailSlice'
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import apiClient from "../../url/index";
 import EditProductType from './EditProductType'
+import ConfirmModal from "../../components/ConfirmModal";
 import AddType from "./AddType";
 import { useParams } from "react-router-dom";
 
@@ -18,12 +19,12 @@ const ProductDetail = () => {
   const [show,setShow] = useState(false)
   const [producttoedited,setProduct] = useState({})
   const [showAddType,setShowAddType] = useState(false)
+  const [showConfirm,setShowConfirm] = useState(false)
+  const [typeId,setTypeId] = useState(null)
   const componentRef = useRef()
  const products = useSelector(state=>state.productDetail.productTypes)
   const dispatch = useDispatch()
   const {prId} = useParams()
-
-console.log(products)
   const featchProductDetails = async ()=>{
     dispatch(isLoadingAction.setIsLoading(true))
   try{
@@ -49,11 +50,20 @@ console.log(products)
    const closeAddType = () =>{
     setShowAddType(false)
    }
-  const deleteProductTypeHandler = async (id) =>{
+   const openConfirmModal = (id) =>{
+    
+    setTypeId(id)
+    setShowConfirm(true)
+   }
+   const closeConfirmModal = () =>{
+    setShowConfirm(false)
+   }
+  const deleteProductTypeHandler = async () =>{
+    console.log('type to delete=',typeId)
     try{
-      var response = await apiClient.delete(`admin/products/${id}`)
+      var response = await apiClient.delete(`admin/products/${typeId}`)
       if(response.status === 200){
-       dispatch(productDetailAction.deleteProduct(id))
+       dispatch(productDetailAction.deleteProductType(typeId))
       }
      }
      catch(err){
@@ -64,7 +74,6 @@ console.log(products)
   const editProductTypeHandler = (product) =>{
     setProduct(product)
     setShow(true)
-    console.log('product to be edited---',product)
   }
   const closeModalHandler = () =>{
     setShow(false)
@@ -108,7 +117,7 @@ console.log(products)
             products.map((product,index) =>(
               <tr key={index}>
               <td className="p-4">{index+1}</td>
-              <td className="p-4">{product.name}</td>
+              <td className="p-4">{product.title}</td>
               <td className="p-2">{product.description}</td>
               <td className="p-4">
               <img src={product.imageUrl} alt="product_type_image" className={classes.img} />
@@ -120,7 +129,7 @@ console.log(products)
       </Dropdown.Toggle>
       <Dropdown.Menu className={classes.dropdownBg}>
       <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>editProductTypeHandler(product)}>Edit Product Type</Button>
-      <Button  variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>deleteProductTypeHandler(product.id)}>Delete Product Type</Button>
+      <Button  variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>openConfirmModal(product.id)}>Delete Product Type</Button>
         </Dropdown.Menu>
     </Dropdown>
               </td>
@@ -134,6 +143,7 @@ console.log(products)
       </div>
       <EditProductType show={show} onClose={closeModalHandler} product={producttoedited} />
       <AddType show={showAddType} onClose={closeAddType} />
+      <ConfirmModal show={showConfirm} onClose={closeConfirmModal} onDelete={deleteProductTypeHandler} message='Are you sure to delete product Type ?' title='Delete Product Type' />
     </div>
   );
 };

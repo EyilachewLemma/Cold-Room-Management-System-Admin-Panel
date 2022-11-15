@@ -1,6 +1,6 @@
 import axios from "axios";
 let fileApiClient = axios.create({
-    baseURL: 'http://192.168.1.101:3000/',
+    baseURL: 'http://192.168.0.9:3000/',
     headers: {
         Accept: 'application/json',
         "Content-Type": "multipart/form-data",

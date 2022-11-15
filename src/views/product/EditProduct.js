@@ -46,7 +46,7 @@ const {recivedData} = props.product
     return err;
   };
   const handleClose = () => {
-    props.onClose(false);
+    props.onClose();
   };
   const editProductHandler = async () => {
     let errorValue = validate(product.title);
@@ -64,7 +64,8 @@ const {recivedData} = props.product
           const editedProduct = {
             id:response.data.id,
             name:response.data.name,
-            totalProduct:0
+            imageUrl:response.data.imageUrl,
+            totalProduct:response.data.totalProduct
           }
           dispatch(productAction.editProduct(editedProduct));
           handleClose()

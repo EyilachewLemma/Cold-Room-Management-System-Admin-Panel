@@ -17,7 +17,6 @@ const EditProductType = (props) => {
     newImage: "",
   });
   const [errors, setErrors] = useState({
-    image: "",
     typeTitle: "",
     description: "",
   });
@@ -75,7 +74,7 @@ const EditProductType = (props) => {
   const editProductHandler = async () => {
     const error = validate(type);
     setErrors(error);
-    if (!error) {
+    if (!errors.typeTitle && !errors.description ) {
       dispatch(buttonAction.setBtnSpiner(true));
       let formData = new FormData();
       formData.append(`title`, type.typeTitle);
@@ -85,7 +84,7 @@ const EditProductType = (props) => {
       }
       console.log("formdata=", formData.getAll("image[]"));
       try {
-        let response = await fileApiClient.put(`admin/products/${props.product.id}`, formData);
+        let response = await fileApiClient.put(`admin/product-types/${props.product.id}`, formData);
         if (response.status === 200) {
           console.log("create Cold room response =", response);
           dispatch(
