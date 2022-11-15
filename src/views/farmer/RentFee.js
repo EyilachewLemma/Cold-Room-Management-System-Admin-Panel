@@ -1,7 +1,7 @@
 import { Fragment,useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
-import { coldRoomAction } from "../../store/slices/coldroomSlice";
+import { rentAction } from "../../store/slices/RentSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -9,46 +9,46 @@ import Table from "react-bootstrap/Table";
 import ExportBtn from "../../components/ExportBtn";
 import Button from 'react-bootstrap/Button';
 import apiClient from "../../url/index";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import classes from "./Farmers.module.css";
 
 
 const RetFee = () => {
 
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
-  const coldRooms = useSelector(state =>state.coldroom)
+  const rents = useSelector(state =>state.rent.rents)
   const navigate = useNavigate()
-  useEffect( ()=>{
-    async function  featchOrder(){
-      // dispatch(isLoadingAction.setIsLoading(true))
-    try{
-     var response = await apiClient.get('api/cold_rooms')
-     if(response.status === 200){
-      dispatch(coldRoomAction.setColdRooms(response.data || []))
-     }
-    }
-    catch(err){}
-    finally {dispatch(isLoadingAction.setIsLoading(false))}
-  }
-  featchOrder()
-  },[dispatch])
+  const {tr,faId} = useParams()
 
-  console.log('coldrooms from',coldRooms)
+  async function  featchRents(){
+    // dispatch(isLoadingAction.setIsLoading(true))
+  try{
+   var response = await apiClient.get(`admin/farmers/rents/${faId}`)
+   if(response.status === 200){
+    dispatch(rentAction.setRents(response.data || []))
+   }
+  }
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
+}
+  useEffect( ()=>{
+  featchRents()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
   return (
     <Fragment>
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
-    <div className="fw-bold">Farmers Product History</div>
+    <div className="fw-bold">Farmers rent fee</div>
     <div className="d-flex align-items-center">
     <div>
       <div className="mt-3">
-        <span className="fw-bold">Farmer</span>: Demeke Gelaw
+        <span className="fw-bold">Farmer</span>: {rents.farmer?.fName+' '+rents.farmer?.lName}
       </div>
       <div className="mt-3">
-        <span className="fw-bold">Total Product Instock</span>: 2000Kg
+        <span className="fw-bold">Total Rennt Fee</span>: {tr} ETB
       </div>
     </div>
-    <div className="ms-5 ps-5"><span className="fw-bold">Date</span>: 10-02-2022</div>  
    
   </div>
       <div className={`${classes.bottomBorder} mt-5`}></div>
@@ -88,28 +88,28 @@ const RetFee = () => {
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
-              <th>Product-ID</th>
+              <th>Order-ID</th>
               <th>Product Name</th>
               <th>Product Type</th>
-              <th>Cold Room</th>
-              <th>Added Date(GC)</th>
-              <th>Sold Stock(Kg)</th>
-              <th>Current Stock(Kg)</th>
-              <th>Price Per Kg(ETB)</th>
+              <th>Order Date(GC)</th>
+              <th>Sold Quantity(Kg)</th>
+              <th>Rent Fee pre Kg(ETB)</th>
+              <th>Total Rent Fee(ETB)</th>
+              <th>Pament Status</th>
             </tr>
           </thead>
           <tbody>
           {
-            products.map((product,index) =>(
+            rents.farmerRents?.map((order,index) =>(
               <tr className={classes.row} key={index}>
-              <td className="p-3">32</td>
-              <td className="p-3">Tomato</td>
-              <td className="p-3">Type 1</td>
-              <td className="p-3">Dahir Dar</td>
-              <td className="p-3">10-02-2022</td>
-              <td className="p-3 text-center">100</td>
-              <td className="p-3 text-center">1500</td>
-            <td className="p-3 text-center">30</td>
+              <td className="p-3">{order.orderCode}</td>
+              <td className="p-3">{order.productName}</td>
+              <td className="p-3">{order.productType}</td>
+              <td className="p-3">{order.orderDate.slice(0,10)}</td>
+              <td className="p-3 text-center">{order.quantity}</td>
+              <td className="p-3 text-center">{order.rentPrice}</td>
+              <td className="p-3 text-center">{order.rentAmount}</td>
+            <td className="p-3 text-center">{order.state}</td>
             </tr>
             ))
           }

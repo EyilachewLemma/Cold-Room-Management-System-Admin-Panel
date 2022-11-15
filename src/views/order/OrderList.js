@@ -27,7 +27,7 @@ const OrderList = () => {
   const  featchOrders = async () =>{
     dispatch(isLoadingAction.setIsLoading(false))
   try{
-   var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}`)
+   var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${''}&date=${''}`)
    if(response.status === 200){
     dispatch(orderAction.setOrders(response.data || []))
    }
@@ -40,9 +40,6 @@ const OrderList = () => {
   featchOrders()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
-
-  console.log('coldrooms from',orders)
-
   const handlOrderItem = () =>{
     navigate('/orders/items')
   }
@@ -68,11 +65,31 @@ const searchHandler = () =>{
   featchOrders()
   console.log('search value',searchBy.current.value)
 }
-  const filterOrderHandler =(e)=>{
+  const filterOrderHandler = async(e)=>{
     console.log('option=', e.target.value)
+    dispatch(isLoadingAction.setIsLoading(false))
+    try{
+     var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${e.target.value}&date=${''}`)
+     if(response.status === 200){
+      dispatch(orderAction.setOrders(response.data || []))
+     }
+    }
+    catch(err){}
+    finally {dispatch(isLoadingAction.setIsLoading(false))
+    }
   }
-  const filterByDateHandler = (e) =>{
+  const filterByDateHandler = async(e) =>{
     console.log('date=',e.target.value)
+    dispatch(isLoadingAction.setIsLoading(false))
+  try{
+   var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${''}&date=${e.target.value}`)
+   if(response.status === 200){
+    dispatch(orderAction.setOrders(response.data || []))
+   }
+  }
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))
+  }
   }
   return (
     <div ref={componentRef}>
@@ -84,7 +101,7 @@ const searchHandler = () =>{
       </p>
       <div className={`${classes.bottomBorder} mt-5`}></div>
         <div className={`${classes.grayBg} d-flex  mt-3 p-2`}>
-        <InputGroup className="w-50 border rounded align-self-center onPrintDnone">
+        <InputGroup className="w-25 border rounded  align-self-center onPrintDnone">
           <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
             <span onClick={searchHandler}>
               <i className="fas fa-search"></i>
@@ -101,11 +118,13 @@ const searchHandler = () =>{
         </InputGroup>
         <div className="ms-auto me-3 align-self-center onPrintDnone">
         <Form.Select aria-label="Default select example" onChange={filterOrderHandler}>
-        <option value='all'>All</option>
-        <option value="1">Completed orders</option>
-        <option value="2">pending orders</option>
-        <option value="3">Payed Orders</option>
-        <option value="4">Unpaid Orders</option>
+        <option value=''>All</option>
+        <option value="pending">Pending Orders</option>
+        <option value="completed">Completed Orders</option>
+        <option value="cancelled">Cancelled Orders</option>
+        <option value="partiallyPaid">Partially Payed Orders</option>
+        <option value="paid">Fully Payed Orders</option>
+        <option value="unpaid">Unpaid Orders</option>
       </Form.Select>
         </div>
       <div className="me-3 align-self-center onPrintDnone">
@@ -125,7 +144,8 @@ const searchHandler = () =>{
         />
         </div>
       </div>
-      
+      {
+        orders.data_name?.length && (
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
@@ -142,7 +162,7 @@ const searchHandler = () =>{
           </thead>
           <tbody>
           {
-            orders.map((order) =>(
+            orders.data_name.map((order) =>(
               <tr className={classes.row} key={order.id}>
               <td className="p-3">{order.code}</td>
               <td className="p-3">{order.coldRoom.name}</td>
@@ -181,6 +201,12 @@ const searchHandler = () =>{
           </tbody>
         </Table>
       </div>
+      )}
+      {
+        !orders.data_name?.length && (
+          <div className="mt-5 text-center">Data not found</div>
+        )
+      }
       <OrderStatus show={isOrderStatusOpen} onClose={handlOrderModalClose} />
       <PaymentStatus show={isPayMentStatusOpen} onClose={handlPaymentStatusModalClose} />
     </div>

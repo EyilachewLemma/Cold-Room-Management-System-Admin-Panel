@@ -1,17 +1,49 @@
-import {Fragment} from 'react'
+import {Fragment,useState,useEffect} from 'react'
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
 import profileImage from '../assetes/eyilachew.jpg'
 import { useNavigate } from 'react-router-dom';
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import {useDispatch,useSelector} from 'react-redux'
+import { notificationAction } from '../store/slices/NotificationSlice';
+import { isLoadingAction } from '../store/slices/spinerSlice';
+import apiClient from '../url/index'
 import classes from './TheHeader.module.css'
 
 const TheHeader = () =>{
+  const [show,setShow] = useState(false)
+  const dispatch = useDispatch()
+  const notifications = useSelector(state=>state.notification.notifications)
   const navigate = useNavigate()
+ 
+  useEffect(()=>{
+   const fetchNotification = async() =>{
+    dispatch(isLoadingAction.setIsLoading(true))
+      try{
+        const response = await apiClient.get('admin/notification')
+        if(response.status === 200){
+          dispatch(notificationAction.setNotifications(response.data))
+        }
+      }
+      catch(err){console.log('err',err)}
+      finally{
+        dispatch(isLoadingAction.setIsLoading(false))
+      }
+   }
+   fetchNotification()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
   const logoutHandler = () =>{}
   const accountHandler = () =>{
     navigate('/account')
+  } 
+  const openNotification = () =>{
+    setShow(true)
   }
-  
+  const handleClose = ()=>{
+    setShow(false)
+  }
+  console.log('notification =',notifications)
   return <Fragment>
   <div className={classes.headerNav+' d-flex px-3 px-lg-5 py-2 align-items-center'}>
        <div>
@@ -19,7 +51,7 @@ const TheHeader = () =>{
         <span className={classes.greenText+' fw-bold fs-4'}>ENGINEERING</span>
        </div>
        <div className='ms-auto me-3'>
-       <Button className={classes.notificationBtn}>
+       <Button className={classes.notificationBtn} onClick={openNotification}>
        <div className='text-white position-relative'><i className="fa-regular fa-bell fs-2"></i>
        <span className={classes.bage+' rounded-circle px-1 small'}>12</span>
        </div>      
@@ -46,6 +78,17 @@ const TheHeader = () =>{
         </Dropdown.Menu>
       </Dropdown>
       </div>        
+       </div>
+       <div>
+       <Offcanvas show={show} placement='end' backdrop={false} onHide={handleClose}>
+       <Offcanvas.Header closeButton>
+         <Offcanvas.Title>Notifications</Offcanvas.Title>
+       </Offcanvas.Header>
+       <Offcanvas.Body>
+         Some text as placeholder. In real life you can have the elements you
+         have chosen. Like, text, images, lists, etc.
+       </Offcanvas.Body>
+     </Offcanvas>
        </div>
        </Fragment>
 }

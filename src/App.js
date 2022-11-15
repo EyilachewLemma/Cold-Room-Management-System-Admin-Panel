@@ -1,15 +1,21 @@
 import {Fragment,useEffect} from 'react'
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 // import { useNavigate } from 'react-router-dom';
 import Spiner from './Spiner';
 import Router from './routes';
 import './App.css';
+import { userAction } from './store/slices/UserSlice';
 
 function App() {
   const isLoading = useSelector((state=>state.loading.isLoading))
   const isAuthenticated = useSelector(state=>state.user.isAuthenticated)
   // const navigate = useNavigate()
+  const dispatch = useDispatch()
   useEffect(()=>{
+    const token = localStorage.getItem('tokenc')
+    if(token){
+      dispatch(userAction.setIsAuthenticated(true))
+    }
     // if(isAuthenticated){
     // navigate('/dash-board')
     // }

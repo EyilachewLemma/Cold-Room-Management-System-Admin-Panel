@@ -1,8 +1,9 @@
 .wraper{
-    width: 45%;
+    width: 35%;
     margin: auto;
     margin-top: 5%;
     border: 1px solid gray;
+    border-radius: 0.5rem;
 }
 .btn{
     background-color: #ff7f00!important;
@@ -29,4 +30,18 @@
     left: 30%;
     color: #ff7f00!important;
     cursor: pointer;
+}
+.editIcon{
+    cursor: pointer;
+}
+.errorBorder{
+    border-color: red!important;
+}
+.errorText{
+    color: red!important;
+}
+@media(max-width:992px){
+    .wraper{
+        width: 45%;
+    }
 }

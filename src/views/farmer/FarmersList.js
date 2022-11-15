@@ -15,7 +15,6 @@ import classes from "./Farmers.module.css";
 
 const FarmersList = () => {
 
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
   const farmers = useSelector(state =>state.farmer.farmers)
   const navigate = useNavigate()
@@ -27,6 +26,7 @@ const FarmersList = () => {
   try{
    var response = await apiClient.get(`admin/farmers?search=${searchBy.current.value}`)
    if(response.status === 200){
+    console.log('farmers=',response.data)
     dispatch(farmerAction.setFarmers(response.data || []))
    }
   }
@@ -39,16 +39,14 @@ const FarmersList = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
-  console.log('farmers from',farmers)
-
-  const handlBalanceHistory = () =>{
-    navigate('/farmers/balance')
+  const handlBalanceHistory = (tbc,id) =>{
+    navigate(`/farmers/${id}/balance/${tbc}`)
   }
-  const handlRentFee = () =>{
-    navigate('/farmers/rent-fee')
+  const handlRentFee = (tr,id) =>{
+    navigate(`/farmers/${id}/rent-fee/${tr}`)
 }
-const handlProductHistory = () =>{
-    navigate('/farmers/product-history')
+const handlProductHistory = (tp,id) =>{
+    navigate(`/farmers/${id}/product-history/${tp}`)
 }
 const enterKeyHandler = (event) =>{
   if(event.key === 'Enter' || !event.target.value){
@@ -110,14 +108,14 @@ const searchHandler = () =>{
           </thead>
           <tbody>
           {
-            products.map((product,index) =>(
-              <tr className={classes.row} key={index}>
+            farmers.map((farmer,index) =>(
+              <tr className={classes.row} key={farmer.id}>
               <td className="p-3">{index+1}</td>
-              <td className="p-3">Kelemu Belay</td>
-              <td className="p-3">Amhara</td>
-              <td className="p-3 text-center">2000</td>
-              <td className="p-3 text-center">200</td>
-              <td className="p-3 text-center">5500</td>
+              <td className="p-3">{farmer.fullName}</td>
+              <td className="p-3">{farmer.location}</td>
+              <td className="p-3 text-center">{farmer.totalProduct}</td>
+              <td className="p-3 text-center">{farmer.totalRent}</td>
+              <td className="p-3 text-center">{farmer.totalBalance}</td>
             <td className="p-3 onPrintDnone">
               <Dropdown>
       <Dropdown.Toggle variant="none" id="dropdown-basic">
@@ -128,15 +126,15 @@ const searchHandler = () =>{
       <Button
         variant="none"
         className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}
-        onClick={event=>handlBalanceHistory()}>Balance History</Button>
+        onClick={()=>handlBalanceHistory(farmer.totalBalance,farmer.id)}>Balance History</Button>
       <Button
         variant="none"
         className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}
-         onClick={handlRentFee}>Rent Fee</Button>
+         onClick={()=>handlRentFee(farmer.totalRent,farmer.id)}>Rent Fee</Button>
       <Button
         variant="none"
          className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}
-          onClick={handlProductHistory}>Product History</Button>
+          onClick={()=>handlProductHistory(farmer.totalProduct,farmer.id)}>Product History</Button>
         </Dropdown.Menu>
     </Dropdown>
               </td>

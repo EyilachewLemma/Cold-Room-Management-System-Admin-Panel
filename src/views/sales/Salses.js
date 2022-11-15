@@ -13,17 +13,17 @@ import classes from "./Sales.module.css";
 
 const Sales = () => {
 
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
   const saleses = useSelector(state =>state.sales.saleses)
+  const coldRooms = useSelector(state=>state.coldRoomName.coldRooms)
   const componentRef = useRef()
   const searchBy = useRef()
    const  featchSaleses = async() =>{
-    // dispatch(isLoadingAction.setIsLoading(true))
+    dispatch(isLoadingAction.setIsLoading(true))
   try{
-   var response = await apiClient.get(`admin/sales?search=${searchBy.current.value}`)
+   var response = await apiClient.get(`admin/sales?search=${searchBy.current.value}&coldRoomId=${''}&date=${''}`)
    if(response.status === 200){
-    dispatch(salesAction.setSaleses(response.data || []))
+    dispatch(salesAction.setSales(response.data || []))
    }
   }
   catch(err){}
@@ -44,12 +44,28 @@ const Sales = () => {
   }
   const searchHandler = () =>{
     featchSaleses()
-    console.log('search value',searchBy.current.value)
   }
-    const filterByColdRoomHandler =(e)=>{
-      console.log('option=', e.target.value)
+    const filterByColdRoomHandler = async (e)=>{
+      dispatch(isLoadingAction.setIsLoading(true))
+  try{
+   var response = await apiClient.get(`admin/sales?search=${searchBy.current.value}&coldRoomId=${e.target.value}&date=${''}`)
+   if(response.status === 200){
+    dispatch(salesAction.setSales(response.data || []))
+   }
+  }
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
     }
-    const filterByDateHandler = (e) =>{
+    const filterByDateHandler = async(e) =>{
+      dispatch(isLoadingAction.setIsLoading(true))
+  try{
+   var response = await apiClient.get(`admin/sales?search=${searchBy.current.value}&coldRoomId=${''}&date=${e.target.value}`)
+   if(response.status === 200){
+    dispatch(salesAction.setSales(response.data || []))
+   }
+  }
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
       console.log('date=',e.target.value)
     }
   return (
@@ -75,10 +91,10 @@ const Sales = () => {
         </InputGroup>
         <div className="ms-auto onPrintDnone">
         <Form.Select aria-label="Default select example" onChange={filterByColdRoomHandler}>
-        <option value='all'>All</option>
-        <option value="1">Cold Room 1</option>
-        <option value="2">Cold Room 2</option>
-        <option value="3">Cold Room 3</option>
+        <option value=''>All</option>
+        {coldRooms.map(coldRoom=>{
+         return(<option key={coldRoom.id} value={coldRoom.id}>{coldRoom.name}</option>)
+        })}
       </Form.Select>
         </div>
       <div className="ms-3 me-3 onPrintDnone">
@@ -98,7 +114,8 @@ const Sales = () => {
         />
         </div>
       </div>
-      
+      {
+        saleses.data_name?.length && (
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
@@ -115,16 +132,16 @@ const Sales = () => {
           </thead>
           <tbody>
           {
-            products.map((product,index) =>(
+            saleses.data_name.map((sales,index) =>(
               <tr className={classes.row} key={index}>
-              <td className="px-2 py-3 text-center">#765</td>
-              <td className="px-2 py-3 text-center">Gashaw Emiru</td>
-              <td className="px-2 py-3 text-center">Cold Room 2</td>
-              <td className="px-2 py-3 text-center">10-02-2022</td>
-              <td className="px-2 py-3 text-center">1300</td>
-              <td className="px-2 py-3 text-center">Partially Paid</td>
-              <td className="px-2 py-3 text-center">900</td>
-              <td className="px-2 py-3 text-center">400</td>
+              <td className="px-2 py-3 text-center">{sales.orderCode}</td>
+              <td className="px-2 py-3 text-center">{sales.wholeSaler?.fName+' '+sales.wholeSaler?.lName}</td>
+              <td className="px-2 py-3 text-center">{sales.coldRoom.name}</td>
+              <td className="px-2 py-3 text-center">{sales.createdAt.slice(0,10)}</td>
+              <td className="px-2 py-3 text-center">{sales.totalPrice}</td>
+              <td className="px-2 py-3 text-center">{sales.paymentStatus}</td>
+              <td className="px-2 py-3 text-center">{sales.paidAmount}</td>
+              <td className="px-2 py-3 text-center">{sales.totalPrice-sales.paidAmount}</td>
               
             </tr>
             ))
@@ -134,6 +151,13 @@ const Sales = () => {
           </tbody>
         </Table>
       </div>
+      )
+      }
+      {
+        !saleses.data_name?.length && (
+          <div className="mt-5 text-center">No data found</div>
+        )
+      }
       </div>
     </Fragment>
   );

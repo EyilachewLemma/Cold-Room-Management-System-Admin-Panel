@@ -19,13 +19,12 @@ const ColdRoomProducts = () => {
     const {crId} = useParams()
     const dispatch =useDispatch()
     const products = useSelector(state=>state.coldroomProduct.products)
-    console.log(crId)
+    const searchBy =useRef()
   const featchColdRoomProducts = async() =>{
-    dispatch(isLoadingAction.setIsLoading(false))
+    dispatch(isLoadingAction.setIsLoading(true))
     try{
      var response = await apiClient.get(`admin/coldroom-products/${crId}`)
      if(response.status === 200){
-      console.log('cold room product',response.data)
       dispatch(coldRoomProductAction.setProducts(response.data || []))
      }
     }
@@ -39,6 +38,14 @@ const ColdRoomProducts = () => {
   const viewProductDetail = (productId,amount) =>{
     navigate(`/cold-rooms/${crId}/product/${productId}/prduct-detail/${amount}`)
   }
+  const enterKeyHandler = (event) =>{
+    if(event.key === 'Enter' || !event.target.value){
+      featchColdRoomProducts()
+    }
+  }
+  const searchHandler = () =>{
+    featchColdRoomProducts()
+  }
   return (
     <Fragment>
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
@@ -50,7 +57,7 @@ const ColdRoomProducts = () => {
       <div className="d-flex justify-content-between mt-4">
         <InputGroup className="mb-3 w-50 border rounded onPrintDnone">
           <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
-            <span>
+            <span onClick={searchHandler}>
               <i className="fas fa-search"></i>
             </span>
           </InputGroup.Text>
@@ -59,6 +66,8 @@ const ColdRoomProducts = () => {
             placeholder="Username"
             aria-label="Username"
             aria-describedby="basic-addon1"
+            ref={searchBy}
+            onKeyUp={enterKeyHandler}
           />
         </InputGroup>
           <div>
@@ -70,6 +79,7 @@ const ColdRoomProducts = () => {
           />
         </div>
       </div>
+      {products.length && (
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
@@ -78,8 +88,6 @@ const ColdRoomProducts = () => {
               <th>Product Name</th>
               <th>Product Image</th>
               <th>Amount(kg)</th>
-              <th>Product post sale price(ETB)</th>
-              <th>Product rent fee(kg)</th>
               <th className="sr-only">action</th>
             </tr>
           </thead>
@@ -88,13 +96,11 @@ const ColdRoomProducts = () => {
             products.map((product,index) =>(
               <tr key={product.productId}>
               <td className="p-4">{index+1}</td>
-              <td className="p-4">{product.Product?.name}</td>
+              <td className="p-4">{product.product?.name}</td>
               <td className="p-2">
-                <img src={product.Product.imageUrl} alt="product_image" className={`${classes.img} img-fluid`} />
+                <img src={product.product.imageUrl} alt="product_image" className={`${classes.img} img-fluid`} />
               </td>
               <td className="p-4">{product.totalProduct}</td>
-              <td className="p-4 text-center">500</td>
-              <td className="p-4 text-center">3 ETB</td>
               <td className="p-4 onPrintDnone">
              <Button className={classes.borderedBtn} variant="none" onClick={()=>viewProductDetail(product.productId,product.totalProduct)}>View Detail</Button>
               </td>
@@ -106,6 +112,14 @@ const ColdRoomProducts = () => {
           </tbody>
         </Table>
       </div>
+      )}
+      {
+        !products.length && (
+          <div className="text-center mt-5">
+          Empty data
+          </div>
+        )
+      }
       </div>
     </Fragment>
   );

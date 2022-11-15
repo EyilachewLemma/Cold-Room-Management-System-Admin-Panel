@@ -4,12 +4,17 @@ import Form from 'react-bootstrap/Form';
 import SaveButton from '../../components/Button';
 import CancelButton from '../../components/CancelButton';
 import ValidatEmployee from './validation';
+import apiClient from '../../url/index';
+import { buttonAction } from '../../store/slices/ButtonSpinerSlice';
+import { employeeAction } from '../../store/slices/EmployeeSlice';
+import { useDispatch } from 'react-redux';
 import classes from './Employees.module.css'
 
 
 const AddEmployees = (props) => {
-    const [employee,setEmployee] = useState({first_name:'',last_name:'',phone_number:'',email:''})
-    const [errors,setErrors] = useState({first_name:'',last_name:'',phone_number:'',email:''})
+    const [employee,setEmployee] = useState({fName:'',lName:'',phoneNumber:'',email:'',role:'local admin'})
+    const [errors,setErrors] = useState({fName:'',lName:'',phoneNumber:'',email:'',role:''})
+    const dispatch = useDispatch()
 
     const changeHandler = (e) =>{
        const {name,value} = e.target
@@ -22,8 +27,26 @@ const AddEmployees = (props) => {
         })
        }
     }
-    const saveHandler = () =>{
+    const roleChangeHandler = (e) =>{
+      setEmployee(previousValues=>{
+        return {...previousValues,role:e.target.value}
+       })
+    }
+    const saveHandler = async() =>{
         setErrors(ValidatEmployee(employee))
+        dispatch(buttonAction.setBtnSpiner(true))
+        try{
+        const response = await apiClient.post('admin/employees',employee)
+        if(response.status === 201){
+           dispatch(employeeAction.addEmployee(response.data))
+           handleClose()
+        }
+      }
+      catch(er){}
+      finally{
+        dispatch(buttonAction.setBtnSpiner(false))
+      }
+
         console.log('employee save is clicked')
     }
   const handleClose = () => {
@@ -47,34 +70,34 @@ const AddEmployees = (props) => {
           <Form.Label>First Name</Form.Label>
           <Form.Control 
           type="text"
-          name="first_name"
+          name="fName"
           onChange={changeHandler}
-          value={employee.first_name}
-          className={errors.first_name?classes.errorBorder:''}
+          value={employee.fName}
+          className={errors.fName?classes.errorBorder:''}
            />
-           <span className={classes.errorText}>{errors.first_name}</span> 
+           <span className={classes.errorText}>{errors.fName}</span> 
         </Form.Group>
         <Form.Group className="mb-3" controlId="lname">
           <Form.Label>Last Name</Form.Label>
           <Form.Control
            type="text"
-           name="last_name"
+           name="lName"
           onChange={changeHandler}
-          value={employee.last_name}
-          className={errors.last_name?classes.errorBorder:''}
+          value={employee.lName}
+          className={errors.lName?classes.errorBorder:''}
             />
-            <span className={classes.errorText}>{errors.last_name}</span> 
+            <span className={classes.errorText}>{errors.lName}</span> 
         </Form.Group>
         <Form.Group className="mb-3" controlId="phoneNo">
         <Form.Label>Phone Number</Form.Label>
         <Form.Control
          type="number"
-         name="phone_number"
+         name="phoneNumber"
           onChange={changeHandler}
-          value={employee.phone_number}
-          className={errors.phone_number?classes.errorBorder:''}
+          value={employee.phoneNumber}
+          className={errors.phoneNumber?classes.errorBorder:''}
           />
-          <span className={classes.errorText}>{errors.phone_number}</span> 
+          <span className={classes.errorText}>{errors.phoneNumber}</span> 
       </Form.Group>
       <Form.Group className="mb-3" controlId="emailAddress">
       <Form.Label>Email Address</Form.Label>
@@ -87,14 +110,16 @@ const AddEmployees = (props) => {
         />
         <span className={classes.errorText}>{errors.email}</span> 
     </Form.Group>
+    
     <Form.Group className="mb-3" controlId="role">
     <Form.Label>Role</Form.Label>
-    <Form.Control type="text" />
+    <Form.Select aria-label="Default select example" onChange={roleChangeHandler} value={employee.role}>
+      <option value="1">local admin</option>
+      <option value="2">Product Inspector</option>
+      <option value="3">Casher</option>
+    </Form.Select>
+
   </Form.Group>
-  <Form.Group className="mb-3" controlId="statuss">
-  <Form.Label>Status</Form.Label>
-  <Form.Control type="text" />
-</Form.Group>
       </Form>
   
         </Modal.Body>

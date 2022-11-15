@@ -19,7 +19,7 @@ const ProductDetail = (props) => {
 
 
     const featchColdRoomProductDetails = async() =>{
-      dispatch(isLoadingAction.setIsLoading(false))
+      dispatch(isLoadingAction.setIsLoading(true))
       try{
        var response = await apiClient.get(`admin/coldroom-products/product/${proId}?coldRoomId=${crId}`)
        if(response.status === 200){
@@ -42,7 +42,7 @@ const ProductDetail = (props) => {
           <div className="d-flex justify-content-between px-3 pt-2">
             <div>
               <div className="mt-3">
-                <span className="fw-bold">Product</span>: {products[0]?.Product.name}
+                <span className="fw-bold">Product</span>: {products[0]?.product.name}
               </div>
               <div className="mt-3">
                 <span className="fw-bold">Total product in stock(kg)</span>: {amount}
@@ -65,7 +65,7 @@ const ProductDetail = (props) => {
         </Form.Select>
           </div>
         <div className="ms-5 mt-3 onPrintDnone">
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Group className="mb-3" controlId="filterbydate">
         <Form.Label>Filter by Date</Form.Label>
         <Form.Control type="date" />
       </Form.Group>
@@ -98,7 +98,7 @@ const ProductDetail = (props) => {
               products.map((product,index) =>(
                 <tr className={classes.tdPadding} key={index}>
                 <td className='py-3'>{product.warehousePosition}</td>
-                <td className="p-2">{product.ProductType.title}</td>
+                <td className="p-2">{product.productType?.title}</td>
                 <td className="p-2 text-center">{product.farmer.fName+' '+product.farmer.lName}</td>
                 <td className="p-2">{product.createdAt.slice(0,10)}</td>
                 <td className="p-2 text-center">{product.oldQuantity}</td>

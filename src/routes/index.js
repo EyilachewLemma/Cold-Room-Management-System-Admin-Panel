@@ -47,13 +47,13 @@ const Router = () =>{
      </Route>
      <Route path='farmers' element={<Farmers />}>
      <Route path='list' element={<FarmersList />} />
-    <Route path='product-history' element={<ProductHistory />} />
-    <Route path='rent-fee' element={<RentFee />} />
-    <Route path='balance' element={<BalanceHistory />} />
+    <Route path=':faId/product-history/:tp' element={<ProductHistory />} />
+    <Route path=':faId/rent-fee/:tr' element={<RentFee />} />
+    <Route path=':faId/balance/:tb' element={<BalanceHistory />} />
      </Route>
      <Route path='wholesalers' element={<WholeSalers />}>
      <Route path='list' element={<WholeSalerList />} />
-     <Route path='order-history' element={<OrderHistory />} />
+     <Route path=':whId/order-history' element={<OrderHistory />} />
       </Route>
      <Route path='employees' element={<Employees />}>
      </Route>

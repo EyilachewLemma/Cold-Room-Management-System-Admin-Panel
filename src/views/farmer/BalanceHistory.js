@@ -1,7 +1,7 @@
 import { Fragment,useEffect,useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
-import { coldRoomAction } from "../../store/slices/coldroomSlice";
+import { balanceAction } from "../../store/slices/BalanceSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -9,33 +9,35 @@ import Table from "react-bootstrap/Table";
 import ReactToPrint from "react-to-print";
 import Button from 'react-bootstrap/Button';
 import apiClient from "../../url/index";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import classes from "./Farmers.module.css";
 
 
 const BalanceHistory = () => {
 
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
-  const coldRooms = useSelector(state =>state.coldroom)
+  const balances = useSelector(state =>state.balance.balances)
   const navigate = useNavigate()
   const componentRef = useRef()
-  useEffect( ()=>{
-    async function  featchOrder(){
-      // dispatch(isLoadingAction.setIsLoading(true))
-    try{
-     var response = await apiClient.get('api/cold_rooms')
-     if(response.status === 200){
-      dispatch(coldRoomAction.setColdRooms(response.data || []))
-     }
-    }
-    catch(err){}
-    finally {dispatch(isLoadingAction.setIsLoading(false))}
+  const {tb,faId} = useParams()
+  async function  featchBalances(){
+    dispatch(isLoadingAction.setIsLoading(true))
+  try{
+   var response = await apiClient.get(`admin/farmers/balances/${faId}`)
+   if(response.status === 200){
+    dispatch(balanceAction.setBalances(response.data || []))
+   }
   }
-  featchOrder()
-  },[dispatch])
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
+}
+  useEffect( ()=>{
+ 
+  featchBalances()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
 
-  console.log('coldrooms from',coldRooms)
+  console.log('coldrooms from',balances)
   return (
     <Fragment>
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
@@ -44,15 +46,14 @@ const BalanceHistory = () => {
     <div className="d-flex align-items-center">
     <div>
       <div className="mt-3">
-        <span className="fw-bold">Farmer</span>: Demeke Gelaw
+        <span className="fw-bold">Farmer</span>: {balances.farmer.fName+' '+balances.farmer.lName}
       </div>
       <div className="mt-3">
-        <span className="fw-bold">Total Balance(ETB)</span>: 2000
+        <span className="fw-bold">Total Balance(ETB)</span>: {tb}
       </div>
     </div>
     <div className="ms-5 ps-5">
-    <div><span className="fw-bold">Cold Room</span>: Bahir Dar</div>
-    <div><span className="fw-bold">Date</span>: 10-02-2022</div>
+    <div><span className="fw-bold">Cold Room</span>: null</div>
     </div>  
    
   </div>
@@ -103,23 +104,23 @@ const BalanceHistory = () => {
               <th>Product Type</th>
               <th>Order Date(GC)</th>
               <th>Quantity(Kg)</th>
-              <th>Price(ETB)</th>
-              <th>Rent Fee(ETB)</th>
+              <th>Price per(ETB)</th>
+              <th>Balance(ETB)</th>
               <th>Withdraw Status</th>
             </tr>
           </thead>
           <tbody>
           {
-            products.map((product,index) =>(
-              <tr className={classes.row} key={index}>
-              <td className="p-3">#32</td>
-              <td className="p-3">Tomato</td>
-              <td className="p-3">Type 1</td>
-              <td className="p-3">10-02-2022</td>
-              <td className="p-3">200</td>
-              <td className="p-3 text-center">1100</td>
-              <td className="p-3 text-center">300</td>
-            <td className="p-3 text-center">no</td>
+            balances.farmerBalances?.map((balance) =>(
+              <tr className={classes.row} key={balance.orderCode}>
+              <td className="p-3">{balance.orderCode}</td>
+              <td className="p-3">{balance.productName}</td>
+              <td className="p-3">{balance.productType}</td>
+              <td className="p-3">{balance.orderDate.slice(0,10)}</td>
+              <td className="p-3">{balance.quantity}</td>
+              <td className="p-3 text-center">{balance.price}</td>
+              <td className="p-3 text-center">{balance.balanceAmount}</td>
+            <td className="p-3 text-center">{balance.state}</td>
             </tr>
             ))
           }

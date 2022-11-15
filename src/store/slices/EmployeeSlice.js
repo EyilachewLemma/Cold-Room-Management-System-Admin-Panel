@@ -7,6 +7,9 @@ const employeeSlice = createSlice({
         setEmployees(state,action){
             state.employees = action.payload
         },
+        addEmployee:(state,action)=>{
+            state.push(action.payload)
+        }
 
 
     }

@@ -20,7 +20,7 @@ const OrderDetail = () => {
   
   useEffect( ()=>{
     async function  featchOrder(){
-      // dispatch(isLoadingAction.setIsLoading(true))
+      dispatch(isLoadingAction.setIsLoading(true))
     try{
      var response = await apiClient.get('api/cold_rooms')
      if(response.status === 200){

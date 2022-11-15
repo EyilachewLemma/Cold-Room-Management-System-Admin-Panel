@@ -79,9 +79,14 @@ const AddProduct = (props) => {
       try {
         let response = await fileApiClient.post("admin/products", formData);
         if (response.status === 200) {
-          console.log("create Cold room response =", response);
-          dispatch(productAction.addProduct(response));
-          console.log("product is added successfullu");
+          const newProduct ={
+            id:response.data.newProduct.id,
+            name:response.data.newProduct.name,
+            imageUrl:response.data.newProduct.imageUrl,
+            totalProduct:0
+          }
+          dispatch(productAction.addProduct(newProduct));
+          handleClose()
         }
       } catch (err) {
         console.log("err", err);

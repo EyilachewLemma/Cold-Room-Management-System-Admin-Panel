@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import SaveButton from "../../components/Button";
 import CancelButton from "../../components/CancelButton";
 import Modal from "react-bootstrap/Modal";
@@ -10,65 +10,70 @@ import fileApiClient from "../../url/fileApiClient";
 import classes from "./AddProduct.module.css";
 
 const EditProduct = (props) => {
-  const [productTitle, setProductTitle] = useState("");
-  const [prImage, setprImage] = useState("");
-  const [errors, setErrors] = useState({ prTitle: "", prImage: "" });
+  const [product, setproduct] = useState({title:'',image:null,newImage:null});
+  const [error, setError] = useState('');
   const dispatch = useDispatch();
-
-
+const {recivedData} = props.product
+   useEffect(()=>{
+    setproduct({
+      title:props.product.name,
+      image:props.product.imageUrl,
+      newImage:''
+    })
+    console.log('passed product=',props.product)
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+   },[recivedData])
   const titleChangeHandler = (e) => {
-    setProductTitle(e.target.value);
+    setproduct(previousValues=>{
+      return {...previousValues,title:e.target.value}
+    });
     if (e.target.value) {
-      setErrors((preValue) => {
-        return { ...preValue, prTitle: "" };
-      });
+      setError('')
     }
   };
   const PrImageInputHandler = (e) => {
-    setprImage(e.target.files[0]);
-    if (e.target.files[0]) {
-      setErrors((preValue) => {
-        return { ...preValue, prImage: "" };
-      });
-    }
+    setproduct(prevValues=>{
+      return {...prevValues,newImage:e.target.files[0]}
+    })
+    
   };
 
-  const validate = (values) => {
-    let errorsValue = {};
-    if (!values.prTitle.trim()) {
-      errorsValue.prTitle = "product title is required";
+  const validate = (title) => {
+    let err = '' 
+    if (!title?.trim()) {
+      err = "product title is required";
     }
-    if (values.prTitle.trim().length > 30) {
-      errorsValue.prTitle = "product title must be lessthan 30 letters";
-    }
-    if (!values.prImage) {
-      errorsValue.prImage = "product image is required";
-    }
-    setErrors(errorsValue);
-    return errorsValue;
+    return err;
   };
   const handleClose = () => {
     props.onClose(false);
   };
-  const addProductHandler = async () => {
-    let errorValue = validate({ prTitle: productTitle, prImage: prImage });
-    console.log('before validation=',errorValue)
-    if (!errorValue?.prTitle && !errorValue?.prImage  ) {
+  const editProductHandler = async () => {
+    let errorValue = validate(product.title);
+    setError(errorValue)
+    if (!errorValue) {
       dispatch(buttonAction.setBtnSpiner(true));
       let formData = new FormData();
-      formData.append('name',productTitle)
-      formData.append('product_image',prImage)     
+      formData.append('name',product.title)
+      if(product.newImage){
+        formData.append('image',product.newImage)   
+      }       
       try {
-        let response = await fileApiClient.post("admin/products", formData);
+        let response = await fileApiClient.put(`admin/products/${props.product.id}`, formData);
         if (response.status === 200) {
-          console.log("create Cold room response =", response);
-          dispatch(productAction.addProduct(response));
-          console.log("product is added successfullu");
+          const editedProduct = {
+            id:response.data.id,
+            name:response.data.name,
+            totalProduct:0
+          }
+          dispatch(productAction.editProduct(editedProduct));
+          handleClose()
         }
       } catch (err) {
         console.log("err", err);
       } finally {
         dispatch(buttonAction.setBtnSpiner(false));
+       
       }
   };
 }
@@ -76,7 +81,7 @@ const EditProduct = (props) => {
   return (
     <>
       <Modal
-        size={"lg"}
+        size='lg'
         show={props.show}
         onHide={handleClose}
         backdrop="static"
@@ -87,17 +92,17 @@ const EditProduct = (props) => {
         </Modal.Header>
         <Modal.Body>
           <Form className="px-5">
-            <Form.Group className="mb-3" controlId="productTitle">
+            <Form.Group className="mb-3" controlId="product">
               <Form.Label>Product Title</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Ex. Avocado"
                 onChange={titleChangeHandler}
-                value={productTitle}
-                className={errors.prTitle ? classes.errorBorder : ""}
+                value={product.title}
+                className={error?classes.errorBorder : ""}
               />
-              {errors.prTitle && (
-                <span className={classes.errorText}>{errors.prTitle}</span>
+              {error && (
+                <span className={classes.errorText}>{error}</span>
               )}
             </Form.Group>
             <div className="d-flex align-items-center">
@@ -105,34 +110,34 @@ const EditProduct = (props) => {
                 className="mb-3 align-self-center flex-fill"
                 controlId="productImage"
               >
-                <Form.Label>Apload product Image</Form.Label>
+                <Form.Label>Apload product type Image</Form.Label>
                 <Form.Control
                   type="file"
                   accept="image/*"
                   onChange={PrImageInputHandler}
-                  className={errors.prImage ? classes.errorBorder : ""}
                 />
-
-                {errors.prImage && (
-                  <span className={classes.errorText}>{errors.prImage}</span>
-                )}
-              </Form.Group>
-              {prImage && (
+              </Form.Group>              
                 <div className="ms-5">
-                  <img
-                    src={URL.createObjectURL(prImage)}
-                    alt="selected_product_image"
-                    className={`${classes.selectedImg} img-fluid`}
-                  />
+                 {product.newImage && (
+                  <img src={URL.createObjectURL(product.newImage)} alt="selected_product_image"
+                   className={`${classes.selectedImg} img-fluid`}/>
+                 )
+                  
+                 }
+                   {
+                    !product.newImage &&(
+                      <img src={product.image} alt="selected_product_image" className={`${classes.selectedImg} img-fluid`}/>
+                    )
+                } 
                 </div>
-              )}
+              
             </div>
 
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <CancelButton title={"Cancel"} onClose={handleClose} />
-          <SaveButton title={"Save Product"} onSave={addProductHandler} />
+          <SaveButton title={"Save Change"} onSave={editProductHandler} />
         </Modal.Footer>
       </Modal>
     </>

@@ -1,11 +1,32 @@
-import { Fragment } from 'react'
+import { Fragment,useEffect, useState } from 'react'
 import SalesOverviewChart from '../../components/SalesOverviewChart'
 import SalesPieChart from '../../components/SalespieChart';
 import RecentOrders from '../../components/RecentOrders';
-
-import Form from 'react-bootstrap/Form';
+import { isLoadingAction } from "../../store/slices/spinerSlice";
+import { useDispatch} from "react-redux";
+import apiClient from "../../url/index";
 import classes from './DashBoard.module.css'
 const DashBoard = () =>{
+    const [datas,setDatas] = useState({})
+    const dispatch = useDispatch()
+    const  featchOrders = async () =>{   
+      
+      dispatch(isLoadingAction.setIsLoading(true))
+    try{
+     var response = await apiClient.get(`admin/orders`)
+     if(response.status === 200){
+        setDatas(response.data)
+
+     }
+    }
+    catch(err){}
+    finally {dispatch(isLoadingAction.setIsLoading(false))}
+  }
+  useEffect(()=>{
+    featchOrders()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+  console.log('statistics data=',datas)
     return (<Fragment>
     <div className="d-flex justify-content-between">
         <div className={`${classes.blackBg} border shadow-sm px-3 pt-1 pb-2`}>
@@ -58,18 +79,7 @@ const DashBoard = () =>{
         </div>
         <div className='d-flex mt-4'>
        <div className={`${classes.salesOverviewChart} p-3`}>
-        <div className='d-flex justify-content-between'>
-            <div className='fw-bold fs-5 p-3'>Sales Overview</div>
-            <div>
-            <Form.Select>
-        <option>Year 2010</option>
-        <option>Year 2011</option>
-        <option>Year 2012</option>
-        <option>Year 2013</option>
-        <option>Year 2014</option>
-      </Form.Select>
-            </div>
-        </div>
+      
        <SalesOverviewChart />
        </div>
        <div className={`${classes.salesPieChart} ms-5`}>

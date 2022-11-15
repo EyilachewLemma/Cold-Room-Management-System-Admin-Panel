@@ -10,6 +10,10 @@ const productSlice = createSlice({
         addProduct:(state,action)=>{
             state.products.push(action.payload)
         },
+        editProduct:(state,action)=>{
+            const index = state.findIndex(product=>product.id===action.payload.id)
+            state[index] = action.payload.product
+        },
         deleteProduct:(state,action)=>{
             state = state.map(product=>product.id*1 !==action.payload*1)
         }

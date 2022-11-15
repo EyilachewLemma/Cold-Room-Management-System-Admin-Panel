@@ -13,14 +13,14 @@ import classes from "./Revenue.module.css";
 
 const Revenue = () => {
 
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
   const revenues = useSelector(state =>state.revenue.revenues)
+  const coldRooms = useSelector(state=>state.coldRoomName.coldRooms)
   const componentRef = useRef()
   const searchBy = useRef()
 
   const  featchRevenues = async() =>{
-    // dispatch(isLoadingAction.setIsLoading(true))
+    dispatch(isLoadingAction.setIsLoading(true))
   try{
    var response = await apiClient.get(`admin/revenues?search=${searchBy.current.value}`)
    if(response.status === 200){
@@ -35,22 +35,35 @@ const Revenue = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
-  console.log('revenues from',revenues)
   const enterKeyHandler = (event) =>{
     if(event.key === 'Enter' || !event.target.value){
       featchRevenues()
-      console.log('event value',event.target.value)
     }
   }
   const searchHandler = () =>{
     featchRevenues()
-    console.log('search value',searchBy.current.value)
   }
-    const filterByColdRoomHandler =(e)=>{
-      console.log('option=', e.target.value)
+    const filterByColdRoomHandler = async (e)=>{
+      dispatch(isLoadingAction.setIsLoading(true))
+      try{
+       var response = await apiClient.get(`admin/revenues?search=${searchBy.current.value}&coldRoomId=${e.target.value}&date=${''}`)
+       if(response.status === 200){
+        dispatch(revenueAction.setRevenues(response.data || []))
+       }
+      }
+      catch(err){}
+      finally {dispatch(isLoadingAction.setIsLoading(false))}
     }
-    const filterByDateHandler = (e) =>{
-      console.log('date=',e.target.value)
+    const filterByDateHandler = async(e) =>{
+      dispatch(isLoadingAction.setIsLoading(true))
+      try{
+       var response = await apiClient.get(`admin/revenues?search=${searchBy.current.value}&coldRoomId=${''}&date=${e.target.value}`)
+       if(response.status === 200){
+        dispatch(revenueAction.setRevenues(response.data || []))
+       }
+      }
+      catch(err){}
+      finally {dispatch(isLoadingAction.setIsLoading(false))}
     }
   return (
     <Fragment>
@@ -75,10 +88,10 @@ const Revenue = () => {
         </InputGroup>
         <div className="ms-auto onPrintDnone">
         <Form.Select aria-label="Default select example" onChange={filterByColdRoomHandler}>
-        <option value='all'>All</option>
-        <option value="1">Cold Room 1</option>
-        <option value="2">Cold Room 2</option>
-        <option value="3">Cold Room 3</option>
+        <option value=''>All</option>
+        {coldRooms.map(coldRoom=>{
+         return(<option key={coldRoom.id} value={coldRoom.id}>{coldRoom.name}</option>)
+        })}
       </Form.Select>
         </div>
       <div className="ms-3 me-3 onPrintDnone">
@@ -98,44 +111,52 @@ const Revenue = () => {
         />
         </div>
       </div>
-      
-      <div className="mt-4">
-        <Table responsive="md">
-          <thead className={classes.header}>
-            <tr>
-              <th>Farmer Name</th>
-              <th>Product Name</th>
-              <th>Product SQU</th>
-              <th>Product Type</th>
-              <th>Cold Room</th>
-              <th>Added Date(GC)</th>
-              <th>Sold Date(GC)</th>
-              <th>Quantity(Kg)</th>
-              <th>Amount(ETB)</th>
-            </tr>
-          </thead>
-          <tbody>
-          {
-            products.map((product,index) =>(
-              <tr className={classes.row} key={index}>
-              <td className="p-3">Fentahun Wale</td>
-              <td className="p-3">Tomato</td>
-              <td className="p-3">#324</td>
-              <td className="p-3">Type 1</td>
-              <td className="p-3">Cold room 1</td>
-              <td className="p-3">10-02-2022</td>
-              <td className="p-3">10-8-2022</td>
-              <td className="p-3 text-center">200</td>
-              <td className="p-3 text-center">100</td>
+      {
+        revenues?.data_name?.length &&(
+          <div className="mt-4">
+          <Table responsive="md">
+            <thead className={classes.header}>
+              <tr>
+                <th>Farmer Name</th>
+                <th>Product Name</th>
+                <th>Product SQU</th>
+                <th>Product Type</th>
+                <th>Cold Room</th>
+                <th>Added Date(GC)</th>
+                <th>Sold Date(GC)</th>
+                <th>Quantity(Kg)</th>
+                <th>Amount(ETB)</th>
+              </tr>
+            </thead>
+            <tbody>
+            {
+              revenues.data_name?.map((revenue,index) =>(
+                <tr className={classes.row} key={index}>
+                <td className="p-3">{revenue.farmer.fName+' '+revenue.farmer.lName}</td>
+                <td className="p-3">{revenue.productName}</td>
+                <td className="p-3">{revenue.productSku}</td>
+                <td className="p-3">{revenue.productType}</td>
+                <td className="p-3">{revenue.coldRoom.name}</td>
+                <td className="p-3">{revenue.addedDate?.slice(0,10)}</td>
+                <td className="p-3">{revenue.soldDate?.slice(0,10)}</td>
+                <td className="p-3 text-center">{revenue.quantity}</td>
+                <td className="p-3 text-center">{revenue.amount}</td>
+                
+              </tr>
+              ))
+            }
               
-            </tr>
-            ))
-          }
-            
-           
-          </tbody>
-        </Table>
-      </div>
+             
+            </tbody>
+          </Table>
+        </div>
+        )
+      }
+     {
+      !revenues?.data_name?.length &&(
+        <div className="mt-5 text-center">No data found</div>
+      )
+     }
       </div>
     </Fragment>
   );

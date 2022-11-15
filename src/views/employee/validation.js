@@ -1,22 +1,22 @@
 const ValidatEmployee = (values) =>{
     const errors = {}
-    if(!values.first_name?.trim()){
-        errors.first_name = 'first name is required'
+    if(!values.fName?.trim()){
+        errors.fName = 'first name is required'
     }
-    if(values.first_name?.trim().length > 25){
-        errors.first_name = 'first name must be lessthan or equal to 25 letters'
+    if(values.fName?.trim().length > 25){
+        errors.fName = 'first name must be lessthan or equal to 25 letters'
     }
-    if(!values.last_name?.trim()){
-        errors.last_name = 'last name is required'
+    if(!values.lName?.trim()){
+        errors.lName = 'last name is required'
     }
-    if(values.last_name?.trim().length > 25){
-        errors.last_name = 'last name must be lessthan or equal to 25 letters'
+    if(values.lName?.trim().length > 25){
+        errors.lName = 'last name must be lessthan or equal to 25 letters'
     }
-    if(!values.phone_number?.trim()){
-        errors.phone_number = 'phone number is required'
+    if(!values.phoneNumber?.trim()){
+        errors.phoneNumber = 'phone number is required'
     }
-    if(!values.phone_number.match(/^\d{10}$/g)){
-              errors.phone_number = 'invalid phone number'
+    if(!values.phoneNumber.match(/^\d{10}$/g)){
+              errors.phoneNumber = 'invalid phone number'
     }
     if(!values.email?.trim()){
         errors.email = 'email is required'

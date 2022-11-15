@@ -17,6 +17,7 @@ import classes from "./Products.module.css";
 const ProductList = () => {
   const [togleModal,setTogleModal] = useState(false)
   const [show,setShow] = useState(false)
+  const [producttoedit,setProducttoedit] = useState({})
   const componentRef = useRef()
   const searchBy = useRef()
  const products = useSelector(state=>state.product.products)
@@ -25,7 +26,7 @@ const ProductList = () => {
 
 
   const featchProducts = async ()=>{
-    dispatch(isLoadingAction.setIsLoading(false))
+    dispatch(isLoadingAction.setIsLoading(true))
   try{
    var response = await apiClient.get(`admin/products?search=${searchBy.current.value}`)
    if(response.status === 200){
@@ -54,7 +55,8 @@ const ProductList = () => {
   const ViewDetailHandler = (prId) =>{
     navigate(`/products/${prId}/detail`)
   }
-  const editProduct = (id) =>{
+  const editProduct = (product) =>{
+    setProducttoedit(product)
     setShow(true)
   }
   const closeEditModal = ()=>{
@@ -139,7 +141,7 @@ const ProductList = () => {
               <td className="p-4">{index +1}</td>
               <td className="p-4">{product.name}</td>
               <td className="p-2">
-                <img src={product.imgeUrl} alt="Avocado_image" className={`${classes.img} img-fluid`} />
+                <img src={product.imageUrl} alt="product_Image" className={`${classes.img} img-fluid`} />
               </td>
               <td className="p-4">{product.totalProduct}</td>
               <td className={`onPrintDnone`}>
@@ -148,8 +150,8 @@ const ProductList = () => {
       <i className="fas fa-ellipsis-v"></i>
       </Dropdown.Toggle>
       <Dropdown.Menu className={classes.dropdownBg}>
-      <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={event=>ViewDetailHandler(product.id)}>Products Detail</Button>
-      <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={event=>editProduct(product.id)}>Edit Product</Button>
+      <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={event=>ViewDetailHandler(product.id)}>Product Type</Button>
+      <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>editProduct(product)}>Edit Product</Button>
       <Button  variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={event=>deleteProductHandler(product.id)}>Delete Product</Button>
         </Dropdown.Menu>
     </Dropdown>
@@ -163,7 +165,7 @@ const ProductList = () => {
         </Table>
       </div>
       <AddProduct show={togleModal} onClose={closeAddandEditModalHandler} title='Add Product'></AddProduct>
-      <EditProduct show={show} onClose={closeEditModal} />
+      <EditProduct show={show} onClose={closeEditModal} product={producttoedit} />
     </div>
   );
 };

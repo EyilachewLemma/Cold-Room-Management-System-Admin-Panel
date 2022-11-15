@@ -1,7 +1,6 @@
 import { Fragment,useEffect,useRef } from "react";
-// import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
-import { coldRoomAction } from "../../store/slices/coldroomSlice";
+import { productHistoryAction } from "../../store/slices/ProductHistorySlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -9,33 +8,35 @@ import Table from "react-bootstrap/Table";
 import Button from 'react-bootstrap/Button';
 import ReactToPrint from "react-to-print";
 import apiClient from "../../url/index";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import classes from "./Farmers.module.css";
 
 
 const ProductHistory = () => {
 
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
-  const coldRooms = useSelector(state =>state.coldroom)
+  const products = useSelector(state =>state.productHistory.products)
   const navigate = useNavigate()
   const componentRef = useRef()
-  useEffect( ()=>{
-    async function  featchOrder(){
-      // dispatch(isLoadingAction.setIsLoading(true))
-    try{
-     var response = await apiClient.get('api/cold_rooms')
-     if(response.status === 200){
-      dispatch(coldRoomAction.setColdRooms(response.data || []))
-     }
-    }
-    catch(err){}
-    finally {dispatch(isLoadingAction.setIsLoading(false))}
-  }
-  featchOrder()
-  },[dispatch])
+  const {tp,faId} = useParams()
 
-  console.log('coldrooms from',coldRooms)
+  async function  featchProductHistory(){
+    dispatch(isLoadingAction.setIsLoading(true))
+  try{
+   var response = await apiClient.get(`admin/farmers/products/${faId}`)
+   if(response.status === 200){
+    dispatch(productHistoryAction.setProducts(response.data || []))
+   }
+  }
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
+}
+  useEffect( ()=>{
+   
+  featchProductHistory()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+console.log('pppp---',products)
   return (
     <Fragment>
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
@@ -44,13 +45,12 @@ const ProductHistory = () => {
     <div className="d-flex align-items-center">
     <div>
       <div className="mt-3">
-        <span className="fw-bold">Farmer</span>: Demeke Gelaw
+        <span className="fw-bold">Farmer</span>: {products[0]?.farmer.fName+' '+products[0]?.farmer.lName}
       </div>
       <div className="mt-3">
-        <span className="fw-bold">Total Product Instock</span>: 2000Kg
+        <span className="fw-bold">Total Product Instock</span>: {tp} Kg
       </div>
     </div>
-    <div className="ms-5 ps-5"><span className="fw-bold">Date</span>: 10-02-2022</div>  
    
   </div>
       <div className={`${classes.bottomBorder} mt-5`}></div>
@@ -102,21 +102,19 @@ const ProductHistory = () => {
               <th>Added Date(GC)</th>
               <th>Sold Stock(Kg)</th>
               <th>Current Stock(Kg)</th>
-              <th>Price Per Kg(ETB)</th>
             </tr>
           </thead>
           <tbody>
           {
-            products.map((product,index) =>(
-              <tr className={classes.row} key={index}>
-              <td className="p-3">32</td>
-              <td className="p-3">Tomato</td>
-              <td className="p-3">Type 1</td>
-              <td className="p-3">Dahir Dar</td>
-              <td className="p-3">10-02-2022</td>
-              <td className="p-3 text-center">100</td>
-              <td className="p-3 text-center">1500</td>
-            <td className="p-3 text-center">30</td>
+            products.map((product) =>(
+              <tr className={classes.row} key={product.id}>
+              <td className="p-3">{product.warehousePosition}</td>
+              <td className="p-3">{product.productType.product.name}</td>
+              <td className="p-3">{product.productType.title}</td>
+              <td className="p-3">{product.coldRoom.name}</td>
+              <td className="p-3">{product.createdAt.slice(0,10)}</td>
+              <td className="p-3 text-center">{product.soldQuantity}</td>
+              <td className="p-3 text-center">{product.currentQuantity}</td>
             </tr>
             ))
           }

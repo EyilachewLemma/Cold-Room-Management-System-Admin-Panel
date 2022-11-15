@@ -4,7 +4,7 @@ const salesSlice = createSlice({
     name:'sales',
     initialState:{saleses:[]},
     reducers:{
-        setRevenues(state,action){
+        setSales(state,action){
             state.saleses = action.payload
         },
 

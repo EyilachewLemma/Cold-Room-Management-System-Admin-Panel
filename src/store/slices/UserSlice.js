@@ -9,7 +9,11 @@ const userSlice = createSlice({
         },
         setIsAuthenticated:(state,action) =>{
             state.isAuthenticated = action.payload
+        },
+        editUser:(state,action) =>{
+
         }
+
 
 
     }

@@ -1,43 +1,44 @@
 import { Fragment,useEffect,useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
-import { coldRoomAction } from "../../store/slices/coldroomSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
+import { whOrAction } from "../../store/slices/WholesalerOrderHistorySlice";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 import ReactToPrint from "react-to-print";
 import apiClient from "../../url/index";
 import classes from "./WholeSalers.module.css";
 
-
 const OrderHistory = () => {
-
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const componentRef = useRef()
-  const coldRooms = useSelector(state =>state.coldroom)
-  useEffect( ()=>{
-    async function  featchOrder(){
+  const orders = useSelector(state =>state.wholesalerOrder.orders)
+  const {whId} = useParams()
+
+  const featchOrder = async() =>{
+    dispatch(isLoadingAction.setIsLoading(true))
     try{
-     var response = await apiClient.get('api/cold_rooms')
+     var response = await apiClient.get(`admin/wholesalers/orders/${whId}`)
      if(response.status === 200){
-      dispatch(coldRoomAction.setColdRooms(response.data || []))
+      dispatch(whOrAction.setWhOrders(response.data || []))
      }
     }
     catch(err){}
     finally {dispatch(isLoadingAction.setIsLoading(false))}
   }
-  featchOrder()
-  },[dispatch])
+  useEffect( ()=>{  
+      featchOrder()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
 
-  console.log('coldrooms from',coldRooms)
+  console.log('coldrooms from',orders)
   return (
     <Fragment>
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
     <div ref={componentRef}>  
     <h6 className="fw-bold">Wholesaler's Order History</h6>
-      <div className="mt-3"><span className="fw-bold">Wholesaler Name</span>: <span className="fs-5">Azimeraw Amare</span></div>
+      <div className="mt-3"><span className="fw-bold">Wholesaler Name</span>: <span className="fs-5">{orders?.fName+' '+orders?.lName}</span></div>
       <div className={`${classes.bottomBorder} mt-5`}></div>
         <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>    
       
@@ -67,16 +68,16 @@ const OrderHistory = () => {
           </thead>
           <tbody>
           {
-            products.map((product,index) =>(
+            orders.orders?.map((order,index) =>(
               <tr className={classes.row} key={index}>
-              <td className="p-3">#213</td>
-              <td className="p-3">11-04-2022</td>
-              <td className="p-3">ColdRoom01</td>
-              <td className="p-3 text-center">2000</td>
-              <td className="p-3">Completed</td>
-              <td className="p-3">Partially Paid</td>
-              <td className="p-3 text-center">1000</td>
-              <td className="p-3 text-center">1000</td>
+              <td className="p-3">{order.orderCode}</td>
+              <td className="p-3">{order.createdAt.slice(0,10)}</td>
+              <td className="p-3">{order.coldRoom?.name}</td>
+              <td className="p-3 text-center">{order.totalPrice}</td>
+              <td className="p-3">{order.orderStatus}</td>
+              <td className="p-3">{order.paymentStatus}</td>
+              <td className="p-3 text-center">{order.paidAmount}</td>
+              <td className="p-3 text-center">{order.totalPrice - order.paidAmount}</td>
             </tr>
             ))
           }

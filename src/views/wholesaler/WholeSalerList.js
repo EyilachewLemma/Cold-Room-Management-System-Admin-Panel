@@ -14,7 +14,6 @@ import classes from "./WholeSalers.module.css";
 
 
 const WholeSalerList = () => {
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
   const wholesalers = useSelector(state =>state.wholesaler.wholesalers)
   const navigate = useNavigate()
@@ -39,8 +38,8 @@ const WholeSalerList = () => {
 
   console.log('wholesalers from',wholesalers)
 
-  const orderHistoryHandler = () =>{
-    navigate('/wholesalers/order-history')
+  const orderHistoryHandler = (whId) =>{
+    navigate(`/wholesalers/${whId}/order-history`)
   }
   const enterKeyHandler = (event) =>{
     if(event.key === 'Enter' || !event.target.value){
@@ -85,31 +84,35 @@ const WholeSalerList = () => {
         />
         </div>
       </div>
-      
-      <div className="mt-4">
+      {wholesalers?.length && (
+    <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
               <th>NO</th>
               <th>Wholesaler's Name</th>
-              <th>Location</th>
+              <th>Region</th>
+              <th>Zone</th>
+              <th>Woreda</th>
               <th className="text-end">Phone Number</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
           {
-            products.map((product,index) =>(
-              <tr className={classes.row} key={index}>
+            wholesalers.map((wholsaler,index) =>(
+              <tr className={classes.row} key={wholsaler.id}>
               <td className="p-3">{index+1}</td>
-              <td className="p-3">Kelemu Belay</td>
-              <td className="p-3">Amhara</td>
-              <td className="p-3 text-end">0911244516</td>
+              <td className="p-3">{wholsaler.fName+' '+wholsaler.lName}</td>
+              <td className="p-3">{wholsaler.address.region}</td>
+              <td className="p-3">{wholsaler.address.zone}</td>
+              <td className="p-3">{wholsaler.address.woreda}</td>
+              <td className="p-3 text-end">{wholsaler.phoneNumber}</td>
             <td className="p-3 text-end">
             <Button 
              variant="none"
              className={`${classes.btn} onPrintDnone`}
-             onClick={event=>orderHistoryHandler()}>Order History</Button>
+             onClick={()=>orderHistoryHandler(wholsaler.id)}>Order History</Button>
               </td>
             </tr>
             ))
@@ -119,6 +122,12 @@ const WholeSalerList = () => {
           </tbody>
         </Table>
       </div>
+      )}
+      {
+        !wholesalers?.length &&(
+          <div className="mt-5 text-center">Empty Data</div>
+        )
+      }
       </div>
   );
 };

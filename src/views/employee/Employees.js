@@ -1,4 +1,4 @@
-import { Fragment,useEffect,useRef,useState } from "react";
+import { Fragment,useRef,useState } from "react";
 import { useSelector,useDispatch } from "react-redux";
 import { employeeAction } from "../../store/slices/EmployeeSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
@@ -16,14 +16,13 @@ import classes from "./Employees.module.css";
 const Employees = () => {
 const [show,setShow] = useState(false)
 const [modalTitle,setModalTitle] = useState('Add Employee')
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
   const employees = useSelector(state =>state.employee.employees)
   const componentRef = useRef()
   const searchBy = useRef()
 
    const  featchEmployees = async() =>{
-    // dispatch(isLoadingAction.setIsLoading(true))
+    dispatch(isLoadingAction.setIsLoading(true))
   try{
    var response = await apiClient.get(`admin/employees?search=${searchBy.current.value}`)
    if(response.status === 200){
@@ -33,11 +32,6 @@ const [modalTitle,setModalTitle] = useState('Add Employee')
   catch(err){}
   finally {dispatch(isLoadingAction.setIsLoading(false))}
 }
-  useEffect( ()=>{
-    
-  featchEmployees()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
   const addEmployeeHandler = () =>{
     setModalTitle('Add Employee')
     setShow(true)
@@ -119,14 +113,14 @@ const [modalTitle,setModalTitle] = useState('Add Employee')
           </thead>
           <tbody>
           {
-            products.map((product,index) =>(
-              <tr className={classes.row} key={index}>
+            employees.map((employee,index) =>(
+              <tr className={classes.row} key={employee.id}>
               <td className="p-3">{index+1}</td>
-              <td className="p-3">Melese Bekalu</td>
-              <td className="p-3">09123453</td>
-              <td className="p-3">melese@gmail.com</td>
-              <td className="p-3">product Inspector</td>
-              <td className="p-3">Cold Room13</td>
+              <td className="p-3">{employee.fName+' '+employee.lName}</td>
+              <td className="p-3">{employee.phoneNumber}</td>
+              <td className="p-3">{employee.email}</td>
+              <td className="p-3">{employee.role}</td>
+              <td className="p-3">{employee.coldRoom?.name}</td>
               <td className="p-3">Active</td>
                <td className="onPrintDnone">
                <Dropdown>

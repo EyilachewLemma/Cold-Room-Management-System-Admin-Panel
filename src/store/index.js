@@ -13,6 +13,12 @@ import EmployeeReducer from "./slices/EmployeeSlice";
 import UserReducer from "./slices/UserSlice";
 import ProductDetailReducer from "./slices/ProductDetailSlice";
 import CrProDetail from "./slices/ColdRoomProductDetailSlice";
+import ProductHistoryReducer from "./slices/ProductHistorySlice";
+import RentReducer from "./slices/RentSlice";
+import BalanceReducer from "./slices/BalanceSlice";
+import WhOrHiReducer from "./slices/WholesalerOrderHistorySlice";
+import NotificationReducer from "./slices/NotificationSlice";
+import ColdRoomNameReducer from "./slices/ColdRoomNameSlice";
 
  
 
@@ -33,6 +39,14 @@ const store = configureStore({
         sales:SalesReducer,
         employee:EmployeeReducer,
         user:UserReducer,
+        productHistory:ProductHistoryReducer,
+        rent:RentReducer,
+        balance:BalanceReducer,
+        wholesalerOrder:WhOrHiReducer,
+        notification:NotificationReducer,
+        coldRoomName:ColdRoomNameReducer,
+
+        
     }
 })
  
