@@ -9,11 +9,11 @@ import classes from './DashBoard.module.css'
 const DashBoard = () =>{
     const [datas,setDatas] = useState({})
     const dispatch = useDispatch()
-    const  featchOrders = async () =>{   
+    const  featchDashboardData = async () =>{   
       
       dispatch(isLoadingAction.setIsLoading(true))
     try{
-     var response = await apiClient.get(`admin/orders`)
+     var response = await apiClient.get(`admin/dashboard/data`)
      if(response.status === 200){
         setDatas(response.data)
 
@@ -23,12 +23,12 @@ const DashBoard = () =>{
     finally {dispatch(isLoadingAction.setIsLoading(false))}
   }
   useEffect(()=>{
-    featchOrders()
+    featchDashboardData()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   console.log('statistics data=',datas)
     return (<Fragment>
-    <div className="d-flex justify-content-between">
+    <div className="d-flex justify-content-between w-100">
         <div className={`${classes.blackBg} border shadow-sm px-3 pt-1 pb-2`}>
             <div className="d-flex justify-content-end p-0" >
                 <span className={`${classes.greenTxt} ms-auto fs-5`}><i className="fa-solid fa-arrow-trend-up"></i></span>
@@ -40,7 +40,7 @@ const DashBoard = () =>{
                     <div className=" ms-3 fw-bold text-white">
                         <div>Total Products</div>
                     </div>
-                    <div className={`${classes.greenTxt} ms-3 fw-bold`}>10,1000 Kg</div>
+                    <div className={`${classes.greenTxt} ms-3 fw-bold`}>{datas.totalProduct} Kg</div>
                 </div>
             
         </div>
@@ -56,7 +56,7 @@ const DashBoard = () =>{
                         <div>Total Orders</div>
                         <div className='small'>Last 30 days</div>
                     </div>
-                    <div className={`${classes.yellowTxt} ms-3 fw-bold`}>1000</div>
+                    <div className={`${classes.yellowTxt} ms-3 fw-bold`}>{datas.totalOrder}</div>
                 </div>
             
         </div>
@@ -72,17 +72,17 @@ const DashBoard = () =>{
                         <div>Rent Revenue</div>
                         <div className='small'>Last 30 days</div>
                     </div>
-                    <div className={`${classes.greenTxt} ms-3 fw-bold`}>21100 ETB</div>
+                    <div className={`${classes.greenTxt} ms-3 fw-bold`}>{datas.totalRevenue} ETB</div>
                 </div>
             
         </div>
         </div>
-        <div className='d-flex mt-4'>
+        <div className='d-flex mt-4 w-100'>
        <div className={`${classes.salesOverviewChart} p-3`}>
       
        <SalesOverviewChart />
        </div>
-       <div className={`${classes.salesPieChart} ms-5`}>
+       <div className={`${classes.salesPieChart} ms-5 pb-4`}>
         <SalesPieChart />
        </div>
        </div>

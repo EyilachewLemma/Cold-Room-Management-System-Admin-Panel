@@ -95,7 +95,7 @@ console.log('pppp---',products)
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
-              <th>Product-ID</th>
+              <th>SKU</th>
               <th>Product Name</th>
               <th>Product Type</th>
               <th>Cold Room</th>

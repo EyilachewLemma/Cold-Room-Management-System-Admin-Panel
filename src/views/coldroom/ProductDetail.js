@@ -1,4 +1,4 @@
-import React,{useRef,useEffect} from "react";
+import React,{useRef,useEffect,useState} from "react";
 import Form from 'react-bootstrap/Form';
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
@@ -7,10 +7,12 @@ import { isLoadingAction } from "../../store/slices/spinerSlice";
 import { useParams } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
 import { crProAction } from "../../store/slices/ColdRoomProductDetailSlice";
+import Pagination from 'react-bootstrap/Pagination';
 import apiClient from "../../url/index";
 import classes from './ProductDetail.module.css'
 
-const ProductDetail = (props) => {
+const ProductDetail = () => {
+  const [currentPage,setCurrentPage] = useState(1)
   const componentRef = useRef()
     const {crId,proId,amount} = useParams()
     const dispatch = useDispatch()
@@ -34,6 +36,15 @@ const ProductDetail = (props) => {
       featchColdRoomProductDetails()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
+    const setPage = (nomber) =>{
+      setCurrentPage(nomber)
+    }
+    const setNextPage = () =>{
+      setCurrentPage(prevValue=>prevValue+1)
+    }
+    const setPrevPage = ()=>{
+      setCurrentPage(prevValue=>prevValue - 1)
+    }
   return (
     <>
       
@@ -42,7 +53,7 @@ const ProductDetail = (props) => {
           <div className="d-flex justify-content-between px-3 pt-2">
             <div>
               <div className="mt-3">
-                <span className="fw-bold">Product</span>: {products[0]?.product.name}
+                <span className="fw-bold">Product</span>: {products.data_name[0]?.product.name}
               </div>
               <div className="mt-3">
                 <span className="fw-bold">Total product in stock(kg)</span>: {amount}
@@ -50,7 +61,7 @@ const ProductDetail = (props) => {
             </div>
             <div className="me-5">
               <div className="mt-3">
-                <span className="fw-bold">Cold room name</span>: {products[0]?.coldRoom.name}
+                <span className="fw-bold">Cold room name</span>: {products.data_name[0]?.coldRoom.name}
               </div>
             </div>
           </div>
@@ -95,7 +106,7 @@ const ProductDetail = (props) => {
             </thead>
             <tbody>
             {
-              products.map((product,index) =>(
+              products.data_name?.map((product,index) =>(
                 <tr className={classes.tdPadding} key={index}>
                 <td className='py-3'>{product.warehousePosition}</td>
                 <td className="p-2">{product.productType?.title}</td>
@@ -112,6 +123,15 @@ const ProductDetail = (props) => {
              
             </tbody>
           </Table>
+          <div className="d-flex justify-content-end mt-5">
+          <Pagination>
+          <Pagination.Prev onClick={setPrevPage} disabled={currentPage === 1} active={currentPage> 1}/>
+          <Pagination.Item onClick={()=>setPage(1)} >{1}</Pagination.Item>
+          <Pagination.Item disabled>{currentPage+'/'+products.totalPages}</Pagination.Item>
+          <Pagination.Item onClick={()=>setPage(products.totalPages)}>{products.totalPages}</Pagination.Item>
+          <Pagination.Next onClick={setNextPage} disabled={products.totalPages === currentPage} active={currentPage<products.totalPages}/>
+        </Pagination>
+          </div>
         </div>
         </div>       
        

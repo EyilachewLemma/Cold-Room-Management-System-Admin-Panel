@@ -6,7 +6,8 @@ import { useSelector,useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
 import {buttonAction} from '../../store/slices/ButtonSpinerSlice'
 import { userAction } from '../../store/slices/UserSlice';
-// import apiClient from '../../url/index';
+import apiClient from '../../url/index';
+import fileApiClient from '../../url/fileApiClient';
 import classes from './Login.module.css'
 
 
@@ -15,6 +16,7 @@ const LoginPage = () =>{
     const [cridentials, setCridentials] = useState({email:'',password:''})
     const [errors,setErrors] = useState({email:'',password:'',errNotify:''})
     const dispatch = useDispatch()
+
         const changeHandler = (e) =>{
            const {name,value} = e.target
            setCridentials(prevValues=>{
@@ -43,22 +45,32 @@ const LoginPage = () =>{
          }
          return errorValues
         } 
+        const fetchUserData = async() =>{
+           try{
+            const response = await apiClient.get('admin/auth/my-account')
+            if(response.status === 200){
+               dispatch(userAction.setUser(response.data))
+            }
+           }
+           catch(err){}
+          }
         const saveUserData = (data) =>{
-            // apiClient.defaults.headers.common["Authorization"] = `Bearer ${data.data.access_token}`;
-            //   localStorage.setItem("tokenc", data.data.access_token);
-            //   dispatch(userAction.setToken(data.data.access_token))
-              dispatch(userAction.setIsAuthenticated(data))
+            apiClient.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+            fileApiClient.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+              localStorage.setItem("tokenc", data.token);
+              dispatch(userAction.setToken(data.token))
+              dispatch(userAction.setIsAuthenticated(true))
         }
         const loginHandler = async() =>{
             setErrors(validate(cridentials))
             if(!errors.email && !errors.password){
                 dispatch(buttonAction.setBtnSpiner(true))
                 try{
-                    // var response = await apiClient.post('admin/login',cridentials)
-                    // if(response.status === 200){
-                        saveUserData(true)
-                        console.log('log in success')
-                    // }
+                    var response = await apiClient.post('admin/auth/login',cridentials)
+                    if(response.status === 200){
+                        saveUserData(response.data)
+                        fetchUserData()
+                     }
                 }
                 catch(err){
                     console.log('login fail')

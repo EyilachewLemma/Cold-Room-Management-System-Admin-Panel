@@ -111,12 +111,13 @@ console.log('pichart sales overview=',salesOverview)
           <div className='d-flex align-items-center ms-2'>
             <div className={`${classes.yellowBg} border`}></div>
             <span className='text-white ms-2'>{salesOverview[1]?.name}</span>
-          </div>
-          <div className='d-flex align-items-center ms-2'>
+          </div>          
+        </div>
+        <div className='d-flex align-items-center'>
             <div className={`${classes.whiteBg} border`}></div>
             <span className='text-white ms-2'>{salesOverview[2]?.name}</span>
           </div>
-        </div>
+        
       </div>
     );
             }

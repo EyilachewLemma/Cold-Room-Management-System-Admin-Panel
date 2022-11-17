@@ -1,5 +1,4 @@
 import { Fragment,useEffect,useRef } from "react";
-// import { useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
 import { balanceAction } from "../../store/slices/BalanceSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
@@ -20,7 +19,9 @@ const BalanceHistory = () => {
   const navigate = useNavigate()
   const componentRef = useRef()
   const {tb,faId} = useParams()
-  async function  featchBalances(){
+
+
+  const featchBalances = async() =>{
     dispatch(isLoadingAction.setIsLoading(true))
   try{
    var response = await apiClient.get(`admin/farmers/balances/${faId}`)
@@ -35,9 +36,10 @@ const BalanceHistory = () => {
  
   featchBalances()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+  },[faId])
 
-  console.log('coldrooms from',balances)
+  console.log('balance page',balances)
+  console.log('farmer id=',faId)
   return (
     <Fragment>
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
@@ -46,7 +48,7 @@ const BalanceHistory = () => {
     <div className="d-flex align-items-center">
     <div>
       <div className="mt-3">
-        <span className="fw-bold">Farmer</span>: {balances.farmer.fName+' '+balances.farmer.lName}
+        <span className="fw-bold">Farmer</span>: {balances.farmer?.fName+' '+balances.farmer?.lName}
       </div>
       <div className="mt-3">
         <span className="fw-bold">Total Balance(ETB)</span>: {tb}
@@ -94,7 +96,8 @@ const BalanceHistory = () => {
         />
         </div>
       </div>
-      
+      {
+        balances.farmerBalances?.length &&(
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
@@ -129,6 +132,12 @@ const BalanceHistory = () => {
           </tbody>
         </Table>
       </div>
+      )}
+      {
+        !balances.farmerBalances?.length &&(
+          <div className="mt-5 text-center">No data found</div>
+        )
+      }
       </div>
     </Fragment>
   );

@@ -7,6 +7,7 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import {useDispatch,useSelector} from 'react-redux'
 import { notificationAction } from '../store/slices/NotificationSlice';
 import { isLoadingAction } from '../store/slices/spinerSlice';
+import { userAction } from '../store/slices/UserSlice';
 import apiClient from '../url/index'
 import classes from './TheHeader.module.css'
 
@@ -33,7 +34,12 @@ const TheHeader = () =>{
    fetchNotification()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
-  const logoutHandler = () =>{}
+  const logoutHandler = () =>{
+    localStorage.removeItem('tokenc')
+    dispatch(userAction.setToken(null))
+    dispatch(userAction.setIsAuthenticated(false))
+    navigate('/login')
+  }
   const accountHandler = () =>{
     navigate('/account')
   } 

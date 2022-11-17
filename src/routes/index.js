@@ -20,7 +20,6 @@ import Saleses from '../views/sales/Salses'
 import Products from '../views/product/Products'
 import ProductList from '../views/product/ProductList';
 import ProductsDetail from '../views/product/ProductDetail';
-import Settings from '../views/Settings'
 import OrderDetail from '../views/order/OrderDetail';
 import OrderList from '../views/order/OrderList';
 import LoginPage from '../views/login/LoginPage';
@@ -60,8 +59,6 @@ const Router = () =>{
      <Route path='/revenue' element={<Revenue />}>
      </Route>
      <Route path='sales' element={<Saleses />}>
-     </Route>
-     <Route path='settings' element={<Settings />}>
      </Route>
      <Route path='/account' element={<Account />}>
      </Route>

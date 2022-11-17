@@ -59,7 +59,6 @@ const SalesOverviewChart = () =>{
   const years = addYear()
   const currentYear = new Date().getFullYear()*1
   const filterByYearHandler = async(e)=>{
-    console.log('event value=',e.target.value)
     try{
       const response  = await apiClient.get(`admin/dashboard/bar?year=${e.target.value}`)
       if(response.status === 200){
@@ -69,7 +68,6 @@ const SalesOverviewChart = () =>{
         let results =salesOverviews.map(element1=>datas.find(element2=>element1.month===element2.month) || element1)
 
         setSalesOverview(results)
-        console.log('result=',results)
       }
     }
     catch(err){}
@@ -86,7 +84,6 @@ const SalesOverviewChart = () =>{
           let results =salesOverviews.map(element1=>datas.find(element2=>element1.month===element2.month) || element1)
   
           setSalesOverview(results)
-          console.log('result=',results)
         }
       }
       catch(err){}
@@ -95,11 +92,9 @@ const SalesOverviewChart = () =>{
    
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
-  console.log('salesOverviews=',salesOverviews)
-  console.log('years ---',years)
     return (
       <>
-      <div className='d-flex justify-content-between'>
+      <div className='d-flex justify-content-between w-100'>
       <div className='fw-bold fs-5 p-3'>Sales Overview</div>
       <div>
       <Form.Select onChange={filterByYearHandler}>

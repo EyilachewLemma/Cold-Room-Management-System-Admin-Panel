@@ -12,12 +12,14 @@ import { useNavigate } from "react-router-dom";
 import ReactToPrint from "react-to-print";
 import OrderStatus from "./OrderStatus";
 import PaymentStatus from "./PaymentStatus";
+import Pagination from 'react-bootstrap/Pagination';
 import classes from "./Orders.module.css";
 
 
 const OrderList = () => {
   const [isOrderStatusOpen,setIsOrderStatusOpen] = useState(false)
   const [isPayMentStatusOpen,setIsPayMentStatusOpen] = useState(false)
+  const [currentPage,setCurrentPage] = useState(1)
   const dispatch = useDispatch()
   const orders = useSelector(state =>state.order.orders)
   const componentRef = useRef()
@@ -25,9 +27,9 @@ const OrderList = () => {
   const navigate = useNavigate()
    
   const  featchOrders = async () =>{
-    dispatch(isLoadingAction.setIsLoading(false))
+    dispatch(isLoadingAction.setIsLoading(true))
   try{
-   var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${''}&date=${''}`)
+   var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${''}&date=${''}&page=${currentPage}`)
    if(response.status === 200){
     dispatch(orderAction.setOrders(response.data || []))
    }
@@ -39,7 +41,7 @@ const OrderList = () => {
    
   featchOrders()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+  },[currentPage])
   const handlOrderItem = () =>{
     navigate('/orders/items')
   }
@@ -90,6 +92,15 @@ const searchHandler = () =>{
   catch(err){}
   finally {dispatch(isLoadingAction.setIsLoading(false))
   }
+  } 
+  const setPage = (nomber) =>{
+    setCurrentPage(nomber)
+  }
+  const setNextPage = () =>{
+    setCurrentPage(prevValue=>prevValue+1)
+  }
+  const setPrevPage = ()=>{
+    setCurrentPage(prevValue=>prevValue - 1)
   }
   return (
     <div ref={componentRef}>
@@ -200,13 +211,23 @@ const searchHandler = () =>{
            
           </tbody>
         </Table>
+        <div className="d-flex justify-content-end mt-5">
+      <Pagination>
+      <Pagination.Prev onClick={setPrevPage} disabled={currentPage === 1} active={currentPage> 1}/>
+      <Pagination.Item onClick={()=>setPage(1)} >{1}</Pagination.Item>
+      <Pagination.Item disabled>{currentPage+'/'+orders.totalPages}</Pagination.Item>
+      <Pagination.Item onClick={()=>setPage(orders.totalPages)}>{orders.totalPages}</Pagination.Item>
+      <Pagination.Next onClick={setNextPage} disabled={orders.totalPages === currentPage} active={currentPage<orders.totalPages}/>
+    </Pagination>
+      </div>
       </div>
       )}
       {
         !orders.data_name?.length && (
           <div className="mt-5 text-center">Data not found</div>
         )
-      }
+      } 
+      
       <OrderStatus show={isOrderStatusOpen} onClose={handlOrderModalClose} />
       <PaymentStatus show={isPayMentStatusOpen} onClose={handlPaymentStatusModalClose} />
     </div>
