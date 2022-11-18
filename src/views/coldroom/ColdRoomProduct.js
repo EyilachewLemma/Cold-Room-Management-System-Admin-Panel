@@ -23,7 +23,7 @@ const ColdRoomProducts = () => {
   const featchColdRoomProducts = async() =>{
     dispatch(isLoadingAction.setIsLoading(true))
     try{
-     var response = await apiClient.get(`admin/coldroom-products/${crId}`)
+     var response = await apiClient.get(`admin/coldroom-products/${crId}?search=${searchBy.current.value}`)
      if(response.status === 200){
       dispatch(coldRoomProductAction.setProducts(response.data || []))
      }

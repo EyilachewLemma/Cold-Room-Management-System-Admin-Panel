@@ -19,6 +19,7 @@ function App() {
      const response = await apiClient.get('admin/auth/my-account')
      if(response.status === 200){
         dispatch(userAction.setUser(response.data))
+        console.log('user data=',response.data)
      }
     }
     catch(err){

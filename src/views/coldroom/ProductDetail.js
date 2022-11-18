@@ -2,6 +2,7 @@ import React,{useRef,useEffect,useState} from "react";
 import Form from 'react-bootstrap/Form';
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
+import InputGroup from 'react-bootstrap/InputGroup'
 import ReactToPrint from "react-to-print";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import { useParams } from "react-router-dom";
@@ -14,6 +15,7 @@ import classes from './ProductDetail.module.css'
 const ProductDetail = () => {
   const [currentPage,setCurrentPage] = useState(1)
   const componentRef = useRef()
+  const searchBy =useRef()
     const {crId,proId,amount} = useParams()
     const dispatch = useDispatch()
     const products = useSelector(state=>state.crProDetail.products)
@@ -23,9 +25,8 @@ const ProductDetail = () => {
     const featchColdRoomProductDetails = async() =>{
       dispatch(isLoadingAction.setIsLoading(true))
       try{
-       var response = await apiClient.get(`admin/coldroom-products/product/${proId}?coldRoomId=${crId}`)
+       var response = await apiClient.get(`admin/coldroom-products/product/${proId}?coldRoomId=${crId}&search=${searchBy.current.value}&date=${''}`)
        if(response.status === 200){
-        console.log('cold room product details',response.data)
         dispatch(crProAction.setProducts(response.data))
        }
       }
@@ -36,6 +37,17 @@ const ProductDetail = () => {
       featchColdRoomProductDetails()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
+    const filterByDateHandler = async(e) =>{
+      dispatch(isLoadingAction.setIsLoading(true))
+      try{
+       const response = await apiClient.get(`admin/coldroom-products/product/${proId}?coldRoomId=${crId}&search=${''}&date=${e.target.value}`)
+       if(response.status === 200){
+        dispatch(crProAction.setProducts(response.data))
+       }
+      }
+      catch(err){}
+      finally {dispatch(isLoadingAction.setIsLoading(false))}
+    }
     const setPage = (nomber) =>{
       setCurrentPage(nomber)
     }
@@ -45,43 +57,64 @@ const ProductDetail = () => {
     const setPrevPage = ()=>{
       setCurrentPage(prevValue=>prevValue - 1)
     }
+    const enterKeyHandler = (event) =>{
+      if(event.key === 'Enter' || !event.target.value){
+        featchColdRoomProductDetails()
+      }
+    }
+    const searchHandler = () =>{
+      featchColdRoomProductDetails()
+    }
   return (
     <>
       
         <div ref={componentRef}>
           <h6 className="fw-bold px-3 pt-3">Product Stock Listing</h6>
-          <div className="d-flex justify-content-between px-3 pt-2">
-            <div>
+            {
+              products.data_name?.length?(
+                <div className="d-flex justify-content-between px-3 pt-2">
+                <div>
               <div className="mt-3">
-                <span className="fw-bold">Product</span>: {products.data_name[0]?.product.name}
+                <span className="fw-bold">Product</span>: {products?.data_name[0]?.product?.name}
               </div>
               <div className="mt-3">
                 <span className="fw-bold">Total product in stock(kg)</span>: {amount}
               </div>
             </div>
-            <div className="me-5">
-              <div className="mt-3">
-                <span className="fw-bold">Cold room name</span>: {products.data_name[0]?.coldRoom.name}
+              <div className="mt-3 me-5">
+                <span className="fw-bold">Cold room name</span>: {products?.data_name[0]?.coldRoom?.name}
               </div>
             </div>
+              ):""
+            }
+         
+          <div className="d-flex px-3 mt-4">
+          <div className="w-50 me-3 onPrintDnone">
+          <InputGroup className="mb-3 w-100 border rounded onPrintDnone">
+          <InputGroup.Text id="basic-addon1" className={classes.searchIcon}>
+            <span onClick={searchHandler}>
+              <i className="fas fa-search"></i>
+            </span>
+          </InputGroup.Text>
+          <Form.Control
+            className={classes.searchInput}
+            placeholder="Username"
+            aria-label="Username"
+            aria-describedby="basic-addon1"
+            ref={searchBy}
+            onKeyUp={enterKeyHandler}
+          />
+        </InputGroup>
           </div>
-          <div className="d-flex px-3 mt-4 align-items-center">
-          <div className="me-3 onPrintDnone">
-          <div className="ms-2 py-2">Filter By product type</div>
-          <Form.Select aria-label="Default select example">
-          <option value='all'>All</option>
-          <option value="1">type 1</option>
-          <option value="2">type 2</option>
-          <option value="3">type 3</option>
-        </Form.Select>
-          </div>
-        <div className="ms-5 mt-3 onPrintDnone">
-        <Form.Group className="mb-3" controlId="filterbydate">
-        <Form.Label>Filter by Date</Form.Label>
-        <Form.Control type="date" />
+        <div className="ms-auto me-4 onPrintDnone">
+        <Form.Group controlId="filterbydate">
+        <Form.Control
+         type="date"
+         onChange={filterByDateHandler}
+         />
       </Form.Group>
         </div>
-           <div className="ms-auto mt-4">
+           <div>
            <ReactToPrint
            trigger={()=><Button variant='none' className="exportbtn py-1 onPrintDnone"><span><i className="fas fa-file-export"></i></span> Export</Button>}
            content={()=>componentRef.current}       

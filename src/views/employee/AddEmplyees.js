@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import SaveButton from '../../components/Button';
@@ -12,10 +12,15 @@ import classes from './Employees.module.css'
 
 
 const AddEmployees = (props) => {
-    const [employee,setEmployee] = useState({fName:'',lName:'',phoneNumber:'',email:'',role:'local admin'})
+    const [employee,setEmployee] = useState({fName:'',lName:'',phoneNumber:'',email:'',role:''})
     const [errors,setErrors] = useState({fName:'',lName:'',phoneNumber:'',email:'',role:''})
     const dispatch = useDispatch()
-
+    const {id,fName,lName,phoneNumber,email,role} = props.employee
+ useEffect(()=>{
+  
+  setEmployee({fName,lName,phoneNumber,email,role})
+ // eslint-disable-next-line react-hooks/exhaustive-deps
+ },[fName])
     const changeHandler = (e) =>{
        const {name,value} = e.target
        setEmployee(previousValues=>{
@@ -33,7 +38,9 @@ const AddEmployees = (props) => {
        })
     }
     const saveHandler = async() =>{
-        setErrors(ValidatEmployee(employee))
+       const err =ValidatEmployee(employee)
+        setErrors(err)
+        if(!err){
         dispatch(buttonAction.setBtnSpiner(true))
         try{
         const response = await apiClient.post('admin/employees',employee)
@@ -49,8 +56,30 @@ const AddEmployees = (props) => {
 
         console.log('employee save is clicked')
     }
+  }
+    const editHandler = async() =>{
+      const err =ValidatEmployee(employee)
+      setErrors(err)
+      if(!err){
+      dispatch(buttonAction.setBtnSpiner(true))
+      try{
+      const response = await apiClient.put(`admin/employees/${id}`,employee)
+      if(response.status === 201){
+         dispatch(employeeAction.addEmployee(response.data))
+         handleClose()
+      }
+    }
+    catch(er){}
+    finally{
+      dispatch(buttonAction.setBtnSpiner(false))
+    }
+
+      console.log('employee save is clicked')
+    }
+  }
   const handleClose = () => {
     props.onClose()
+    setEmployee({})
   }
 
   return (
@@ -125,7 +154,11 @@ const AddEmployees = (props) => {
         </Modal.Body>
         <Modal.Footer>
         <CancelButton title="Close" onClose={handleClose} />
-        <SaveButton title="Save" onSave={saveHandler}/>
+        {props.title=== 'Add Employee'?(
+          <SaveButton title="Save" onSave={saveHandler}/>
+        ):( <SaveButton title="Save Change" onSave={editHandler}/>)
+      }
+       
         </Modal.Footer>
       </Modal>
     </>

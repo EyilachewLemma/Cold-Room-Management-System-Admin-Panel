@@ -16,6 +16,7 @@ import classes from "./Employees.module.css";
 const Employees = () => {
 const [show,setShow] = useState(false)
 const [modalTitle,setModalTitle] = useState('Add Employee')
+const [employee,setEmployee] = useState({})
   const dispatch = useDispatch()
   const employees = useSelector(state =>state.employee.employees)
   const componentRef = useRef()
@@ -36,8 +37,9 @@ const [modalTitle,setModalTitle] = useState('Add Employee')
     setModalTitle('Add Employee')
     setShow(true)
   }
-   const editEmployeeHandler = () =>{
+   const editEmployeeHandler = (empl) =>{
     setModalTitle('Edit Employee')
+    setEmployee(empl)
     setShow(true)
    }
    const deleteEmployeeHandler = () =>{}
@@ -114,7 +116,7 @@ const [modalTitle,setModalTitle] = useState('Add Employee')
           <tbody>
           {
             employees.map((employee,index) =>(
-              <tr className={classes.row} key={employee.id}>
+              <tr className={classes.row} key={index}>
               <td className="p-3">{index+1}</td>
               <td className="p-3">{employee.fName+' '+employee.lName}</td>
               <td className="p-3">{employee.phoneNumber}</td>
@@ -129,7 +131,7 @@ const [modalTitle,setModalTitle] = useState('Add Employee')
                </Dropdown.Toggle>
          
                <Dropdown.Menu className={classes.dropdownBg}>
-               <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={event=>editEmployeeHandler()}>Edit Employee</Button>
+               <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>editEmployeeHandler(employee)}>Edit Employee</Button>
                <Button  variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>deleteEmployeeHandler(index)}>Delete Employee</Button>
                  </Dropdown.Menu>
              </Dropdown>
@@ -143,7 +145,7 @@ const [modalTitle,setModalTitle] = useState('Add Employee')
         </Table>
       </div>
       </div>
-      <AddEmployees show={show} title={modalTitle} onClose={closeModalHandler} />
+      <AddEmployees show={show} title={modalTitle} onClose={closeModalHandler} employee={employee} />
     </Fragment>
   );
 };

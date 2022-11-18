@@ -13,7 +13,7 @@ const EditProduct = (props) => {
   const [product, setproduct] = useState({title:'',image:null,newImage:null});
   const [error, setError] = useState('');
   const dispatch = useDispatch();
-const {recivedData} = props.product
+  const {name} = props.product
    useEffect(()=>{
     setproduct({
       title:props.product.name,
@@ -22,7 +22,7 @@ const {recivedData} = props.product
     })
     console.log('passed product=',props.product)
    // eslint-disable-next-line react-hooks/exhaustive-deps
-   },[recivedData])
+   },[name])
   const titleChangeHandler = (e) => {
     setproduct(previousValues=>{
       return {...previousValues,title:e.target.value}

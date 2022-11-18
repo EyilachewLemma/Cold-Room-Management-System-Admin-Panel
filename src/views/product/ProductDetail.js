@@ -25,6 +25,7 @@ const ProductDetail = () => {
  const products = useSelector(state=>state.productDetail.productTypes)
   const dispatch = useDispatch()
   const {prId} = useParams()
+
   const featchProductDetails = async ()=>{
     dispatch(isLoadingAction.setIsLoading(true))
   try{
@@ -50,8 +51,7 @@ const ProductDetail = () => {
    const closeAddType = () =>{
     setShowAddType(false)
    }
-   const openConfirmModal = (id) =>{
-    
+   const openConfirmModal = (id) =>{    
     setTypeId(id)
     setShowConfirm(true)
    }
@@ -118,7 +118,7 @@ const ProductDetail = () => {
               <tr key={index}>
               <td className="p-4">{index+1}</td>
               <td className="p-4">{product.title}</td>
-              <td className="p-2">{product.description}</td>
+              <td className="p-4">{product.description}</td>
               <td className="p-4">
               <img src={product.imageUrl} alt="product_type_image" className={classes.img} />
               </td>

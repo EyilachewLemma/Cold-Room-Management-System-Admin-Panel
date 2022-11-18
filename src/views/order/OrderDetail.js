@@ -1,39 +1,42 @@
 import { Fragment,useEffect,useRef } from "react";
 import { useSelector,useDispatch } from "react-redux";
-import { coldRoomAction } from "../../store/slices/coldroomSlice";
+import { orderAction } from "../../store/slices/OrderSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button"
 import ReactToPrint from "react-to-print";
 import apiClient from "../../url/index";
-import {useNavigate } from "react-router-dom";
+import {useNavigate,useParams } from "react-router-dom";
 import classes from "./Orders.module.css";
 
 
 
 const OrderDetail = () => {
-  const products = [1,2,3,4,5,6,7,8,9,10,11]
   const dispatch = useDispatch()
-  const coldRooms = useSelector(state =>state.coldroom)
+  const orders = useSelector(state =>state.order.orderItems)
   const navigate = useNavigate()
   const componentRef = useRef()
+  const {orderId} = useParams()
   
-  useEffect( ()=>{
-    async function  featchOrder(){
-      dispatch(isLoadingAction.setIsLoading(true))
-    try{
-     var response = await apiClient.get('api/cold_rooms')
-     if(response.status === 200){
-      dispatch(coldRoomAction.setColdRooms(response.data || []))
-     }
-    }
-    catch(err){}
-    finally {dispatch(isLoadingAction.setIsLoading(false))}
-  }
-  featchOrder()
-  },[dispatch])
 
-  console.log('coldrooms from',coldRooms)
+  async function  featchOrder(){
+    dispatch(isLoadingAction.setIsLoading(true))
+  try{
+   var response = await apiClient.get(`admin/orders/${orderId}`)
+   if(response.status === 200){
+    dispatch(orderAction.setOrderItems(response.data || []))
+   }
+  }
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
+}
+  useEffect( ()=>{
+    
+  featchOrder()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
+  console.log('order Items from',orders)
 
   return (
     <Fragment>
@@ -43,26 +46,26 @@ const OrderDetail = () => {
       <div className="d-flex justify-content-between">
       <div>
         <div className="mt-3">
-          <span className="fw-bold">Order Id</span>: #34814
+          <span className="fw-bold">Order Id</span>: {orders.orderCode}
         </div>
         <div className="mt-3">
-          <span className="fw-bold">Wholesaler</span>: Ribika Chekol
+          <span className="fw-bold">Wholesaler</span>: {orders.wholeSaler?.fName+' '+orders.wholeSaler?.lName}
         </div>
       </div>
       <div className="me-5">
         <div className="mt-3">
-          <span className="fw-bold">Total Price(ETB)</span>: 23,500
+          <span className="fw-bold">Total Price(ETB)</span>: {orders.totalPrice}
         </div>
         <div className="mt-3">
-          <span className="fw-bold">Payment Status</span>: Partially Paid
+          <span className="fw-bold">Payment Status</span>: {orders.paymentStatus}
         </div>
       </div>
       <div>
         <div className="mt-3">
-          <span className="fw-bold">Paid Amount(ETB)</span>: 13,500
+          <span className="fw-bold">Paid Amount(ETB)</span>: {orders.paidAmount}
         </div>
         <div className="mt-3">
-          <span className="fw-bold">Remaining Amount(ETB)</span>: 1000
+          <span className="fw-bold">Remaining Amount(ETB)</span>: {orders.totalPrice - orders.paidAmount}
         </div>
       </div>
     </div>
@@ -94,16 +97,16 @@ const OrderDetail = () => {
           </thead>
           <tbody>
           {
-            products.map((product,index) =>(
-              <tr className={classes.row} key={index}>
-              <td className="p-3">#34814</td>
-              <td className="p-3">Tomato</td>
-              <td className="p-3">Type 1</td>
-              <td className="p-3">Fresh</td>
-              <td className="p-3">50</td>
-              <td className="p-3">30</td>
-              <td className="p-3 text-center">0</td>
-              <td className="p-3 text-center">1500</td>
+            orders.orderItems?.map((order) =>(
+              <tr className={classes.row} key={order.id}>
+              <td className="p-3">{order.orderId}</td>
+              <td className="p-3">null</td>
+              <td className="p-3">null</td>
+              <td className="p-3">{order.quality}</td>
+              <td className="p-3">null</td>
+              <td className="p-3">{order.pricePerKg}</td>
+              <td className="p-3 text-center">null</td>
+              <td className="p-3 text-center">null</td>
             </tr>
             ))
           }

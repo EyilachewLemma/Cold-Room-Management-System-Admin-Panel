@@ -20,6 +20,7 @@ const OrderList = () => {
   const [isOrderStatusOpen,setIsOrderStatusOpen] = useState(false)
   const [isPayMentStatusOpen,setIsPayMentStatusOpen] = useState(false)
   const [currentPage,setCurrentPage] = useState(1)
+  const[order,setOrder] = useState({})
   const dispatch = useDispatch()
   const orders = useSelector(state =>state.order.orders)
   const componentRef = useRef()
@@ -42,10 +43,11 @@ const OrderList = () => {
   featchOrders()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[currentPage])
-  const handlOrderItem = () =>{
-    navigate('/orders/items')
+  const handlOrderItem = (orderId) =>{
+    navigate(`/orders/${orderId}`)
   }
-  const handlOrderStatus = () =>{
+  const handlOrderStatus = (order) =>{
+    setOrder(order)
     setIsOrderStatusOpen(true)
 }
 const handlOrderModalClose = () =>{
@@ -192,11 +194,11 @@ const searchHandler = () =>{
       <Button
         variant="none"
         className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}
-        onClick={event=>handlOrderItem()}>Order Item</Button>
+        onClick={()=>handlOrderItem(order.id)}>Order Item</Button>
       <Button
         variant="none"
         className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}
-         onClick={handlOrderStatus}>Order Status</Button>
+         onClick={()=>handlOrderStatus(order)}>Order Status</Button>
       <Button
         variant="none"
          className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}
@@ -228,7 +230,7 @@ const searchHandler = () =>{
         )
       } 
       
-      <OrderStatus show={isOrderStatusOpen} onClose={handlOrderModalClose} />
+      <OrderStatus show={isOrderStatusOpen} onClose={handlOrderModalClose} order={order} />
       <PaymentStatus show={isPayMentStatusOpen} onClose={handlPaymentStatusModalClose} />
     </div>
   );

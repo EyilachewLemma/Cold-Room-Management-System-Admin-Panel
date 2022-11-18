@@ -20,13 +20,12 @@ const ProductList = () => {
   const [show,setShow] = useState(false)
   const [producttoedit,setProducttoedit] = useState({})
   const [showConfirm,setShowConfirm] = useState(false)
+  const [id,setId]=useState(null)
   const componentRef = useRef()
   const searchBy = useRef()
  const products = useSelector(state=>state.product.products)
   const dispatch = useDispatch()
  const navigate = useNavigate()
-
-
   const featchProducts = async ()=>{
     dispatch(isLoadingAction.setIsLoading(true))
   try{
@@ -64,17 +63,20 @@ const ProductList = () => {
   const closeEditModal = ()=>{
     setShow(false)
   }
-  const openConfirmModal = () =>{
+  const openConfirmModal = (id) =>{
+  setId(id)
     setShowConfirm(true)
   }
   const closeConfirmModal = () =>{
     setShowConfirm(false)
   }
-  const deleteProductHandler = async (id) =>{
+  const deleteProductHandler = async () =>{
     try{
       var response = await apiClient.delete(`admin/products/${id}`)
+      console.log('delete status code=',response.status)
       if(response.status === 200){
        dispatch(productAction.deleteProduct(id))
+       setShowConfirm(false)
       }
      }
      catch(err){

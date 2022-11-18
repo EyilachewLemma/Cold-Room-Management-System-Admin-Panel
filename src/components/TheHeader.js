@@ -1,4 +1,4 @@
-import {Fragment,useState,useEffect} from 'react'
+import React, {Fragment,useState,useEffect} from 'react'
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
 import profileImage from '../assetes/eyilachew.jpg'
@@ -16,6 +16,7 @@ const TheHeader = () =>{
   const dispatch = useDispatch()
   const notifications = useSelector(state=>state.notification.notifications)
   const navigate = useNavigate()
+  const user = useSelector(state=>state.user.data)
  
   useEffect(()=>{
    const fetchNotification = async() =>{
@@ -69,8 +70,8 @@ const TheHeader = () =>{
         <div className='d-flex overflow-hidden ms-2 align-items-center'>
       <img src={profileImage} alt={'profile_photo'} className={classes.profileImg+' img-fluid rounded-circle'} />
          <div className='text-white me-2'>
-           <div className='fw-bold ms-2 mt-2'>Mesenbet Dinku  </div>
-           <div className='small text-start ms-3'>admin</div>
+           <div className='fw-bold ms-2 mt-2'>{user.fName+' '+user.lName}</div>
+           <div className='small text-start ms-3'>{user.role}</div>
          </div>
          </div>
         </Dropdown.Toggle>
@@ -98,4 +99,4 @@ const TheHeader = () =>{
        </div>
        </Fragment>
 }
-export default TheHeader
+export default React.memo(TheHeader)

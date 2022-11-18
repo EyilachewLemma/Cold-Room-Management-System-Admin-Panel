@@ -10,8 +10,6 @@
     z-index: 0!important;
 }
 .searchIcon{
-    background: none!important;
-    border-right: none!important;
     cursor: pointer;
 }
 .header{

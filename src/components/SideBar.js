@@ -11,31 +11,31 @@ const SideBar = () =>{
             </NavLink>
         </div>
         <div className='mb-3'>     
-        <NavLink to={'/products/list'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-1 px-xl-4 py-2" : classes.inactive+' px-1 px-xl-4 py-2'}>
+        <NavLink to={'/products'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-1 px-xl-4 py-2" : classes.inactive+' px-1 px-xl-4 py-2'}>
         <span className="fs-5 me-3"><i className="fa-solid fa-layer-group"></i></span>            
         <span>Products</span>
           </NavLink>
         </div>
         <div className='mb-3'>     
-        <NavLink to={'/cold-rooms/list'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-1 px-xl-4 py-2" : classes.inactive+' px-1 px-xl-4 py-2'}>
+        <NavLink to={'/cold-rooms'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-1 px-xl-4 py-2" : classes.inactive+' px-1 px-xl-4 py-2'}>
         <span className="fs-5 me-3"><i className="fa-solid fa-warehouse"></i></span>            
         <span>Coldrooms</span>
             </NavLink>
         </div>
         <div className='mb-3'>     
-        <NavLink to={'/orders/list'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-1 px-xl-4 py-2" : classes.inactive+' px-1 px-xl-4 py-2'}>
+        <NavLink to={'/orders'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-1 px-xl-4 py-2" : classes.inactive+' px-1 px-xl-4 py-2'}>
         <span className="fs-5 me-3"><i className="fa-solid fa-cart-shopping"></i></span>            
         <span>Orders</span>
             </NavLink>
         </div>
         <div className='mb-3'>     
-        <NavLink to={'/farmers/list'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-1 px-xl-4 py-2" : classes.inactive+' px-1 px-xl-4 py-2'}>
+        <NavLink to={'/farmers'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-1 px-xl-4 py-2" : classes.inactive+' px-1 px-xl-4 py-2'}>
         <span className="fs-5 me-3"><i className="fa-solid fa-user-group"></i></span>            
         <span>Farmers</span>
             </NavLink>
         </div>
         <div className='mb-3'>     
-        <NavLink to={'/wholesalers/list'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-1 px-xl-4 py-2" : classes.inactive+' px-1 px-xl-4 py-2'}>
+        <NavLink to={'/wholesalers'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-1 px-xl-4 py-2" : classes.inactive+' px-1 px-xl-4 py-2'}>
         <span className="fs-5 me-3"><i className="fa-solid fa-people-carry-box"></i></span>            
         <span>Wholesalers</span>
             </NavLink>

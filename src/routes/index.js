@@ -30,28 +30,28 @@ const Router = () =>{
   return <Routes>
   <Route path='/' element={<AppContainer />}>
     <Route path='products' element={<Products />}>  
-    <Route path='list' element={<ProductList />} />  
+    <Route index element={<ProductList />} />  
     <Route path=':prId/detail' element={<ProductsDetail />} />    
     </Route>
     <Route path='orders' element={<Orders />}>  
-    <Route path='list' element={<OrderList />} />
-    <Route path='items' element={<OrderDetail />} />      
+    <Route index element={<OrderList />} />
+    <Route path=':orderId' element={<OrderDetail />} />      
     </Route>
     <Route path='dash-board' element={<DashBoard />}>        
     </Route>
     <Route path='cold-rooms' element={<ColdRooms />}>
-    <Route path='list' element={<ColdRoomLists />} />
+    <Route index element={<ColdRoomLists />} />
     <Route path=':crId/products' element={<ColdRoomProducts />} />
     <Route path=':crId/product/:proId/prduct-detail/:amount' element={<ProductDetail />} />
      </Route>
      <Route path='farmers' element={<Farmers />}>
-     <Route path='list' element={<FarmersList />} />
+     <Route index element={<FarmersList />} />
     <Route path=':faId/product-history/:tp' element={<ProductHistory />} />
     <Route path=':faId/rent-fee/:tr' element={<RentFee />} />
     <Route path=':faId/balance/:tb' element={<BalanceHistory />} />
      </Route>
      <Route path='wholesalers' element={<WholeSalers />}>
-     <Route path='list' element={<WholeSalerList />} />
+     <Route index element={<WholeSalerList />} />
      <Route path=':whId/order-history' element={<OrderHistory />} />
       </Route>
      <Route path='employees' element={<Employees />}>

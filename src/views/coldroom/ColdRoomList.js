@@ -135,7 +135,7 @@ const ColdRoomLists = () => {
           {
             coldRooms?.map((coldRoom,index) =>(
               <tr className={classes.row} key={coldRoom.id}>
-              <td className="p-2">{coldRoom.id}</td>
+              <td className="p-2">{index+1}</td>
               <td className="p-2">{coldRoom.name}</td>
               <td className="p-2">{coldRoom.address.region}</td>
               <td className="p-2">{coldRoom.address.zone}</td>

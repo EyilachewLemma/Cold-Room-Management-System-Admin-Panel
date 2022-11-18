@@ -9,7 +9,6 @@ import classes from './Orders.module.css'
 
 const OrderStatus = (props) => {
   const componentRef = useRef()
-    const products = [1,2,3,4,5]
   const closeModalHandler = () => {
     props.onClose();
   };
@@ -25,8 +24,8 @@ const OrderStatus = (props) => {
         <Modal.Body className={classes.modalBg}>
         <div className="px-4 py-3" ref={componentRef}>
           <div className="fw-bold px-3">Order Status</div>
-          <div className="fw-bold px-3 pt-3">Order id: #1232123</div>
-          <div className=" fw-bold mt-3 px-3">Order Status : Completed</div>
+          <div className="fw-bold px-3 pt-3">Order id: {props.order.orderCode}</div>
+          <div className=" fw-bold mt-3 px-3">Order Status : {props.order.orderStatus}</div>
           <div className="d-flex align-items-center px-3 pt-2">              
             <div className="me-5 onPrintDnone">
             <Form.Select aria-label="Default select example">
@@ -58,12 +57,12 @@ const OrderStatus = (props) => {
             </thead>
             <tbody>
             {
-              products.map((product,index) =>(
-                <tr className={classes.tdPadding} key={index}>
-                <td className='py-3'>11-02-2022</td>
-                <td className="p-2">pending</td>
-                <td className="p-2">Completed</td>
-                <td className="p-2">Walelign Gebiru</td>
+              props.order.orderLogs?.map((order) =>(
+                <tr className={classes.tdPadding} key={order.id}>
+                <td className='py-3'>{order.updatedAt.slice(0,10)}</td>
+                <td className="p-2">{order.changedFrom}</td>
+                <td className="p-2">{order.changedTo}</td>
+                <td className="p-2">{order.changedBy}</td>
                 
               </tr>
               ))

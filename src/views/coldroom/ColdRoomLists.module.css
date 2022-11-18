@@ -1,13 +1,11 @@
 .searchIcon{
-    background: none!important;
-    border-right: none!important;
     cursor: pointer;
 }
 .searchInput{
     box-shadow: none!important;
     border-left: none!important;
     z-index: 0!important;
-    outline: none;
+    outline: none!important;
 }
 .btn{
     background-color: #FF7F00!important;

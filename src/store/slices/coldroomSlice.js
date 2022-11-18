@@ -10,6 +10,9 @@ const coldRoomSlice = createSlice({
         addColdRoom(state,action){
             state.coldRooms.push(action.payload)
         },
+        assignManager:(state,action)=>{
+            state.coldRooms[action.payload.index].employee= action.payload.employee
+        }
 
 
     }

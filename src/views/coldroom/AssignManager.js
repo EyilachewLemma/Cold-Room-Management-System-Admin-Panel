@@ -10,7 +10,6 @@ import apiClient from "../../url/index";
 import classes from './AssignManager.module.css'
 const AssignManager =(props) =>{
     const employees = useSelector(state=>state.employee.employees)
-    const coldRooms = useSelector(state=>state.coldroom.coldRooms)
     const dispatch = useDispatch()
     let empId=null
 
@@ -19,18 +18,31 @@ const AssignManager =(props) =>{
     console.log('selected employee empId=',empId)
 
  }
- const assignAsManagerHandler =async()=>{
-       dispatch(buttonAction.setBtnSpiner(false))
+ const assignAsManagerHandler = async()=>{
+       dispatch(buttonAction.setBtnSpiner(true))
     try{
         var response = await apiClient.post(`admin/coldRooms/assign-manager/${props.coldroom.id}?employeeId=${empId}`)
+
         if(response.status === 200){
-            const listOfColdRooms = coldRooms
-            listOfColdRooms[props.coldroom.index] = response.data
-         dispatch(coldRoomAction.setColdRooms(listOfColdRooms || []))
+            const coldRoomManager ={
+              index:props.coldroom.index,
+              employee:{
+                fName:response.data.fName,
+                lName:response.data.lName
+              }
+
+            }
+            console.log('assined persone',coldRoomManager)
+         dispatch(coldRoomAction.assignManager(coldRoomManager))
+         handleClose()
         }
        }
-       catch(err){}
-       finally {dispatch(buttonAction.setBtnSpiner(false))}
+       catch(err){
+        console.log('error to assign')
+       }
+       finally {dispatch(buttonAction.setBtnSpiner(false))
+       
+      }
      }
  
     const handleClose =()=>{
@@ -38,7 +50,6 @@ const AssignManager =(props) =>{
     }
     return <>
     <Modal
-        size={"lg"}
         show={props.show}
         onHide={handleClose}
         backdrop="static"
@@ -65,7 +76,7 @@ const AssignManager =(props) =>{
           <tbody>
           {
             employees.map((employee,index) =>(
-              <tr className={classes.row} key={employee.id}>
+              <tr className={classes.row} key={index}>
               <td className="p-3">{index+1}</td>
               <td className="p-3">{employee.fName+' '+employee.lName}</td>
               <td className="p-3">{employee.phoneNumber}</td>

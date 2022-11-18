@@ -11,12 +11,20 @@ const productSlice = createSlice({
             state.products.push(action.payload)
         },
         editProduct:(state,action)=>{
-            const index = state.findIndex(product=>product.id*1===action.payload.id*1)
+            const index = state.products.findIndex(product=>product.id*1===action.payload.id*1)
             console.log('edited index=',index)
-            state[index] = action.payload.product
+            const totalAmount = state.products[index].totalProduct
+            const product ={
+                name:action.payload.name,
+                imageUrl:action.payload.imageUrl,
+                totalProduct:totalAmount,
+            }
+            state.products[index] = product
         },
         deleteProduct:(state,action)=>{
-            state = state.map(product=>product.id*1 !==action.payload*1)
+            console.log('deleted pr id=',action.payload) 
+            const index = state.products.findIndex(product=>product.id*1 ===action.payload*1)
+            state.products.splice(index,1)
         }
         
 

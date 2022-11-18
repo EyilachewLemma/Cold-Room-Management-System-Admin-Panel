@@ -6,6 +6,7 @@
 .searchInput{
     box-shadow: none!important;
     border-left: none!important;
+    z-index: 0!important;
 }
 .bottomBorder{
     border-bottom: 4px solid rgb(203, 202, 202);
