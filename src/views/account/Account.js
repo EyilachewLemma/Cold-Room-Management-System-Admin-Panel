@@ -64,7 +64,7 @@ const Account = () =>{
         }
         
     </div>
-    { image && <div className='text-center'>
+    { image && <div className='text-center mb-3'>
         <Button variant='none' className={`${classes.btn} py-1`}>Save Profile picture</Button>
         </div>}
       <div className='d-flex border-bottom px-3'>

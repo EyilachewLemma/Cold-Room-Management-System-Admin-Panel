@@ -18,6 +18,7 @@ const BalanceHistory = () => {
   const balances = useSelector(state =>state.balance.balances)
   const navigate = useNavigate()
   const componentRef = useRef()
+  const searchBy = useRef()
   const {tb,faId} = useParams()
 
 
@@ -37,9 +38,39 @@ const BalanceHistory = () => {
   featchBalances()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[faId])
+  const enterKeyHandler = (event) =>{
+    if(event.key === 'Enter' || !event.target.value){
 
-  console.log('balance page',balances)
-  console.log('farmer id=',faId)
+      console.log('event value',event.target.value)
+    }
+  }
+  const searchHandler = () =>{
+    console.log('search value',searchBy.current.value)
+  }
+    const filterOrderHandler = async(e)=>{
+      console.log('option=', e.target.value)
+      dispatch(isLoadingAction.setIsLoading(false))
+      try{
+       var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${e.target.value}&date=${''}`)
+       if(response.status === 200){
+       }
+      }
+      catch(err){}
+      finally {dispatch(isLoadingAction.setIsLoading(false))
+      }
+    }
+    const filterByDateHandler = async(e) =>{
+      console.log('date=',e.target.value)
+      dispatch(isLoadingAction.setIsLoading(false))
+    try{
+     var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${''}&date=${e.target.value}`)
+     if(response.status === 200){
+     }
+    }
+    catch(err){}
+    finally {dispatch(isLoadingAction.setIsLoading(false))
+    }
+    } 
   return (
     <Fragment>
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
@@ -63,7 +94,7 @@ const BalanceHistory = () => {
         <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>
         <InputGroup className="w-50 border rounded onPrintDnone">
           <InputGroup.Text id="searchbyproductName" className={classes.searchIcon}>
-            <span>
+            <span onClick={searchHandler}>
               <i className="fas fa-search"></i>
             </span>
           </InputGroup.Text>
@@ -72,10 +103,12 @@ const BalanceHistory = () => {
             placeholder="search by Product name"
             aria-label="search by product name"
             aria-describedby="searchbyproductName"
+            ref={searchBy}
+            onKeyUp={enterKeyHandler}
           />
         </InputGroup>
         <div className="ms-3 onPrintDnone">
-        <Form.Select aria-label="Default select example">
+        <Form.Select aria-label="Default select example" onChange={filterOrderHandler}>
         <option value='all'>All</option>
         <option value="1">Type 1</option>
         <option value="2">Type 2</option>
@@ -84,7 +117,9 @@ const BalanceHistory = () => {
         </div>
       <div className="ms-3 me-3 onPrintDnone">
       <Form.Group controlId="search-by-date">
-      <Form.Control type="date" />
+      <Form.Control type="date" 
+      onChange={filterByDateHandler}
+      />
     </Form.Group>
       </div>
         <div>

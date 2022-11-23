@@ -1,7 +1,7 @@
 import { Fragment,useEffect, useState } from 'react'
-import SalesOverviewChart from '../../components/SalesOverviewChart'
-import SalesPieChart from '../../components/SalespieChart';
-import RecentOrders from '../../components/RecentOrders';
+import SalesOverviewChart from './SalesOverviewChart'
+import SalesPieChart from './SalespieChart';
+import RecentOrders from './RecentOrders';
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import { useDispatch} from "react-redux";
 import apiClient from "../../url/index";

@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import SaveButton from "../../components/Button";
 import CancelButton from "../../components/CancelButton";
 import Modal from "react-bootstrap/Modal";
+import NotificationModal from "../../components/Modal";
 import Form from "react-bootstrap/Form";
 import MapBox from "./MapBox";
 import apiClient from "../../url";
@@ -23,6 +24,7 @@ const AddColdRoom = (props) => {
   });
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
+  const[modalData,setModalData] = useState({show:false,status:null,title:'',message:''})
   const { data } = props;
   useEffect(() => {
     const coldRoom = {
@@ -62,60 +64,57 @@ const AddColdRoom = (props) => {
   );
 
   const createColdRoom = async () => {
-    console.log("data sent to server =", coldroomData);
     const errorValues = setErrors(validate(coldroomData));
     if (!errorValues) {
       dispatch(buttonAction.setBtnSpiner(true));
       try {
         let response = await apiClient.post("admin/coldRooms", coldroomData);
         if (response.status === 200) {
-          console.log("create Cold room response =", response);
           const responsData = {
             ...response.data.coldRoom,
             address: response.data.address,
             rent: response.data.rent,
             employee: response.data.employee,
           };
-          console.log("res data =", responsData);
           dispatch(coldRoomAction.addColdRoom(responsData));
-          console.log("cold room is created successfully");
+          setColdroomData({});
+          handleClose();
+          setModalData({show:true,status:1,title:'Successful',message:'You created cold room successfully'})
         }
       } catch (err) {
-        console.log("err", err);
+        setModalData({show:true,status:0,title:'Faild',message:'faild to create cold room'})
       } finally {
         dispatch(buttonAction.setBtnSpiner(false));
-        handleClose();
-        setColdroomData({});
       }
     }
   };
   const editColdRoom = async () => {
-    console.log("data sent to server =", coldroomData);
     const errorValues = setErrors(validate(coldroomData));
     if (!errorValues) {
       dispatch(buttonAction.setBtnSpiner(true));
       try {
-        let response = await apiClient.put(
-          `admin/coldRooms/${props.data.id}`,
-          coldroomData
-        );
+        let response = await apiClient.put(`admin/coldRooms/${props.data.id}`,coldroomData);
         if (response.status === 200) {
-          console.log("create Cold room response =", response);
           dispatch(coldRoomAction.addColdRoom(response.data));
-          console.log("cold room is created successfully");
+          handleClose();
+          setModalData({show:true,status:1,title:'Successful',message:'You edited cold room successfully'})
         }
       } catch (err) {
-        console.log("err", err);
+        setModalData({show:true,status:0,title:'Faild',message:'faild to edit cold room'})
       } finally {
         dispatch(buttonAction.setBtnSpiner(false));
-        handleClose();
-        setColdroomData({});
+        
+        
       }
     }
   };
+  const handleModalClose =() =>{
+    setModalData({})
+  }
   const handleClose = () => {
     props.closeModal(false);
     setErrors({});
+    setColdroomData({});
   };
   return (
     <>
@@ -136,7 +135,7 @@ const AddColdRoom = (props) => {
               <Form.Control
                 type="text"
                 name="name"
-                value={coldroomData.name}
+                value={coldroomData.name || ''}
                 onChange={changeHandler}
                 className={errors.name ? classes.errorBorder : ""}
               />
@@ -147,7 +146,7 @@ const AddColdRoom = (props) => {
               <Form.Control
                 type="text"
                 name="region"
-                value={coldroomData.region}
+                value={coldroomData.region || ''}
                 onChange={changeHandler}
                 className={errors.region ? classes.errorBorder : ""}
               />
@@ -158,7 +157,7 @@ const AddColdRoom = (props) => {
               <Form.Control
                 text="text"
                 name="zone"
-                value={coldroomData.zone}
+                value={coldroomData.zone || ''}
                 onChange={changeHandler}
                 className={errors.zone ? classes.errorBorder : ""}
               />
@@ -169,7 +168,7 @@ const AddColdRoom = (props) => {
               <Form.Control
                 text="text"
                 name="woreda"
-                value={coldroomData.woreda}
+                value={coldroomData.woreda || ''}
                 onChange={changeHandler}
                 className={errors.woreda ? classes.errorBorder : ""}
               />
@@ -180,7 +179,7 @@ const AddColdRoom = (props) => {
               <Form.Control
                 text="text"
                 name="kebele"
-                value={coldroomData.kebele}
+                value={coldroomData.kebele || ''}
                 onChange={changeHandler}
                 className={errors.kebele ? classes.errorBorder : ""}
               />
@@ -191,7 +190,7 @@ const AddColdRoom = (props) => {
               <Form.Control
                 text="number"
                 name="price"
-                value={coldroomData.price}
+                value={coldroomData.price || ''}
                 onChange={changeHandler}
                 className={errors.price ? classes.errorBorder : ""}
               />
@@ -224,6 +223,7 @@ const AddColdRoom = (props) => {
           )}
         </Modal.Footer>
       </Modal>
+      <NotificationModal modal={modalData} onClose={handleModalClose} />
     </>
   );
 };

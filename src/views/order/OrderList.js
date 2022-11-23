@@ -53,7 +53,8 @@ const OrderList = () => {
 const handlOrderModalClose = () =>{
   setIsOrderStatusOpen(false)
 }
-const handlPaymentStatus = () =>{
+const handlPaymentStatus = (order) =>{
+  setOrder(order)
   setIsPayMentStatusOpen(true)
 }
 const handlPaymentStatusModalClose = () =>{
@@ -177,7 +178,7 @@ const searchHandler = () =>{
           {
             orders.data_name.map((order) =>(
               <tr className={classes.row} key={order.id}>
-              <td className="p-3">{order.code}</td>
+              <td className="p-3">{order.orderCode}</td>
               <td className="p-3">{order.coldRoom.name}</td>
               <td className="p-3">{order.wholeSaler?.fName+' '+order.wholeSaler?.lName}</td>
               <td className="p-3">{order.createdAt.slice(0,10)}</td>
@@ -202,7 +203,7 @@ const searchHandler = () =>{
       <Button
         variant="none"
          className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}
-          onClick={handlPaymentStatus}>Payment Status</Button>
+          onClick={()=>handlPaymentStatus(order)}>Payment Status</Button>
         </Dropdown.Menu>
     </Dropdown>
               </td>
@@ -231,7 +232,7 @@ const searchHandler = () =>{
       } 
       
       <OrderStatus show={isOrderStatusOpen} onClose={handlOrderModalClose} order={order} />
-      <PaymentStatus show={isPayMentStatusOpen} onClose={handlPaymentStatusModalClose} />
+      <PaymentStatus show={isPayMentStatusOpen} onClose={handlPaymentStatusModalClose} order={order} />
     </div>
   );
 };

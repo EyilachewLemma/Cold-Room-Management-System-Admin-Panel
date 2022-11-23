@@ -11,11 +11,12 @@ const productDetailSlice = createSlice({
             state.productTypes.push(action.payload)
         },
         editProductType:(state,action)=>{
-          const index = state.findIndex(type=>type.id === action.payload.id)
-          state[index] = action.payload.type
+          const index = state.productTypes.findIndex(type=>type.id*1 === action.payload.id*1)
+          state.productTypes[index] = action.payload
         },
         deleteProductType:(state,action)=>{
-            state = state.map(product=>product.id*1 !==action.payload*1)
+            const index = state.productTypes.findIndex(type=>type.id*1 === action.payload*1)
+            state.productTypes.splice(index,1)
         }
         
 

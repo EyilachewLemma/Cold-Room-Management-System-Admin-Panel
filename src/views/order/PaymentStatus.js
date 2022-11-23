@@ -4,12 +4,10 @@ import Form from 'react-bootstrap/Form';
 import Table from "react-bootstrap/Table";
 import ReactToPrint from "react-to-print";
 import Button from "react-bootstrap/Button";
-import CancelButton from "../../components/CancelButton";
 import classes from './Orders.module.css'
 
 const PaymentStatus = (props) => {
   const componentRef = useRef()
-    const products = [1,2,3,4,5]
   const closeModalHandler = () => {
     props.onClose();
   };
@@ -22,11 +20,13 @@ const PaymentStatus = (props) => {
         backdrop="static"
         keyboard={false}        
       >
+      <Modal.Header closeButton className={classes.modalBg}>
+      <Modal.Title >Payment Status</Modal.Title>
+    </Modal.Header>
         <Modal.Body className={classes.modalBg}>
         <div className="px-4 py-3" ref={componentRef}>
-          <div className="fw-bold px-3">Payment Status</div>
-          <div className="fw-bold px-3 pt-3">Order id: #1232123</div>
-          <div className=" fw-bold mt-3 px-3">Payment Status : Fully Paid</div>
+          <div className="fw-bold px-3 pt-3">Order id: {props.order.orderCode}</div>
+          <div className=" fw-bold mt-3 px-3">Payment Status : {props.order.paymentStatus}</div>
           <div className="d-flex align-items-center px-3 pt-2">              
             <div className="me-5 onPrintDnone">
             <Form.Select aria-label="Default select example">
@@ -59,12 +59,12 @@ const PaymentStatus = (props) => {
             </thead>
             <tbody>
             {
-              products.map((product,index) =>(
-                <tr className={classes.tdPadding} key={index}>
-                <td className='py-3'>11-02-2022</td>
-                <td className="p-2">pending</td>
-                <td className="p-2">Completed</td>
-                <td className="p-2">Walelign Gebiru</td>
+              props.order.orderPaymentLogs?.map((order) =>(
+                <tr className={classes.tdPadding} key={order.id}>
+                <td className='py-3'>{order.updatedAt.slice(0,10)}</td>
+                <td className="p-2">{order.changedFrom}</td>
+                <td className="p-2">{order.changedTo}</td>
+                <td className="p-2">{order.changedBy}</td>
                 
               </tr>
               ))
@@ -75,9 +75,6 @@ const PaymentStatus = (props) => {
           </Table>
         </div>
         <div className="onPrintDnone">
-        <div className='d-flex justify-content-end mt-3'>
-        <CancelButton title='Close' onClose={closeModalHandler} />
-        </div>
         </div>
         </div>
         </Modal.Body>       

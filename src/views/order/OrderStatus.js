@@ -3,7 +3,6 @@ import Modal from "react-bootstrap/Modal";
 import Form from 'react-bootstrap/Form';
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button"
-import CancelButton from "../../components/CancelButton";
 import ReactToPrint from "react-to-print";
 import classes from './Orders.module.css'
 
@@ -21,10 +20,12 @@ const OrderStatus = (props) => {
         backdrop="static"
         keyboard={false}        
       >
+      <Modal.Header closeButton className={classes.modalBg}>
+          <Modal.Title >Order Status</Modal.Title>
+        </Modal.Header>
         <Modal.Body className={classes.modalBg}>
-        <div className="px-4 py-3" ref={componentRef}>
-          <div className="fw-bold px-3">Order Status</div>
-          <div className="fw-bold px-3 pt-3">Order id: {props.order.orderCode}</div>
+        <div className="px-4 pb-3" ref={componentRef}>
+          <div className="fw-bold px-3">Order id: {props.order.orderCode}</div>
           <div className=" fw-bold mt-3 px-3">Order Status : {props.order.orderStatus}</div>
           <div className="d-flex align-items-center px-3 pt-2">              
             <div className="me-5 onPrintDnone">
@@ -73,9 +74,6 @@ const OrderStatus = (props) => {
           </Table>
         </div>
        <div className="onPrintDnone">
-       <div className='d-flex justify-content-end mt-3'>
-       <CancelButton title='Close' onClose={closeModalHandler} />
-       </div>
        </div>
         </div>
         </Modal.Body>       

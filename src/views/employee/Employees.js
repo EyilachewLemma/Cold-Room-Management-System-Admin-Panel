@@ -42,7 +42,25 @@ const [employee,setEmployee] = useState({})
     setEmployee(empl)
     setShow(true)
    }
-   const deleteEmployeeHandler = () =>{}
+   const changeStatusHandler = async(emp,index) =>{
+    let status = null;
+    if(emp.status){
+      status = 0
+    }
+    else {
+      status = 1
+    }
+    console.log('emp status=',emp.status)
+    console.log('new emp status=',status)
+    try{
+      var response = await apiClient.put(`admin/employees/update-status/${emp.id}`,{status:status})
+      if(response.status === 200){
+        dispatch(employeeAction.setStatus({index:index,status:response.data.status}))
+        employee.status = status
+      }
+     }
+     catch(err){}
+   }
    const closeModalHandler = () =>{
     setShow(false)
    }
@@ -123,7 +141,9 @@ const [employee,setEmployee] = useState({})
               <td className="p-3">{employee.email}</td>
               <td className="p-3">{employee.role}</td>
               <td className="p-3">{employee.coldRoom?.name}</td>
-              <td className="p-3">Active</td>
+              <td className="p-3">
+              {employee.status?'Active':'Inactive'}
+              </td>
                <td className="onPrintDnone">
                <Dropdown>
                <Dropdown.Toggle variant="none" id="dropdown-basic">
@@ -132,7 +152,9 @@ const [employee,setEmployee] = useState({})
          
                <Dropdown.Menu className={classes.dropdownBg}>
                <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>editEmployeeHandler(employee)}>Edit Employee</Button>
-               <Button  variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>deleteEmployeeHandler(index)}>Delete Employee</Button>
+               <Button  variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>changeStatusHandler(employee,index)}>
+               {employee.status?"Deactivate ":"Activate "}
+               </Button>
                  </Dropdown.Menu>
              </Dropdown>
                </td>

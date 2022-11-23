@@ -5,7 +5,6 @@ import Spiner from './Spiner';
 import Router from './routes';
 import { userAction } from './store/slices/UserSlice';
 import apiClient from './url/index';
-import fileApiClient from './url/fileApiClient';
 import './App.css';
 
 
@@ -30,12 +29,13 @@ function App() {
     const token = localStorage.getItem('tokenc')
     if(token){
       apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      fileApiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      fetchUserData()
       dispatch(userAction.setIsAuthenticated(true))
+     
     }
     if(isAuthenticated){
     navigate('/dash-board')
+    fetchUserData()
+    
     }
     else{
       navigate('/login')

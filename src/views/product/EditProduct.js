@@ -7,11 +7,13 @@ import { useDispatch } from "react-redux";
 import { productAction } from "../../store/slices/productSlice";
 import { buttonAction } from "../../store/slices/ButtonSpinerSlice";
 import fileApiClient from "../../url/fileApiClient";
+import NotificationModal from "../../components/Modal";
 import classes from "./AddProduct.module.css";
 
 const EditProduct = (props) => {
   const [product, setproduct] = useState({title:'',image:null,newImage:null});
   const [error, setError] = useState('');
+  const[modalData,setModalData] = useState({show:false,status:null,title:'',message:''})
   const dispatch = useDispatch();
   const {name} = props.product
    useEffect(()=>{
@@ -69,16 +71,19 @@ const EditProduct = (props) => {
           }
           dispatch(productAction.editProduct(editedProduct));
           handleClose()
+          setModalData({show:true,status:1,title:'Successful',message:'You edited a product information successfully'})
         }
       } catch (err) {
-        console.log("err", err);
+        setModalData({show:true,status:0,title:'Faild',message:'faild to edit product information'})
       } finally {
         dispatch(buttonAction.setBtnSpiner(false));
        
       }
   };
 }
-
+const handleModalClose =() =>{
+  setModalData({})
+}
   return (
     <>
       <Modal
@@ -99,7 +104,7 @@ const EditProduct = (props) => {
                 type="text"
                 placeholder="Ex. Avocado"
                 onChange={titleChangeHandler}
-                value={product.title}
+                value={product.title || ''}
                 className={error?classes.errorBorder : ""}
               />
               {error && (
@@ -141,6 +146,7 @@ const EditProduct = (props) => {
           <SaveButton title={"Save Change"} onSave={editProductHandler} />
         </Modal.Footer>
       </Modal>
+      <NotificationModal modal={modalData} onClose={handleModalClose} />
     </>
   );
 };

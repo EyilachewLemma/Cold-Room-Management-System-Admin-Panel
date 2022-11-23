@@ -12,15 +12,17 @@ import classes from './Employees.module.css'
 
 
 const AddEmployees = (props) => {
-    const [employee,setEmployee] = useState({fName:'',lName:'',phoneNumber:'',email:'',role:''})
-    const [errors,setErrors] = useState({fName:'',lName:'',phoneNumber:'',email:'',role:''})
+    const [employee,setEmployee] = useState({fName:"",lName:"",phoneNumber:"",email:"",role:""})
+    const [errors,setErrors] = useState({fName:"",lName:"",phoneNumber:"",email:"",role:""})
     const dispatch = useDispatch()
     const {id,fName,lName,phoneNumber,email,role} = props.employee
+    console.log('employees to be edited=',props.employee)
  useEffect(()=>{
   
   setEmployee({fName,lName,phoneNumber,email,role})
  // eslint-disable-next-line react-hooks/exhaustive-deps
- },[fName])
+ },[id])
+ 
     const changeHandler = (e) =>{
        const {name,value} = e.target
        setEmployee(previousValues=>{
@@ -28,7 +30,7 @@ const AddEmployees = (props) => {
        })
        if(e.target.value){
         setErrors(prevErrors=>{
-            return {...prevErrors,[name]:''}
+            return {...prevErrors,[name]:""}
         })
        }
     }
@@ -40,7 +42,7 @@ const AddEmployees = (props) => {
     const saveHandler = async() =>{
        const err =ValidatEmployee(employee)
         setErrors(err)
-        if(!err){
+        if(Object.values(err)?.length === 0){
         dispatch(buttonAction.setBtnSpiner(true))
         try{
         const response = await apiClient.post('admin/employees',employee)
@@ -54,18 +56,17 @@ const AddEmployees = (props) => {
         dispatch(buttonAction.setBtnSpiner(false))
       }
 
-        console.log('employee save is clicked')
     }
   }
     const editHandler = async() =>{
       const err =ValidatEmployee(employee)
       setErrors(err)
-      if(!err){
+      if(Object.values(err)?.length === 0){
       dispatch(buttonAction.setBtnSpiner(true))
       try{
       const response = await apiClient.put(`admin/employees/${id}`,employee)
-      if(response.status === 201){
-         dispatch(employeeAction.addEmployee(response.data))
+      if(response.status === 200){
+         dispatch(employeeAction.editEmployee(response.data))
          handleClose()
       }
     }
@@ -80,6 +81,7 @@ const AddEmployees = (props) => {
   const handleClose = () => {
     props.onClose()
     setEmployee({})
+      setErrors({})
   }
 
   return (
@@ -101,7 +103,7 @@ const AddEmployees = (props) => {
           type="text"
           name="fName"
           onChange={changeHandler}
-          value={employee.fName}
+          value={employee.fName || ''}
           className={errors.fName?classes.errorBorder:''}
            />
            <span className={classes.errorText}>{errors.fName}</span> 
@@ -112,7 +114,7 @@ const AddEmployees = (props) => {
            type="text"
            name="lName"
           onChange={changeHandler}
-          value={employee.lName}
+          value={employee.lName || ''}
           className={errors.lName?classes.errorBorder:''}
             />
             <span className={classes.errorText}>{errors.lName}</span> 
@@ -123,7 +125,7 @@ const AddEmployees = (props) => {
          type="number"
          name="phoneNumber"
           onChange={changeHandler}
-          value={employee.phoneNumber}
+          value={employee.phoneNumber || ''}
           className={errors.phoneNumber?classes.errorBorder:''}
           />
           <span className={classes.errorText}>{errors.phoneNumber}</span> 
@@ -134,7 +136,7 @@ const AddEmployees = (props) => {
        type="email"
        name="email"
        onChange={changeHandler}
-       value={employee.email}
+       value={employee.email || ''}
        className={errors.email?classes.errorBorder:''}
         />
         <span className={classes.errorText}>{errors.email}</span> 
@@ -143,9 +145,9 @@ const AddEmployees = (props) => {
     <Form.Group className="mb-3" controlId="role">
     <Form.Label>Role</Form.Label>
     <Form.Select aria-label="Default select example" onChange={roleChangeHandler} value={employee.role}>
-      <option value="1">local admin</option>
-      <option value="2">Product Inspector</option>
-      <option value="3">Casher</option>
+      <option value="local admin">local admin</option>
+      <option value="Product inspector">Product Inspector</option>
+      <option value="Casher">Casher</option>
     </Form.Select>
 
   </Form.Group>

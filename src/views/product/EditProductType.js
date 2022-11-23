@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form";
 import { useDispatch } from "react-redux";
 import { productDetailAction } from "../../store/slices/ProductDetailSlice";
 import { buttonAction } from "../../store/slices/ButtonSpinerSlice";
+import NotificationModal from "../../components/Modal";
 import fileApiClient from "../../url/fileApiClient";
 import classes from "./AddProduct.module.css";
 
@@ -20,12 +21,13 @@ const EditProductType = (props) => {
     typeTitle: "",
     description: "",
   });
+  const[modalData,setModalData] = useState({show:false,status:null,title:'',message:''})
   const dispatch = useDispatch();
   const imgInput = useRef();
   const { product } = props;
   useEffect(() => {
     const productToBeEdit = {
-      typeTitle: props.product.name,
+      typeTitle: props.product.title,
       description: props.product.description,
       image: props.product.imageUrl,
     };
@@ -60,6 +62,7 @@ const EditProductType = (props) => {
   };
   const handleClose = () => {
     props.onClose(false);
+    setType({})
   };
   const validate = (values) => {
     const err = {};
@@ -67,11 +70,11 @@ const EditProductType = (props) => {
       err.typeTitle = "product type title is required";
     }
     if (!values.description.trim()) {
-      err.description = "product type title is required";
+      err.description = "product type description is required";
     }
     return err;
   };
-  const editProductHandler = async () => {
+  const editProductTypeHandler = async () => {
     const error = validate(type);
     setErrors(error);
     if (!errors.typeTitle && !errors.description ) {
@@ -82,25 +85,24 @@ const EditProductType = (props) => {
       if (type.newImage) {
         formData.append(`image`, type.newImage);
       }
-      console.log("formdata=", formData.getAll("image[]"));
       try {
         let response = await fileApiClient.put(`admin/product-types/${props.product.id}`, formData);
         if (response.status === 200) {
-          console.log("create Cold room response =", response);
-          dispatch(
-            productDetailAction.editProductType({ id: props.product.id, type: response.data })
-          );
-          console.log("product is added successfullu");
+          dispatch(productDetailAction.editProductType(response.data));
+          handleClose();
+          setModalData({show:true,status:1,title:'Successful',message:'You edited a product type information successfully'})
         }
       } catch (err) {
-        console.log("err", err);
+        setModalData({show:true,status:0,title:'Faild',message:'faild to edit product type information'})
       } finally {
         dispatch(buttonAction.setBtnSpiner(false));
-        handleClose();
+        
       }
     }
   };
-
+  const handleModalClose =() =>{
+    setModalData({})
+  }
   return (
     <>
       <Modal
@@ -179,9 +181,10 @@ const EditProductType = (props) => {
         </Modal.Body>
         <Modal.Footer>
           <CancelButton title={"Cancel"} onClose={handleClose} />
-          <SaveButton title={"Save change"} onSave={editProductHandler} />
+          <SaveButton title={"Save change"} onSave={editProductTypeHandler} />
         </Modal.Footer>
       </Modal>
+      <NotificationModal modal={modalData} onClose={handleModalClose} />
     </>
   );
 };

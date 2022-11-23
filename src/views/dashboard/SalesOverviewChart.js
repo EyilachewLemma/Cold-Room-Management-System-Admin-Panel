@@ -1,7 +1,7 @@
 import {useState,useEffect} from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Form from 'react-bootstrap/Form';
-import apiClient from '../url/index';
+import apiClient from '../../url/index';
 import addYear from './addYear';
     const data = [
         {
@@ -58,20 +58,8 @@ const SalesOverviewChart = () =>{
   const [salesOverviews,setSalesOverview] = useState(data)
   const years = addYear()
   const currentYear = new Date().getFullYear()*1
-  const filterByYearHandler = async(e)=>{
-    try{
-      const response  = await apiClient.get(`admin/dashboard/bar?year=${e.target.value}`)
-      if(response.status === 200){
-        const datas = response.data.map(month=>{
-          return {month:month.month.slice(0,3),sales:month.count}
-        })
-        let results =salesOverviews.map(element1=>datas.find(element2=>element1.month===element2.month) || element1)
+  const [selectedValue,setSelectedValue] = useState(currentYear)
 
-        setSalesOverview(results)
-      }
-    }
-    catch(err){}
-  }
   useEffect(()=>{
     const fetchCurrentYearOrders = async() =>{
       
@@ -89,18 +77,36 @@ const SalesOverviewChart = () =>{
       catch(err){}
     }
     fetchCurrentYearOrders()
-   
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
+  const filterByYearHandler = async(e)=>{
+    setSelectedValue(e.target.value)
+    try{
+      const response  = await apiClient.get(`admin/dashboard/bar?year=${e.target.value}`)
+      if(response.status === 200){
+        const datas = response.data.map(month=>{
+          return {month:month.month.slice(0,3),sales:month.count}
+        })
+        let results =salesOverviews.map(element1=>datas.find(element2=>element1.month===element2.month) || element1)
+       
+        setSalesOverview(results)
+        
+       
+      }
+      
+    }
+    catch(err){}
+  }
+ 
     return (
       <>
       <div className='d-flex justify-content-between w-100'>
       <div className='fw-bold fs-5 p-3'>Sales Overview</div>
       <div>
-      <Form.Select onChange={filterByYearHandler}>
+      <Form.Select onChange={filterByYearHandler} value={selectedValue}>
       {
         years.map(year =>{
-         return (<option value={year} key={year} selected={year ===currentYear}>Year {year}</option>)
+         return (<option key={year} value={year} >Year {year}</option>)
         })
       }
  

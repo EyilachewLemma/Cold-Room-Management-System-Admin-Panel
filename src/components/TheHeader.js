@@ -1,7 +1,8 @@
 import React, {Fragment,useState,useEffect} from 'react'
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
-import profileImage from '../assetes/eyilachew.jpg'
+import ChangePassword from './ChangePassword';
+// import profileImage from '../assetes/eyilachew.jpg'
 import { useNavigate } from 'react-router-dom';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import {useDispatch,useSelector} from 'react-redux'
@@ -13,6 +14,7 @@ import classes from './TheHeader.module.css'
 
 const TheHeader = () =>{
   const [show,setShow] = useState(false)
+  const [showChangePassword,setShowChangePassword] = useState(false)
   const dispatch = useDispatch()
   const notifications = useSelector(state=>state.notification.notifications)
   const navigate = useNavigate()
@@ -42,13 +44,15 @@ const TheHeader = () =>{
     navigate('/login')
   }
   const accountHandler = () =>{
-    navigate('/account')
+    // navigate('/account')
+    setShowChangePassword(true)
   } 
   const openNotification = () =>{
     setShow(true)
-  }
+  } 
   const handleClose = ()=>{
     setShow(false)
+    setShowChangePassword(false)
   }
   console.log('notification =',notifications)
   return <Fragment>
@@ -68,7 +72,10 @@ const TheHeader = () =>{
       <Dropdown>
         <Dropdown.Toggle className={classes.dropDown+' d-flex align-items-center'} id="profile-dropdown">
         <div className='d-flex overflow-hidden ms-2 align-items-center'>
-      <img src={profileImage} alt={'profile_photo'} className={classes.profileImg+' img-fluid rounded-circle'} />
+        <div className='fs-2'><i className="far fa-user"></i></div>
+    { 
+      //  <img src={profileImage} alt={'profile_photo'} className={classes.profileImg+' img-fluid rounded-circle'} />
+      }
          <div className='text-white me-2'>
            <div className='fw-bold ms-2 mt-2'>{user.fName+' '+user.lName}</div>
            <div className='small text-start ms-3'>{user.role}</div>
@@ -77,7 +84,7 @@ const TheHeader = () =>{
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Item>
-            <Button className={classes.profileBtn+' text-dark'} onClick={accountHandler}>My Account</Button>            
+            <Button className={classes.profileBtn+' text-dark'} onClick={accountHandler}>Change Password</Button>            
             </Dropdown.Item>
           <Dropdown.Item>
           <Button className={classes.profileBtn+' text-dark'} onClick={logoutHandler}>Logout</Button>            
@@ -97,6 +104,7 @@ const TheHeader = () =>{
        </Offcanvas.Body>
      </Offcanvas>
        </div>
+       <ChangePassword show={showChangePassword} onClose={handleClose} />
        </Fragment>
 }
 export default React.memo(TheHeader)

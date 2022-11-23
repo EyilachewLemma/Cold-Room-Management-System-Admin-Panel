@@ -99,14 +99,14 @@ const OrderDetail = () => {
           {
             orders.orderItems?.map((order) =>(
               <tr className={classes.row} key={order.id}>
-              <td className="p-3">{order.orderId}</td>
-              <td className="p-3">null</td>
-              <td className="p-3">null</td>
-              <td className="p-3">{order.quality}</td>
-              <td className="p-3">null</td>
-              <td className="p-3">{order.pricePerKg}</td>
+              <td className="p-3">{order.farmerProduct.warehousePosition}</td>
+              <td className="p-3">{order.farmerProduct.product?.name}</td>
+              <td className="p-3">{order.farmerProduct.productType?.title}</td>
+              <td className="p-3">{order.farmerProduct.quality}</td>
+              <td className="p-3">{order.quantity}</td>
+              <td className="p-3">{order.farmerProduct.pricePerKg}</td>
               <td className="p-3 text-center">null</td>
-              <td className="p-3 text-center">null</td>
+              <td className="p-3 text-center">{order?.price}</td>
             </tr>
             ))
           }

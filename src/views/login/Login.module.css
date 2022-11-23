@@ -23,3 +23,8 @@
 .errorText{
     color: red!important;
 }
+@media(max-width:768px){
+    .wraper{
+        width: 50%;
+    }
+}

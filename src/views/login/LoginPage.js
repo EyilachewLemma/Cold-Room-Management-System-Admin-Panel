@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import {buttonAction} from '../../store/slices/ButtonSpinerSlice'
 import { userAction } from '../../store/slices/UserSlice';
 import apiClient from '../../url/index';
-import fileApiClient from '../../url/fileApiClient';
 import classes from './Login.module.css'
 
 
@@ -15,6 +14,7 @@ const LoginPage = () =>{
     const isLoading = useSelector((state) => state.btn.isLoading);
     const [cridentials, setCridentials] = useState({email:'',password:''})
     const [errors,setErrors] = useState({email:'',password:'',errNotify:''})
+    const [notification,setNotification] = useState('')
     const dispatch = useDispatch()
 
         const changeHandler = (e) =>{
@@ -56,7 +56,6 @@ const LoginPage = () =>{
           }
         const saveUserData = (data) =>{
             apiClient.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-            fileApiClient.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
               localStorage.setItem("tokenc", data.token);
               dispatch(userAction.setToken(data.token))
               dispatch(userAction.setIsAuthenticated(true))
@@ -69,14 +68,12 @@ const LoginPage = () =>{
                     var response = await apiClient.post('admin/auth/login',cridentials)
                     if(response.status === 200){
                         saveUserData(response.data)
+                        
                         fetchUserData()
                      }
                 }
                 catch(err){
-                    console.log('login fail')
-                    setErrors(prevErrors=>{
-                        return {...prevErrors,errNotify:'login faild'}
-                    })
+                    setNotification(err.response.data)
                 }
                 finally{
                     dispatch(buttonAction.setBtnSpiner(false))
@@ -115,9 +112,9 @@ Login  <span className="ms-2">
 </span>
 </Button>
 </Form>
-<p className={`${classes.errorText} mt-3`}>{errors.errNotify}</p>
+<p className={`${classes.errorText} mt-3`}>{notification}</p>
 <div className='d-flex justify-content-end mt-4'>
-<Link to={'/forgot-password'}>Forgot Password</Link>
+<Link to={'/forgot'}>Forgot Password</Link>
 </div>
 </div>
 }

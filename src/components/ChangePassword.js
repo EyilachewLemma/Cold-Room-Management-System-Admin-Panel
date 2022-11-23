@@ -1,20 +1,22 @@
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import SaveButton from '../../components/Button';
-import CancelButton from '../../components/CancelButton';
-import { buttonAction } from "../../store/slices/ButtonSpinerSlice";
-import {userAction} from '../../store/slices/UserSlice'
+import SaveButton from './Button';
+import CancelButton from './CancelButton';
+import { buttonAction } from "../store/slices/ButtonSpinerSlice";
+import {userAction} from '../store/slices/UserSlice'
 import { useDispatch,useSelector } from 'react-redux';
-import classes from './Login.module.css'
-import apiClient from '../../url';
+import { useNavigate } from 'react-router-dom';
+import classes from './ChangePassword.module.css'
+import apiClient from '../url';
 
  const ChangePassword = (props) => {
-    const [values,setValues] =useState({newPassword:'',confirmPassword:''})
-    const [errors,setErrors] = useState({newPassword:'',confirmPassword:''})
+    const [values,setValues] =useState({oldPassword:'',newPassword:'',confirmPassword:''})
+    const [errors,setErrors] = useState({oldPassword:'',newPassword:'',confirmPassword:''})
     const [notification,setNotification] = useState('')
     const user = useSelector(state=>state.user.data)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const changeHandler = (e) =>{
         const {name,value} =e.target
         setValues(prevValues=>{
@@ -28,6 +30,9 @@ import apiClient from '../../url';
     }
     const validate = (data) =>{
         const err = {}
+        if(!data.oldPassword?.trim()){
+            err.oldPassword = 'old password  is requried'
+        }    
     if(!data.newPassword?.trim()){
         err.newPassword = 'please enter new password'
     }    
@@ -45,30 +50,19 @@ else if(data.confirmPassword !== data.newPassword){
 }
 return err
 }
-const fetchUserData = async() =>{
-  try{
-   const response = await apiClient.get('admin/auth/my-account')
-   if(response.status === 200){
-      dispatch(userAction.setUser(response.data))
-   }
-  }
-  catch(err){}
- }
-const saveUserData = (data) =>{
-   apiClient.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-     localStorage.setItem("tokenc", data.token);
-     dispatch(userAction.setToken(data.token))
-     dispatch(userAction.setIsAuthenticated(true))
-}
     const saveHandler = async() =>{
        const err = setErrors(validate(values))
-        if(!err?.newPassword && !err?.confirmPassword){
+        if(!err?.oldPassword && !err?.newPassword && !err?.confirmPassword){
             try{
                 dispatch(buttonAction.setBtnSpiner(true));
                 const response = await apiClient.put(`admin/auth/change-password/${user.id}`,values)
                 if(response.status === 200){
-                  saveUserData(response.data)                    
-                  fetchUserData()
+
+                    localStorage.removeItem('tokenc')
+                     dispatch(userAction.setToken(null))
+                     dispatch(userAction.setIsAuthenticated(false))
+                    navigate('/login')
+                    
                 }
             }
             catch(err){
@@ -137,7 +131,7 @@ const saveUserData = (data) =>{
       </Modal.Body>
       <Modal.Footer>
         <CancelButton title="Cancel" onClose={closeHandler} />
-        <SaveButton title="Save Chance" onSave={saveHandler} />
+        <SaveButton title="Save Change" onSave={saveHandler} />
       </Modal.Footer>
     </Modal>
   );

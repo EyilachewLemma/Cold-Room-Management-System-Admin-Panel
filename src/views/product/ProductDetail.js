@@ -6,6 +6,7 @@ import ReactToPrint from "react-to-print";
 import { useSelector,useDispatch } from "react-redux";
 import {productDetailAction} from '../../store/slices/ProductDetailSlice'
 import { isLoadingAction } from "../../store/slices/spinerSlice";
+import { buttonAction } from "../../store/slices/ButtonSpinerSlice";
 import apiClient from "../../url/index";
 import EditProductType from './EditProductType'
 import ConfirmModal from "../../components/ConfirmModal";
@@ -59,17 +60,18 @@ const ProductDetail = () => {
     setShowConfirm(false)
    }
   const deleteProductTypeHandler = async () =>{
-    console.log('type to delete=',typeId)
+    dispatch(buttonAction.setBtnSpiner(true))
     try{
-      var response = await apiClient.delete(`admin/products/${typeId}`)
+      var response = await apiClient.delete(`admin/product-types/${typeId}`)
       if(response.status === 200){
        dispatch(productDetailAction.deleteProductType(typeId))
+       closeModalHandler()
       }
      }
      catch(err){
        console.log(err)
      }
-     finally {dispatch(isLoadingAction.setIsLoading(false))}
+     finally {dispatch(buttonAction.setBtnSpiner(false))}
    }
   const editProductTypeHandler = (product) =>{
     setProduct(product)
@@ -144,6 +146,7 @@ const ProductDetail = () => {
       <EditProductType show={show} onClose={closeModalHandler} product={producttoedited} />
       <AddType show={showAddType} onClose={closeAddType} />
       <ConfirmModal show={showConfirm} onClose={closeConfirmModal} onDelete={deleteProductTypeHandler} message='Are you sure to delete product Type ?' title='Delete Product Type' />
+      
     </div>
   );
 };

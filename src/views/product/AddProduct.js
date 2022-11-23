@@ -5,10 +5,10 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import AddProductType from "./AddProductType";
 import AddedProductTypes from "./AddedProductTypes";
+import NotificationModal from "../../components/Modal";
 import { useDispatch } from "react-redux";
 import { productAction } from "../../store/slices/productSlice";
 import { buttonAction } from "../../store/slices/ButtonSpinerSlice";
-// import apiClient from "../../url/index";
 import fileApiClient from "../../url/fileApiClient";
 import classes from "./AddProduct.module.css";
 
@@ -17,7 +17,8 @@ const AddProduct = (props) => {
   const [productTitle, setProductTitle] = useState("");
   const [prImage, setprImage] = useState("");
   const [errors, setErrors] = useState({ prTitle: "", prImage: "" });
-  const dispatch = useDispatch();
+  const[modalData,setModalData] = useState({show:false,status:null,title:'',message:''})
+  const dispatch = useDispatch();  
   const titleChangeHandler = (e) => {
     setProductTitle(e.target.value);
     if (e.target.value) {
@@ -60,6 +61,9 @@ const AddProduct = (props) => {
   const handleClose = () => {
     props.onClose(false);
   };
+  const handleModalClose =() =>{
+    setModalData({})
+  }
   const addProductHandler = async () => {
     let errorValue = validate({ prTitle: productTitle, prImage: prImage });
     console.log('before validation=',errorValue)
@@ -73,9 +77,7 @@ const AddProduct = (props) => {
         formData.append(`description${index}`,type.description)
         formData.append(`image${index}`,type.image)
       })
-      formData.append('size',productTypes.length)
-     
-      console.log('formdata=',formData.getAll('image[]'))
+      formData.append('size',productTypes.length)     
       try {
         let response = await fileApiClient.post("admin/products", formData);
         if (response.status === 200) {
@@ -87,9 +89,10 @@ const AddProduct = (props) => {
           }
           dispatch(productAction.addProduct(newProduct));
           handleClose()
+          setModalData({show:true,status:1,title:'Successful',message:'You added a product successfully'})
         }
       } catch (err) {
-        console.log("err", err);
+        setModalData({show:true,status:0,title:'Faild',message:'faild to add product'})
       } finally {
         dispatch(buttonAction.setBtnSpiner(false));
       }
@@ -164,6 +167,7 @@ const AddProduct = (props) => {
           <SaveButton title={"Save Product"} onSave={addProductHandler} />
         </Modal.Footer>
       </Modal>
+      <NotificationModal modal={modalData} onClose={handleModalClose} />
     </>
   );
 };

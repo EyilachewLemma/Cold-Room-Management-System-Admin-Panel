@@ -1,15 +1,15 @@
 import { useState,useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import {Link} from 'react-router-dom'
-import { isLoadingAction } from "../store/slices/spinerSlice";
+import { isLoadingAction } from "../../store/slices/spinerSlice";
 import { useDispatch} from "react-redux";
-import apiClient from '../url/index';
+import apiClient from '../../url/index';
 import classes from './RecentOrders.module.css'
 const RecentOrders = () =>{
   const [recentOrders,setRecentOrders] = useState([])
   const dispatch = useDispatch()
-  const  featchOrders = async () =>{   
-      
+
+  const  featchOrders = async () =>{         
     dispatch(isLoadingAction.setIsLoading(false))
   try{
    var response = await apiClient.get(`admin/orders`)
@@ -33,6 +33,8 @@ useEffect(()=>{
            <Link to={'/orders/list'} className={`${classes.yellowText} text-decoration-none fw-bold fs-5`}>See All</Link>
             </div>
         </div>
+        {
+          recentOrders?.length && (
       <Table responsive="md" borderless className='text-white'>
         <thead className={classes.header}>
           <tr>
@@ -45,8 +47,7 @@ useEffect(()=>{
             <th>Payment Status</th>
           </tr>
         </thead>
-       {
-        recentOrders?.length && (
+      
           <tbody>
           {
             recentOrders.map((order) =>(
@@ -62,9 +63,8 @@ useEffect(()=>{
             ))
           }
           </tbody>
-        )
-       }
       </Table>
+      )}
 
     </div>
   );

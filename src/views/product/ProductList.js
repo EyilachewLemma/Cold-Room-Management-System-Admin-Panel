@@ -11,6 +11,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import { useSelector,useDispatch } from "react-redux";
 import {productAction} from '../../store/slices/productSlice'
 import { isLoadingAction } from "../../store/slices/spinerSlice";
+import { buttonAction } from "../../store/slices/ButtonSpinerSlice";
 import apiClient from "../../url/index";
 import { useNavigate } from "react-router-dom";
 import classes from "./Products.module.css";
@@ -72,6 +73,7 @@ const ProductList = () => {
   }
   const deleteProductHandler = async () =>{
     try{
+      dispatch(buttonAction.setBtnSpiner(true));
       var response = await apiClient.delete(`admin/products/${id}`)
       console.log('delete status code=',response.status)
       if(response.status === 200){
@@ -82,7 +84,7 @@ const ProductList = () => {
      catch(err){
        console.log(err)
      }
-     finally {dispatch(isLoadingAction.setIsLoading(false))}
+     dispatch(buttonAction.setBtnSpiner(false));
    }
   const enterKeyHandler = (event) =>{
     if(event.key === 'Enter' || !event.target.value){

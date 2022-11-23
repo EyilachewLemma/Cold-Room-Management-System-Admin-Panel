@@ -95,7 +95,7 @@ const ColdRoomLists = () => {
           </InputGroup.Text>
           <Form.Control
             className={classes.searchInput}
-            placeholder="Username"
+            placeholder="search by cold room name"
             aria-label="Username"
             aria-describedby="basic-addon1"
             ref={searchBy}

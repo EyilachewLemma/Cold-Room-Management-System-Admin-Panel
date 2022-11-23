@@ -12,12 +12,6 @@
 .btn:hover{
     background-color: #ff3300!important;
 }
-.errorBorder{
-    border-color: red!important;
-}
-.errorText{
-    color: red!important;
-}
 .profileImg{
     min-width: 5rem;
     max-width: 5rem;

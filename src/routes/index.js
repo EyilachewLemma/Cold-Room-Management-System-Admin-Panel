@@ -23,6 +23,7 @@ import ProductsDetail from '../views/product/ProductDetail';
 import OrderDetail from '../views/order/OrderDetail';
 import OrderList from '../views/order/OrderList';
 import LoginPage from '../views/login/LoginPage';
+import AskToForgot from '../views/login/AskToForgot';
 import ForgotPassword from '../views/login/ForgotPassword';
 import Account from '../views/account/Account';
 import NotFound from '../Notfound';
@@ -65,6 +66,7 @@ const Router = () =>{
      </Route>
      <Route path='/login' element={<LoginPage />} />
      <Route path='/forgot-password' element={<ForgotPassword />} />
+     <Route path='/forgot' element={<AskToForgot />} />
      
      <Route path="*" element={<NotFound />}/>
   </Routes>
