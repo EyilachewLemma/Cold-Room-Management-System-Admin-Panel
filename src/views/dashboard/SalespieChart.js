@@ -31,24 +31,37 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
       try{
         const response  = await apiClient.get(`admin/dashboard/pie?year=${currentYear}`)
         if(response.status === 200){
-          
-          const topSeller= response.data.sales.map(element=>{
+          console.log('piechart data=',response.data)
+          const topSeller = response.data.sales.map(element=>{
             return {
               name:element.farmerProduct.product?.name,
               value:element.soldQuantity
             }
-          }) || []
-          const topeSale1 = response.data.sales[0]?.soldQuantity
-          const topeSale2 = response.data.sales[1]?.soldQuantity
+          }) 
+          console.log('piechart data1=',topSeller)
+          const bestSells = []
+          topSeller.forEach((el,index)=>{
+            bestSells[index] = topSeller[index]
+          })
+           if(topSeller.length > 2){
+          const topeSale1 = topSeller[0]?.value
+          const topeSale2 = topSeller[1]?.value
           const sum = topeSale1 + topeSale2
           const otherValue = response.data.total-sum
+          if(otherValue > 0){
           const other = {
             name:'Other',
             value:otherValue
           }
-          topSeller.push(other)
-          setBestSelles(topSeller)
+          bestSells.push(other)
+        }    
+        console.log('best sells=',bestSells)      
+          setBestSelles(bestSells)
         }
+        else{
+          setBestSelles(bestSells)
+        }
+      }
       }
       catch(err){}
     }
@@ -62,13 +75,18 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
     try{
       const response  = await apiClient.get(`admin/dashboard/pie?year=${e.target.value}`)
       if(response.status === 200){
-          
+          console.log('piechart data=',response.data)
         const topSeller= response.data.sales.map(element=>{
           return {
             name:element.farmerProduct.product?.name,
             value:element.soldQuantity
           }
         }) || []
+        const bestSells = []
+        for(let i =0;i<topSeller.length;i++){
+          bestSells.push(topSeller[i])
+         }
+         if(response.data.sales.length > 2){
         const topeSale1 = response.data.sales[0]?.soldQuantity
         const topeSale2 = response.data.sales[1]?.soldQuantity
         const sum = topeSale1 + topeSale2
@@ -77,10 +95,12 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
           name:'Other',
           value:otherValue
         }
-        topSeller.push(other)
-        setBestSelles(topSeller)
+        bestSells.push(other)
+        setBestSelles(bestSells)
       }
     }
+  }
+  
     catch(err){}
   }
     return (
@@ -125,10 +145,14 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
             <span className='text-white ms-2'>{bestSells[1]?.name}</span>
           </div>          
         </div>
-        <div className='d-flex align-items-center my-1'>
-            <div className={`${classes.whiteBg} border`}></div>
-            <span className='text-white ms-2'>{bestSells[2]?.name}</span>
-          </div>
+       {
+        bestSells.length > 2 &&(
+          <div className='d-flex align-items-center my-1'>
+          <div className={`${classes.whiteBg} border`}></div>
+          <span className='text-white ms-2'>{bestSells[2]?.name}</span>
+        </div>
+        )
+       }
         
       </div>
     );

@@ -1,4 +1,4 @@
-import { Fragment,useRef,useState } from "react";
+import { Fragment,useRef,useState,useEffect } from "react";
 import { useSelector,useDispatch } from "react-redux";
 import { employeeAction } from "../../store/slices/EmployeeSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
@@ -33,6 +33,10 @@ const [employee,setEmployee] = useState({})
   catch(err){}
   finally {dispatch(isLoadingAction.setIsLoading(false))}
 }
+useEffect(()=>{
+  featchEmployees()
+// eslint-disable-next-line react-hooks/exhaustive-deps
+},[])
   const addEmployeeHandler = () =>{
     setModalTitle('Add Employee')
     setShow(true)
