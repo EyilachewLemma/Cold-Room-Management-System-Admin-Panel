@@ -40,7 +40,7 @@ const DashBoard = () =>{
                     <div className=" ms-3 fw-bold text-white">
                         <div>Total Products</div>
                     </div>
-                    <div className={`${classes.greenTxt} ms-3 fw-bold`}>{datas.totalProduct} Kg</div>
+                    <div className={`${classes.greenTxt} ms-3 fw-bold`}>{datas.totalProduct}</div>
                 </div>
             
         </div>

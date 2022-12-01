@@ -80,7 +80,7 @@ const OrderDetail = () => {
         />
         </div>
       </div>
-      
+      {orders.orderItems?.length >0 &&(
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
@@ -115,6 +115,12 @@ const OrderDetail = () => {
           </tbody>
         </Table>
       </div>
+      )}
+      {
+        orders.orderItems?.length === 0 &&(
+          <div className="mt-5 text-center">No order items found</div>
+        )
+      }
       </div>
     </Fragment>
   );

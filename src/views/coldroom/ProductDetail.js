@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import InputGroup from 'react-bootstrap/InputGroup'
 import ReactToPrint from "react-to-print";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
 import { crProAction } from "../../store/slices/ColdRoomProductDetailSlice";
 import Pagination from 'react-bootstrap/Pagination';
@@ -19,6 +19,7 @@ const ProductDetail = () => {
     const {crId,proId,amount} = useParams()
     const dispatch = useDispatch()
     const products = useSelector(state=>state.crProDetail.products)
+    const navigate = useNavigate()
 
 
 
@@ -40,7 +41,7 @@ const ProductDetail = () => {
     const filterByDateHandler = async(e) =>{
       dispatch(isLoadingAction.setIsLoading(true))
       try{
-       const response = await apiClient.get(`admin/coldroom-products/product/${proId}?coldRoomId=${crId}&search=${''}&date=${e.target.value}`)
+       const response = await apiClient.get(`admin/coldroom-products/product/${proId}?coldRoomId=${crId}&search=${searchBy.current.value}&date=${e.target.value}`)
        if(response.status === 200){
         dispatch(crProAction.setProducts(response.data))
        }
@@ -69,6 +70,7 @@ const ProductDetail = () => {
     <>
       
         <div ref={componentRef}>
+        <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
           <h6 className="fw-bold px-3 pt-3">Product Stock Listing</h6>
             {
               products.data_name?.length?(
@@ -98,7 +100,7 @@ const ProductDetail = () => {
           </InputGroup.Text>
           <Form.Control
             className={classes.searchInput}
-            placeholder="Username"
+            placeholder="farmer name"
             aria-label="Username"
             aria-describedby="basic-addon1"
             ref={searchBy}

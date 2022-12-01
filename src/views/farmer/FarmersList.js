@@ -92,7 +92,7 @@ const searchHandler = () =>{
         />
         </div>
       </div>
-      
+      {farmers.length > 0 && (
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
@@ -146,6 +146,10 @@ const searchHandler = () =>{
           </tbody>
         </Table>
       </div>
+      )}
+      {farmers.length === 0 &&(
+        <div className="mt-5 text-center">No farmers found</div>
+      )}
       </div>
   );
 };

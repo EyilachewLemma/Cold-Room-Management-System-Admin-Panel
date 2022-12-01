@@ -136,6 +136,7 @@ const ProductList = () => {
         </div>
       </div>
       <div className="mt-4">
+      {products.length >0 &&(
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
@@ -152,8 +153,10 @@ const ProductList = () => {
               <tr key={product.id}>
               <td className="p-4">{index +1}</td>
               <td className="p-4">{product.name}</td>
-              <td className="p-2">
+              <td className="pb-0 mb-0">
+              <div className={`${classes.imgSize} mt-2`}>
                 <img src={product.imageUrl} alt="product_Image" className={`${classes.img} img-fluid`} />
+                </div>
               </td>
               <td className="p-4">{product.totalProduct}</td>
               <td className={`onPrintDnone`}>
@@ -175,6 +178,12 @@ const ProductList = () => {
            
           </tbody>
         </Table>
+        )}
+        {
+          products.length === 0 &&(
+            <div className="mt-5 text-center">No products found</div>
+          )
+        }
       </div>
       <AddProduct show={togleModal} onClose={closeAddandEditModalHandler} title='Add Product'></AddProduct>
       <EditProduct show={show} onClose={closeEditModal} product={producttoedit} />

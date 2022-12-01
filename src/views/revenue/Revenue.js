@@ -123,7 +123,7 @@ const Revenue = () => {
         </div>
       </div>
       {
-        revenues?.data_name?.length &&(
+        revenues?.data_name?.length > 0 &&(
           <div className="mt-4">
           <Table responsive="md">
             <thead className={classes.header}>
@@ -173,7 +173,7 @@ const Revenue = () => {
         )
       }
      {
-      !revenues?.data_name?.length &&(
+      revenues?.data_name?.length === 0 &&(
         <div className="mt-5 text-center">No data found</div>
       )
      }

@@ -47,6 +47,7 @@ const PaymentStatus = (props) => {
           </div>
           <div className={`${classes.borderTop} mt-4 border rounded-3 bg-white`}>
           <div className="p-4">Payment Status Change History</div>
+          {props.order.orderPaymentLogs?.length > 0 &&(
           <Table responsive="md">
             <thead className=''>
               <tr>
@@ -73,6 +74,12 @@ const PaymentStatus = (props) => {
              
             </tbody>
           </Table>
+          )}
+          {
+            props.order.orderPaymentLogs?.length === 0 &&(
+              <div className="mt-5 text-center">No payment Status history found</div>
+            )
+          }
         </div>
         <div className="onPrintDnone">
         </div>

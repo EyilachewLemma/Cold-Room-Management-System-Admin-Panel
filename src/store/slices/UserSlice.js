@@ -13,9 +13,6 @@ const userSlice = createSlice({
         setUser:(state,action)=>{
             state.data = action.payload
         },
-        editUser:(state,action) =>{
-
-        }
 
 
 

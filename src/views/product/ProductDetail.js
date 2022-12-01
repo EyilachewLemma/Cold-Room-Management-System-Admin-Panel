@@ -121,8 +121,10 @@ const ProductDetail = () => {
               <td className="p-4">{index+1}</td>
               <td className="p-4">{product.title}</td>
               <td className="p-4">{product.description}</td>
-              <td className="p-4">
-              <img src={product.imageUrl} alt="product_type_image" className={classes.img} />
+               <td className="pb-0 mb-0">
+              <div className={`${classes.imgSize} mt-2`}>
+                <img src={product.imageUrl} alt="product_Image" className={`${classes.img} img-fluid`} />
+                </div>
               </td>
               <td className={`onPrintDnone`}>
               <Dropdown>

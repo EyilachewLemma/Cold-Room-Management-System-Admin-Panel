@@ -115,7 +115,9 @@ const ColdRoomLists = () => {
         </div>
       </div>
       <div className={classes.bottomBorder}></div>
-     {coldRooms.length &&( <div className="mt-4" ref={componentRef}>
+     {
+      coldRooms.length > 0 &&(
+       <div className="mt-4" ref={componentRef}>
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
@@ -152,7 +154,6 @@ const ColdRoomLists = () => {
 
       <Dropdown.Menu className={classes.dropdownBg}>
       <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={event=>handlViewProduct(coldRoom.id)}>View Products</Button>
-      <Button variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}>View Location</Button>
       <Button  variant="none" className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`} onClick={()=>editColdRoomHandler(coldRoom)}>Edit Cold Room</Button>
         <Button variant="none" className={`${classes.dropdownItem} w-100 rounded-0 text-start ps-3`} onClick={()=>openAssignManagerHandle(coldRoom.id,index)}>Assign Manager</Button>
         </Dropdown.Menu>

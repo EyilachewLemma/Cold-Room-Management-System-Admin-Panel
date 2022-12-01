@@ -126,7 +126,7 @@ const Sales = () => {
         </div>
       </div>
       {
-        saleses.data_name?.length && (
+        saleses.data_name?.length > 0  && (
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
@@ -174,7 +174,7 @@ const Sales = () => {
       )
       }
       {
-        !saleses.data_name?.length && (
+        saleses.data_name?.length === 0 && (
           <div className="mt-5 text-center">No data found</div>
         )
       }

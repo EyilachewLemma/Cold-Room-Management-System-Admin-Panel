@@ -2,7 +2,7 @@ import { Fragment,useEffect,useRef } from "react";
 import { useNavigate,useParams } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
-import { whOrAction } from "../../store/slices/WholesalerOrderHistorySlice";
+import { wholesalerAction } from "../../store/slices/WholesalerSlice";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 import ReactToPrint from "react-to-print";
@@ -13,7 +13,7 @@ const OrderHistory = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const componentRef = useRef()
-  const orders = useSelector(state =>state.wholesalerOrder.orders)
+  const orders = useSelector(state =>state.wholesaler.orders)
   const {whId} = useParams()
 
   const featchOrder = async() =>{
@@ -21,7 +21,7 @@ const OrderHistory = () => {
     try{
      var response = await apiClient.get(`admin/wholesalers/orders/${whId}`)
      if(response.status === 200){
-      dispatch(whOrAction.setWhOrders(response.data || []))
+      dispatch(wholesalerAction.setOrders(response.data || []))
      }
     }
     catch(err){}
@@ -53,6 +53,8 @@ const OrderHistory = () => {
       </div>
       
       <div className="mt-4">
+      {
+        orders.orders?.length > 0 &&(
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
@@ -85,6 +87,13 @@ const OrderHistory = () => {
            
           </tbody>
         </Table>
+        )}
+        {
+          orders.orders?.length === 0 &&(
+            <div className="mt-5 text-center">No order history found</div>
+          )
+          
+        }
       </div>
       </div>
     </Fragment>

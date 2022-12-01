@@ -117,7 +117,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
       </Form.Select>
             </div>
         </div>
-        <ResponsiveContainer width="100%" height="80%">
+        <ResponsiveContainer width="100%" height="75%">
         <PieChart width={400} height={400}>
           <Pie
             data={bestSells}

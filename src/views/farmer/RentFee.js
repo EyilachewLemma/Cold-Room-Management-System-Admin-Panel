@@ -90,7 +90,8 @@ const RetFee = () => {
       />
       </div>
       </div>
-      
+      {
+        rents.farmerRents.length > 0 &&(
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
@@ -125,6 +126,12 @@ const RetFee = () => {
           </tbody>
         </Table>
       </div>
+      )}
+      {
+        rents.farmerRents.length === 0 &&(
+          <div className="mt-5 text-center">No data found</div>
+        )
+      }
       </div>
     </Fragment>
   );

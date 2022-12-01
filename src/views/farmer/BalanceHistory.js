@@ -132,7 +132,7 @@ const BalanceHistory = () => {
         </div>
       </div>
       {
-        balances.farmerBalances?.length &&(
+        balances.farmerBalances?.length > 0 &&(
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
@@ -169,7 +169,7 @@ const BalanceHistory = () => {
       </div>
       )}
       {
-        !balances.farmerBalances?.length &&(
+        balances.farmerBalances?.length === 0 &&(
           <div className="mt-5 text-center">No data found</div>
         )
       }

@@ -16,11 +16,18 @@
     border-bottom: 0.1rem solid rgb(192, 188, 188)!important;
     padding: 4px;
 }
+
+.imgSize{
+    min-width: 6rem;
+    max-width: 6rem;
+    min-height: 6rem;
+    max-height: 6rem;
+}
 .img{
-    min-width: 5rem;
-    max-width: 5rem;
-    min-height: 5rem;
-    max-height: 5rem;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
 }
 .dropdownBg{
     background-color: rgb(243, 240, 240);

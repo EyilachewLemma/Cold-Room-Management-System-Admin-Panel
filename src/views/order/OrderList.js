@@ -159,7 +159,7 @@ const searchHandler = () =>{
         </div>
       </div>
       {
-        orders.data_name?.length && (
+        orders.data_name?.length > 0 && (
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>

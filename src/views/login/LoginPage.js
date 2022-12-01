@@ -6,6 +6,7 @@ import { useSelector,useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
 import {buttonAction} from '../../store/slices/ButtonSpinerSlice'
 import { userAction } from '../../store/slices/UserSlice';
+import { useNavigate } from 'react-router-dom';
 import apiClient from '../../url/index';
 import classes from './Login.module.css'
 
@@ -16,7 +17,7 @@ const LoginPage = () =>{
     const [errors,setErrors] = useState({email:'',password:'',errNotify:''})
     const [notification,setNotification] = useState('')
     const dispatch = useDispatch()
-
+   const navigate = useNavigate()
         const changeHandler = (e) =>{
            const {name,value} = e.target
            setCridentials(prevValues=>{
@@ -50,6 +51,7 @@ const LoginPage = () =>{
             const response = await apiClient.get('admin/auth/my-account')
             if(response.status === 200){
                dispatch(userAction.setUser(response.data))
+               navigate('/dash-bord')
             }
            }
            catch(err){}
@@ -59,6 +61,7 @@ const LoginPage = () =>{
               localStorage.setItem("tokenc", data.token);
               dispatch(userAction.setToken(data.token))
               dispatch(userAction.setIsAuthenticated(true))
+              
         }
         const loginHandler = async() =>{
             setErrors(validate(cridentials))
@@ -68,12 +71,12 @@ const LoginPage = () =>{
                     var response = await apiClient.post('admin/auth/login',cridentials)
                     if(response.status === 200){
                         saveUserData(response.data)
-                        
                         fetchUserData()
+                        
                      }
                 }
                 catch(err){
-                    setNotification(err.response.data)
+                    setNotification(err.response.data ?? 'faild to login')
                 }
                 finally{
                     dispatch(buttonAction.setBtnSpiner(false))

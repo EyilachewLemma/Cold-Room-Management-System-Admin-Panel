@@ -16,7 +16,6 @@ import CrProDetail from "./slices/ColdRoomProductDetailSlice";
 import ProductHistoryReducer from "./slices/ProductHistorySlice";
 import RentReducer from "./slices/RentSlice";
 import BalanceReducer from "./slices/BalanceSlice";
-import WhOrHiReducer from "./slices/WholesalerOrderHistorySlice";
 import NotificationReducer from "./slices/NotificationSlice";
 import ColdRoomNameReducer from "./slices/ColdRoomNameSlice";
 
@@ -42,7 +41,6 @@ const store = configureStore({
         productHistory:ProductHistoryReducer,
         rent:RentReducer,
         balance:BalanceReducer,
-        wholesalerOrder:WhOrHiReducer,
         notification:NotificationReducer,
         coldRoomName:ColdRoomNameReducer,
 

@@ -46,6 +46,7 @@ const OrderStatus = (props) => {
           </div>
           <div className={`${classes.borderTop} mt-4 border rounded-3 bg-white`}>
           <div className="p-4">Order Status Change History</div>
+          {props.order.orderLogs?.length > 0 &&(
           <Table responsive="md">
             <thead className=''>
               <tr>
@@ -72,9 +73,12 @@ const OrderStatus = (props) => {
              
             </tbody>
           </Table>
+          )}
+          {props.order.orderLogs?.length === 0 &&(
+            <div className="mt-5 text-center">No order histry found</div>
+          )}
         </div>
-       <div className="onPrintDnone">
-       </div>
+       
         </div>
         </Modal.Body>       
        

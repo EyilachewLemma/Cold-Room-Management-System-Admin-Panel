@@ -46,7 +46,7 @@ const AddEmployees = (props) => {
         dispatch(buttonAction.setBtnSpiner(true))
         try{
         const response = await apiClient.post('admin/employees',employee)
-        if(response.status === 201){
+        if(response.status === 200 || response.status=== 201){
            dispatch(employeeAction.addEmployee(response.data))
            handleClose()
         }

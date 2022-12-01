@@ -90,7 +90,7 @@ console.log('pppp---',products)
         />
         </div>
       </div>
-      
+      {products.length > 0 &&(
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
@@ -123,6 +123,10 @@ console.log('pppp---',products)
           </tbody>
         </Table>
       </div>
+      )}
+      {products.length === 0 &&(
+        <div className="mt-5 text-center">No products found</div>
+      )}
       </div>
     </Fragment>
   );

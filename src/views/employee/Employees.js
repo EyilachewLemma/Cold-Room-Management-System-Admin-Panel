@@ -120,7 +120,8 @@ useEffect(()=>{
         />
         </div>
       </div>
-      
+      {
+        employees.length > 0 &&(        
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
@@ -170,6 +171,12 @@ useEffect(()=>{
           </tbody>
         </Table>
       </div>
+      )}
+      {
+        employees.length === 0 &&(
+          <div className="mt-5 text-center">No employees found</div>
+        )
+      }
       </div>
       <AddEmployees show={show} title={modalTitle} onClose={closeModalHandler} employee={employee} />
     </Fragment>

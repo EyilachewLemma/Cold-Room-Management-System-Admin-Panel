@@ -51,6 +51,7 @@ const AssignManager =(props) =>{
     return <>
     <Modal
         show={props.show}
+        size="lg"
         onHide={handleClose}
         backdrop="static"
         keyboard={false}

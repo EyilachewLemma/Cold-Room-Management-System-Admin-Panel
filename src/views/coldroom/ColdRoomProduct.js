@@ -51,8 +51,8 @@ const ColdRoomProducts = () => {
     <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
     <div ref={componentRef}>  
       <h6 className="fw-bold">Product Listing in cold room</h6>
-        <div className="mt-3"><span className="fw-bold">Cold Room</span>: {products[0]?.coldRoom?.name}</div>
-        <div className="mt-3"><span className="fw-bold">Date</span>: null</div>
+        <div className="mt-3">
+        <span className="fw-bold">Cold Room</span>: {products[0]?.coldRoom?.name}</div>
       <div className={`${classes.bottomBorder} mt-3`}></div>
       <div className="d-flex justify-content-between mt-4">
         <InputGroup className="mb-3 w-50 border rounded onPrintDnone">
@@ -79,7 +79,7 @@ const ColdRoomProducts = () => {
           />
         </div>
       </div>
-      {products.length && (
+      {products.length > 0 && (
       <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
@@ -97,8 +97,10 @@ const ColdRoomProducts = () => {
               <tr key={product.productId}>
               <td className="p-4">{index+1}</td>
               <td className="p-4">{product.product?.name}</td>
-              <td className="p-2">
-                <img src={product.product.imageUrl} alt="product_image" className={`${classes.img} img-fluid`} />
+              <td className="pb-0 mb-0">
+              <div className={`${classes.imgSize} mt-2`}>
+                <img src={product.product.imageUrl} alt="product_Image" className={`${classes.img} img-fluid`} />
+                </div>
               </td>
               <td className="p-4">{product.totalProduct}</td>
               <td className="p-4 onPrintDnone">
@@ -114,9 +116,9 @@ const ColdRoomProducts = () => {
       </div>
       )}
       {
-        !products.length && (
+        products.length === 0 && (
           <div className="text-center mt-5">
-          Empty data
+          No data found
           </div>
         )
       }

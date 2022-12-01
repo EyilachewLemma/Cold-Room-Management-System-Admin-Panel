@@ -1,15 +1,18 @@
 import { Fragment,useEffect } from 'react';
 import TheHeader from './components/TheHeader';
 import SideBar from './components/SideBar';
-import apiClient from './url/index';
+
 import { Outlet } from "react-router-dom"
 import { coldRoomNameAction } from './store/slices/ColdRoomNameSlice';
 import { employeeAction } from "./store/slices/EmployeeSlice";
 import { isLoadingAction } from "./store/slices/spinerSlice";
-import { useDispatch } from 'react-redux';
-
+import { useSelector,useDispatch } from 'react-redux';
+import Spiner from './Spiner';
+import apiClient from './url/index';
 const AppContainer = () =>{
+  const isLoading = useSelector((state=>state.loading.isLoading))
   const dispatch = useDispatch()
+  
   const fetchColdRooms = async() =>{
     try{
       var response =await apiClient.get('admin/coldRoomNames')
@@ -31,6 +34,7 @@ const AppContainer = () =>{
   catch(err){}
   finally {dispatch(isLoadingAction.setIsLoading(false))}
 }
+
   useEffect(()=>{
     fetchColdRooms()
     featchEmployees()
@@ -42,7 +46,10 @@ const AppContainer = () =>{
          <div className='sideBar'>
          <SideBar />
          </div>
-        <div className='flex-fill px-3 px-lg-5 py-4 mb-4'>     
+        <div className='flex-fill px-3 px-lg-5 py-4 mb-4 position-relative'>  
+        {
+          isLoading && (<Spiner /> )
+        }       
         <Outlet />
         </div>
          </div>

@@ -2,10 +2,13 @@ import {createSlice} from '@reduxjs/toolkit'
 
 const wholesalerSlice = createSlice({
     name:'wholesaller',
-    initialState:{wholesalers:[]},
+    initialState:{wholesalers:[],orders:[]},
     reducers:{
         setWholesalers(state,action){
             state.wholesalers = action.payload
+        },
+        setOrders:(state,action)=>{
+            state.orders = action.payload
         },
 
 

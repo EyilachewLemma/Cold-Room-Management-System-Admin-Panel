@@ -30,6 +30,7 @@ import NotFound from '../Notfound';
 const Router = () =>{
   return <Routes>
   <Route path='/' element={<AppContainer />}>
+   <Route path='dash-bord' element={<DashBoard />} /> 
     <Route path='products' element={<Products />}>  
     <Route index element={<ProductList />} />  
     <Route path=':prId/detail' element={<ProductsDetail />} />    
@@ -37,9 +38,7 @@ const Router = () =>{
     <Route path='orders' element={<Orders />}>  
     <Route index element={<OrderList />} />
     <Route path=':orderId' element={<OrderDetail />} />      
-    </Route>
-    <Route path='dash-board' element={<DashBoard />}>        
-    </Route>
+    </Route>            
     <Route path='cold-rooms' element={<ColdRooms />}>
     <Route index element={<ColdRoomLists />} />
     <Route path=':crId/products' element={<ColdRoomProducts />} />

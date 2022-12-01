@@ -84,16 +84,14 @@ const WholeSalerList = () => {
         />
         </div>
       </div>
-      {wholesalers?.length && (
+      {wholesalers?.length > 0 && (
     <div className="mt-4">
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
               <th>NO</th>
               <th>Wholesaler's Name</th>
-              <th>Region</th>
-              <th>Zone</th>
-              <th>Woreda</th>
+              <th>City</th>
               <th className="text-end">Phone Number</th>
               <th></th>
             </tr>
@@ -104,9 +102,7 @@ const WholeSalerList = () => {
               <tr className={classes.row} key={wholsaler.id}>
               <td className="p-3">{index+1}</td>
               <td className="p-3">{wholsaler.fName+' '+wholsaler.lName}</td>
-              <td className="p-3">{wholsaler.address.region}</td>
-              <td className="p-3">{wholsaler.address.zone}</td>
-              <td className="p-3">{wholsaler.address.woreda}</td>
+              <td className="p-3">{wholsaler.address.location}</td>
               <td className="p-3 text-end">{wholsaler.phoneNumber}</td>
             <td className="p-3 text-end">
             <Button 
@@ -124,7 +120,7 @@ const WholeSalerList = () => {
       </div>
       )}
       {
-        !wholesalers?.length &&(
+        wholesalers?.length === 0 &&(
           <div className="mt-5 text-center">Empty Data</div>
         )
       }
