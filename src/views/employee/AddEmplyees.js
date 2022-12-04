@@ -12,13 +12,11 @@ import classes from './Employees.module.css'
 
 
 const AddEmployees = (props) => {
-    const [employee,setEmployee] = useState({fName:"",lName:"",phoneNumber:"",email:"",role:""})
+    const [employee,setEmployee] = useState({fName:"",lName:"",phoneNumber:"",email:"",role:"admin"})
     const [errors,setErrors] = useState({fName:"",lName:"",phoneNumber:"",email:"",role:""})
     const dispatch = useDispatch()
     const {id,fName,lName,phoneNumber,email,role} = props.employee
-    console.log('employees to be edited=',props.employee)
  useEffect(()=>{
-  
   setEmployee({fName,lName,phoneNumber,email,role})
  // eslint-disable-next-line react-hooks/exhaustive-deps
  },[id])
@@ -145,9 +143,8 @@ const AddEmployees = (props) => {
     <Form.Group className="mb-3" controlId="role">
     <Form.Label>Role</Form.Label>
     <Form.Select aria-label="Default select example" onChange={roleChangeHandler} value={employee.role}>
+      <option value="admin">admin</option>
       <option value="local admin">local admin</option>
-      <option value="Product inspector">Product Inspector</option>
-      <option value="Casher">Casher</option>
     </Form.Select>
 
   </Form.Group>

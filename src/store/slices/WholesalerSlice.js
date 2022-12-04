@@ -4,7 +4,7 @@ const wholesalerSlice = createSlice({
     name:'wholesaller',
     initialState:{wholesalers:[],orders:[]},
     reducers:{
-        setWholesalers(state,action){
+        setWholesalers:(state,action)=>{
             state.wholesalers = action.payload
         },
         setOrders:(state,action)=>{

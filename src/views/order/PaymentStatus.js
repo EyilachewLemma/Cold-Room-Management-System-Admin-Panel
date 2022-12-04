@@ -1,6 +1,6 @@
 import React,{useRef} from "react";
 import Modal from "react-bootstrap/Modal";
-import Form from 'react-bootstrap/Form';
+// import Form from 'react-bootstrap/Form';
 import Table from "react-bootstrap/Table";
 import ReactToPrint from "react-to-print";
 import Button from "react-bootstrap/Button";
@@ -28,14 +28,16 @@ const PaymentStatus = (props) => {
           <div className="fw-bold px-3 pt-3">Order id: {props.order.orderCode}</div>
           <div className=" fw-bold mt-3 px-3">Payment Status : {props.order.paymentStatus}</div>
           <div className="d-flex align-items-center px-3 pt-2">              
-            <div className="me-5 onPrintDnone">
-            <Form.Select aria-label="Default select example">
-            <option value='0'>Change Payment Status</option>
-            <option value="1">Unpaid</option>
-            <option value="2">Partially Paid</option>
-            <option value="2">Fully Paid</option>
-          </Form.Select>
-            </div>
+            {
+          //     <div className="me-5 onPrintDnone">
+          //   <Form.Select aria-label="Default select example">
+          //   <option value='0'>Change Payment Status</option>
+          //   <option value="1">Unpaid</option>
+          //   <option value="2">Partially Paid</option>
+          //   <option value="2">Fully Paid</option>
+          // </Form.Select>
+          //   </div>
+          }
             <div className="ms-auto">
             <ReactToPrint
             trigger={()=><Button variant='none' className="exportbtn onPrintDnone py-1"><span><i className="fas fa-file-export"></i></span> Export</Button>}
@@ -51,21 +53,21 @@ const PaymentStatus = (props) => {
           <Table responsive="md">
             <thead className=''>
               <tr>
-                <th>Changed Date</th>
-                <th>Changed From</th>
-                <th>Changed To</th>
-                <th>Changed By</th>
+              <th>NO</th>
+                <th>Paid Date</th>
+                <th>Paid Amount</th>
+                <th>Payment Added Body</th>
                 
               </tr>
             </thead>
             <tbody>
             {
-              props.order.orderPaymentLogs?.map((order) =>(
-                <tr className={classes.tdPadding} key={order.id}>
-                <td className='py-3'>{order.updatedAt.slice(0,10)}</td>
-                <td className="p-2">{order.changedFrom}</td>
-                <td className="p-2">{order.changedTo}</td>
-                <td className="p-2">{order.changedBy}</td>
+              props.order.orderPaymentLogs?.map((log,index) =>(
+                <tr className={classes.tdPadding} key={log.id}>
+                <td className="p-2">{index+1}</td>
+                <td className='py-3'>{log.updatedAt.slice(0,10)}</td>
+                <td className="p-2">{log.paidAmount}</td>
+                <td className="p-2">{log.changedBy}</td>
                 
               </tr>
               ))

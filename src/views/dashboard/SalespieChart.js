@@ -31,31 +31,26 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
       try{
         const response  = await apiClient.get(`admin/dashboard/pie?year=${currentYear}`)
         if(response.status === 200){
-          console.log('piechart data=',response.data)
           const topSeller = response.data.sales.map(element=>{
             return {
               name:element.farmerProduct.product?.name,
               value:element.soldQuantity
             }
           }) 
-          console.log('piechart data1=',topSeller)
           const bestSells = []
           topSeller.forEach((el,index)=>{
             bestSells[index] = topSeller[index]
           })
            if(topSeller.length > 2){
-          const topeSale1 = topSeller[0]?.value
-          const topeSale2 = topSeller[1]?.value
-          const sum = topeSale1 + topeSale2
-          const otherValue = response.data.total-sum
+          const sum = (topSeller[0]?.value*1)+(topSeller[1]?.value*1)
+          const otherValue = response.data.total*1-sum
           if(otherValue > 0){
           const other = {
             name:'Other',
             value:otherValue
           }
-          bestSells.push(other)
+          bestSells[2]=other
         }    
-        console.log('best sells=',bestSells)      
           setBestSelles(bestSells)
         }
         else{

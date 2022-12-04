@@ -4,7 +4,7 @@ const rentSlice = createSlice({
     name:'rent',
     initialState:{rents:[]},
     reducers:{
-        setRents(state,action){
+        setRents:(state,action)=>{
             state.rents = action.payload
         },
         

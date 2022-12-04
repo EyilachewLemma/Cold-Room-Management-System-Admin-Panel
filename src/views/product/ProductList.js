@@ -75,7 +75,7 @@ const ProductList = () => {
     try{
       dispatch(buttonAction.setBtnSpiner(true));
       var response = await apiClient.delete(`admin/products/${id}`)
-      console.log('delete status code=',response.status)
+      console.log('response data-',response.status)
       if(response.status === 200){
        dispatch(productAction.deleteProduct(id))
        setShowConfirm(false)

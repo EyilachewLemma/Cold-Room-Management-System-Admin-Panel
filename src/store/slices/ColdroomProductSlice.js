@@ -4,7 +4,7 @@ const coldRoomProductSlice = createSlice({
     name:'coldroomProduct',
     initialState:{products:[]},
     reducers:{
-        setProducts(state,action){
+        setProducts:(state,action)=>{
             state.products = action.payload
         },
         

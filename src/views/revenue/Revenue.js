@@ -36,14 +36,25 @@ const Revenue = () => {
       featchRevenues()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[currentPage])
-
+ const searchByHandler= async()=>{
+  dispatch(isLoadingAction.setIsLoading(true))
+  try{
+   var response = await apiClient.get(`admin/revenues?search=${searchBy.current.value}&page=${1}`)
+   if(response.status === 200){
+    dispatch(revenueAction.setRevenues(response.data || []))
+   }
+  }
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
+  setCurrentPage(1)
+ }
   const enterKeyHandler = (event) =>{
     if(event.key === 'Enter' || !event.target.value){
-      featchRevenues()
+      searchByHandler()
     }
   }
   const searchHandler = () =>{
-    featchRevenues()
+    searchByHandler()
   }
     const filterByColdRoomHandler = async (e)=>{
       dispatch(isLoadingAction.setIsLoading(true))
@@ -133,8 +144,8 @@ const Revenue = () => {
                 <th>Product SQU</th>
                 <th>Product Type</th>
                 <th>Cold Room</th>
-                <th>Added Date(GC)</th>
-                <th>Sold Date(GC)</th>
+                <th>Added Date</th>
+                <th>Sold Date</th>
                 <th>Quantity(Kg)</th>
                 <th>Amount(ETB)</th>
               </tr>
@@ -145,7 +156,7 @@ const Revenue = () => {
                 <tr className={classes.row} key={index}>
                 <td className="p-3">{revenue.farmer.fName+' '+revenue.farmer.lName}</td>
                 <td className="p-3">{revenue.productName}</td>
-                <td className="p-3">{revenue.productSku}</td>
+                <td className="p-3">{revenue.warehousePosition}</td>
                 <td className="p-3">{revenue.productType}</td>
                 <td className="p-3">{revenue.coldRoom.name}</td>
                 <td className="p-3">{revenue.addedDate?.slice(0,10)}</td>

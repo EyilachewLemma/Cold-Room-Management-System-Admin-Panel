@@ -36,16 +36,25 @@ const Sales = () => {
   featchSaleses()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[currentPage])
-
-  console.log('saleses from',saleses)
+const searchByHandler = async()=>{
+  dispatch(isLoadingAction.setIsLoading(true))
+  try{
+   var response = await apiClient.get(`admin/sales?search=${searchBy.current.value}&coldRoomId=${''}&date=${''}&page=${1}`)
+   if(response.status === 200){
+    dispatch(salesAction.setSales(response.data || []))
+   }
+  }
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
+  setCurrentPage(1)
+}
   const enterKeyHandler = (event) =>{
     if(event.key === 'Enter' || !event.target.value){
-      featchSaleses()
-      console.log('event value',event.target.value)
+      searchByHandler()
     }
   }
   const searchHandler = () =>{
-    featchSaleses()
+    searchByHandler()
   }
     const filterByColdRoomHandler = async (e)=>{
       dispatch(isLoadingAction.setIsLoading(true))

@@ -63,8 +63,8 @@ const ColdRoomProducts = () => {
           </InputGroup.Text>
           <Form.Control
             className={classes.searchInput}
-            placeholder="Username"
-            aria-label="Username"
+            placeholder="product name"
+            aria-label="product name"
             aria-describedby="basic-addon1"
             ref={searchBy}
             onKeyUp={enterKeyHandler}

@@ -4,10 +4,10 @@ const orderSlice = createSlice({
     name:'coldroomList',
     initialState:{orders:[],orderItems:[]},
     reducers:{
-        setOrders(state,action){
+        setOrders:(state,action)=>{
             state.orders = action.payload
         },
-        setOrderItems(state,action){
+        setOrderItems:(state,action)=>{
             state.orderItems = action.payload
         },
 

@@ -42,9 +42,9 @@ const FarmersList = () => {
   const handlBalanceHistory = (tbc,id) =>{
     navigate(`/farmers/${id}/balance/${tbc}`)
   }
-  const handlRentFee = (tr,id) =>{
-    navigate(`/farmers/${id}/rent-fee/${tr}`)
-}
+//   const handlRentFee = (tr,id) =>{
+//     navigate(`/farmers/${id}/rent-fee/${tr}`)
+// }
 const handlProductHistory = (tp,id) =>{
     navigate(`/farmers/${id}/product-history/${tp}`)
 }
@@ -127,10 +127,12 @@ const searchHandler = () =>{
         variant="none"
         className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}
         onClick={()=>handlBalanceHistory(farmer.totalBalance,farmer.id)}>Balance History</Button>
-      <Button
-        variant="none"
-        className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}
-         onClick={()=>handlRentFee(farmer.totalRent,farmer.id)}>Rent Fee</Button>
+     {
+      // <Button
+      // variant="none"
+      // className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}
+      //  onClick={()=>handlRentFee(farmer.totalRent,farmer.id)}>Rent Fee</Button>
+     }
       <Button
         variant="none"
          className={`${classes.dropdownItem} border-bottom w-100 rounded-0 text-start ps-3`}

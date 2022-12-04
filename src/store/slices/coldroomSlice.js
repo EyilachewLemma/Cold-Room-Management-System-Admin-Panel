@@ -4,10 +4,10 @@ const coldRoomSlice = createSlice({
     name:'coldroomList',
     initialState:{coldRooms:[]},
     reducers:{
-        setColdRooms(state,action){
+        setColdRooms:(state,action)=>{
             state.coldRooms = action.payload
         },
-        addColdRoom(state,action){
+        addColdRoom:(state,action)=>{
             state.coldRooms.push(action.payload)
         },
         assignManager:(state,action)=>{

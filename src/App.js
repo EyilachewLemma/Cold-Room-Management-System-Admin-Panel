@@ -15,7 +15,7 @@ function App() {
   const dispatch = useDispatch()
   const fetchUserData = async(token) =>{
     try{
-     const response = await axios.get('http://192.168.100.127:3000/admin/auth/my-account',{
+     const response = await axios.get('http://coldroomapinew.merahitechnologies.com/admin/auth/my-account',{
       headers: {
         'Access-Control-Allow-Origin': '*',
         Accept: 'application/json',

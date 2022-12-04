@@ -1,6 +1,6 @@
 import React,{useRef} from "react";
 import Modal from "react-bootstrap/Modal";
-import Form from 'react-bootstrap/Form';
+// import Form from 'react-bootstrap/Form';
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button"
 import ReactToPrint from "react-to-print";
@@ -28,13 +28,15 @@ const OrderStatus = (props) => {
           <div className="fw-bold px-3">Order id: {props.order.orderCode}</div>
           <div className=" fw-bold mt-3 px-3">Order Status : {props.order.orderStatus}</div>
           <div className="d-flex align-items-center px-3 pt-2">              
-            <div className="me-5 onPrintDnone">
-            <Form.Select aria-label="Default select example">
-            <option value='0'>Change order Status</option>
-            <option value="1">Completed</option>
-            <option value="2">pending</option>
-          </Form.Select>
-            </div>
+            {
+          //     <div className="me-5 onPrintDnone">
+          //   <Form.Select aria-label="Default select example">
+          //   <option value='0'>Change order Status</option>
+          //   <option value="1">Completed</option>
+          //   <option value="2">pending</option>
+          // </Form.Select>
+          //   </div>
+          }
             <div className="ms-auto">
             <ReactToPrint
             trigger={()=><Button variant='none' className="exportbtn onPrintDnone py-1"><span><i className="fas fa-file-export"></i></span> Export</Button>}

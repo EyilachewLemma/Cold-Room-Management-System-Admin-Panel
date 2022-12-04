@@ -60,18 +60,27 @@ const handlPaymentStatus = (order) =>{
 const handlPaymentStatusModalClose = () =>{
   setIsPayMentStatusOpen(false)
 }
+const searchByHandler = async() =>{
+  dispatch(isLoadingAction.setIsLoading(true))
+  try{
+   var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${''}&date=${''}&page=${1}`)
+   if(response.status === 200){
+    dispatch(orderAction.setOrders(response.data || []))
+   }
+  }
+  catch(err){}
+  finally {dispatch(isLoadingAction.setIsLoading(false))}
+  setCurrentPage(1)
+}
 const enterKeyHandler = (event) =>{
   if(event.key === 'Enter' || !event.target.value){
-    featchOrders()
-    console.log('event value',event.target.value)
+    searchByHandler()
   }
 }
 const searchHandler = () =>{
-  featchOrders()
-  console.log('search value',searchBy.current.value)
+  searchByHandler()
 }
   const filterOrderHandler = async(e)=>{
-    console.log('option=', e.target.value)
     dispatch(isLoadingAction.setIsLoading(false))
     try{
      var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${e.target.value}&date=${''}`)
@@ -81,19 +90,20 @@ const searchHandler = () =>{
     }
     catch(err){}
     finally {dispatch(isLoadingAction.setIsLoading(false))
+      
     }
   }
   const filterByDateHandler = async(e) =>{
-    console.log('date=',e.target.value)
     dispatch(isLoadingAction.setIsLoading(false))
   try{
-   var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${''}&date=${e.target.value}`)
+   var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${''}&date=${e.target.value}&page=${1}`)
    if(response.status === 200){
     dispatch(orderAction.setOrders(response.data || []))
    }
   }
   catch(err){}
   finally {dispatch(isLoadingAction.setIsLoading(false))
+    setCurrentPage(1)
   }
   } 
   const setPage = (nomber) =>{
@@ -123,7 +133,7 @@ const searchHandler = () =>{
           </InputGroup.Text>
           <Form.Control
             className={classes.searchInput}
-            placeholder="search orders by wholsaler name"
+            placeholder="wholsaler name"
             ref={searchBy}
             aria-label="Username"
             aria-describedby="basic-addon1"

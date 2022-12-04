@@ -3,7 +3,7 @@ import { useSelector,useDispatch } from "react-redux";
 import { balanceAction } from "../../store/slices/BalanceSlice";
 import { isLoadingAction } from "../../store/slices/spinerSlice";
 import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
+// import InputGroup from "react-bootstrap/InputGroup";
 import Table from "react-bootstrap/Table";
 import ReactToPrint from "react-to-print";
 import Button from 'react-bootstrap/Button';
@@ -38,29 +38,14 @@ const BalanceHistory = () => {
   featchBalances()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[faId])
-  const enterKeyHandler = (event) =>{
-    if(event.key === 'Enter' || !event.target.value){
+  // const enterKeyHandler = (event) =>{
+  //   if(event.key === 'Enter' || !event.target.value){
 
-      console.log('event value',event.target.value)
-    }
-  }
-  const searchHandler = () =>{
-    console.log('search value',searchBy.current.value)
-  }
-    const filterOrderHandler = async(e)=>{
-      console.log('option=', e.target.value)
-      dispatch(isLoadingAction.setIsLoading(false))
-      try{
-       var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${e.target.value}&date=${''}`)
-       if(response.status === 200){
-       }
-      }
-      catch(err){}
-      finally {dispatch(isLoadingAction.setIsLoading(false))
-      }
-    }
+  //   }
+  // }
+  // const searchHandler = () =>{
+  // }
     const filterByDateHandler = async(e) =>{
-      console.log('date=',e.target.value)
       dispatch(isLoadingAction.setIsLoading(false))
     try{
      var response = await apiClient.get(`admin/orders?search=${searchBy.current.value}&status=${''}&date=${e.target.value}`)
@@ -91,30 +76,24 @@ const BalanceHistory = () => {
    
   </div>
       <div className={`${classes.bottomBorder} mt-5`}></div>
-        <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>
-        <InputGroup className="w-50 border rounded onPrintDnone">
-          <InputGroup.Text id="searchbyproductName" className={classes.searchIcon}>
-            <span onClick={searchHandler}>
-              <i className="fas fa-search"></i>
-            </span>
-          </InputGroup.Text>
-          <Form.Control
-            className={classes.searchInput}
-            placeholder="search by Product name"
-            aria-label="search by product name"
-            aria-describedby="searchbyproductName"
-            ref={searchBy}
-            onKeyUp={enterKeyHandler}
-          />
-        </InputGroup>
-        <div className="ms-3 onPrintDnone">
-        <Form.Select aria-label="Default select example" onChange={filterOrderHandler}>
-        <option value='all'>All</option>
-        <option value="1">Type 1</option>
-        <option value="2">Type 2</option>
-        <option value="3">Type 3</option>
-      </Form.Select>
-        </div>
+        <div className={`${classes.grayBg} d-flex justify-content-end mt-3 p-2`}>
+      {
+      //   <InputGroup className="w-50 border rounded onPrintDnone">
+      //   <InputGroup.Text id="searchbyproductName" className={classes.searchIcon}>
+      //     <span onClick={searchHandler}>
+      //       <i className="fas fa-search"></i>
+      //     </span>
+      //   </InputGroup.Text>
+      //   <Form.Control
+      //     className={classes.searchInput}
+      //     placeholder="search by Product name"
+      //     aria-label="search by product name"
+      //     aria-describedby="searchbyproductName"
+      //     ref={searchBy}
+      //     onKeyUp={enterKeyHandler}
+      //   />
+      // </InputGroup>
+      }
       <div className="ms-3 me-3 onPrintDnone">
       <Form.Group controlId="search-by-date">
       <Form.Control type="date" 
@@ -137,14 +116,16 @@ const BalanceHistory = () => {
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
-              <th>Order-ID</th>
+              <th>Order Code</th>
               <th>Product Name</th>
               <th>Product Type</th>
-              <th>Order Date(GC)</th>
+              <th>Order Date</th>
               <th>Quantity(Kg)</th>
-              <th>Price per(ETB)</th>
+              <th>Price(ETB)</th>
+              <th>Rent Fee</th>
               <th>Balance(ETB)</th>
-              <th>Withdraw Status</th>
+              <th>Net Balance(ETB)</th>
+              <th>Withdrawal State</th>
             </tr>
           </thead>
           <tbody>
@@ -157,8 +138,12 @@ const BalanceHistory = () => {
               <td className="p-3">{balance.orderDate.slice(0,10)}</td>
               <td className="p-3">{balance.quantity}</td>
               <td className="p-3 text-center">{balance.price}</td>
+              <td className="p-3 text-center">{balance.rentAmount}</td>
               <td className="p-3 text-center">{balance.balanceAmount}</td>
-            <td className="p-3 text-center">{balance.state}</td>
+              <td className="p-3 text-center">{balance.balanceAmount - balance.rentAmount}</td>
+            <td className="p-3 text-center">
+            {balance.state*1?"Withdrawed":"Unwithdraw"}
+            </td>
             </tr>
             ))
           }

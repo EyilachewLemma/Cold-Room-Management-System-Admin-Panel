@@ -4,7 +4,7 @@ const farmerSlice = createSlice({
     name:'farmers',
     initialState:{farmers:[]},
     reducers:{
-        setFarmers(state,action){
+        setFarmers:(state,action)=>{
             state.farmers = action.payload
         },
 

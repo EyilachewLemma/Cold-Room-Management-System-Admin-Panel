@@ -4,7 +4,7 @@ const balanceSlice = createSlice({
     name:'balance',
     initialState:{balances:[]},
     reducers:{
-        setBalances(state,action){
+        setBalances:(state,action)=>{
             state.balances = action.payload
         },
         

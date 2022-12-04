@@ -30,7 +30,7 @@ useEffect(()=>{
         <div className='d-flex justify-content-between text-white px-4 pb-4'>
             <div className='fw-bold fs-5'>Recent Orders</div>
             <div>
-           <Link to={'/orders/list'} className={`${classes.yellowText} text-decoration-none fw-bold fs-5`}>See All</Link>
+           <Link to={'/orders'} className={`${classes.yellowText} text-decoration-none fw-bold fs-5`}>See All</Link>
             </div>
         </div>
         {
