@@ -5,7 +5,7 @@ const SideBar = () =>{
     return <div className='px-2'>
     <div className='my-4 fs-5 fw-bold ms-4'>Menu</div>
       <div className='mb-3'>     
-        <NavLink to={'/dash-bord'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-1 px-xl-3 py-2" : classes.inactive+' px-1 px-xl-3 py-2'}>
+        <NavLink to={'/'}  className={({ isActive }) =>isActive ? classes.active+" border rounded px-1 px-xl-3 py-2" : classes.inactive+' px-1 px-xl-3 py-2'}>
         <span className="fs-5 me-3"><i className="fas fa-th-large"></i></span>            
         <span>Dashboard</span>
             </NavLink>

@@ -18,7 +18,7 @@ const AddType = (props) => {
   const dispatch = useDispatch();
   const {prId} = useParams()
 
-
+console.log('prId==',prId)
  const newTypeTitleHandler = (e)=> {
   setType(previousValue =>{
       return  {...previousValue,title:e.target.value}

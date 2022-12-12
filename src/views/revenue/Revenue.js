@@ -139,15 +139,15 @@ const Revenue = () => {
           <Table responsive="md">
             <thead className={classes.header}>
               <tr>
-                <th>Farmer Name</th>
-                <th>Product Name</th>
-                <th>Product SQU</th>
-                <th>Product Type</th>
-                <th>Cold Room</th>
-                <th>Added Date</th>
-                <th>Sold Date</th>
-                <th>Quantity(Kg)</th>
-                <th>Amount(ETB)</th>
+                <th className="small">Farmer Name</th>
+                <th className="small">Product Name</th>
+                <th className="small">Product SQU</th>
+                <th className="small">Product Type</th>
+                <th className="small">Cold Room</th>
+                <th className="small">Added Date</th>
+                <th className="small">Sold Date</th>
+                <th className="small">Quantity(Kg)</th>
+                <th className="small">Rent Profit(ETB)</th>
               </tr>
             </thead>
             <tbody>

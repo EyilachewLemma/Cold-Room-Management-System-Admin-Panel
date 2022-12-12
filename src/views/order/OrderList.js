@@ -133,7 +133,7 @@ const searchHandler = () =>{
           </InputGroup.Text>
           <Form.Control
             className={classes.searchInput}
-            placeholder="wholsaler name"
+            placeholder="Wholsaler name"
             ref={searchBy}
             aria-label="Username"
             aria-describedby="basic-addon1"
@@ -146,8 +146,8 @@ const searchHandler = () =>{
         <option value="pending">Pending Orders</option>
         <option value="completed">Completed Orders</option>
         <option value="cancelled">Cancelled Orders</option>
-        <option value="partiallyPaid">Partially Payed Orders</option>
-        <option value="paid">Fully Payed Orders</option>
+        <option value="partiallyPaid">Partially Paid Orders</option>
+        <option value="paid">Fully Paid Orders</option>
         <option value="unpaid">Unpaid Orders</option>
       </Form.Select>
         </div>
@@ -174,7 +174,7 @@ const searchHandler = () =>{
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
-              <th>Order-Id</th>
+              <th>Order-Code</th>
               <th>Cold Room</th>
               <th>Wholesaler</th>
               <th>Ordered Date</th>

@@ -68,14 +68,6 @@ console.log('pppp---',products)
             aria-describedby="searchbyproductName"
           />
         </InputGroup>
-        <div className="ms-3 onPrintDnone">
-        <Form.Select aria-label="Default select example">
-        <option value='all'>All</option>
-        <option value="1">Type 1</option>
-        <option value="2">Type 2</option>
-        <option value="3">Type 3</option>
-      </Form.Select>
-        </div>
       <div className="ms-3 me-3 onPrintDnone">
       <Form.Group controlId="search-by-date">
       <Form.Control type="date" />

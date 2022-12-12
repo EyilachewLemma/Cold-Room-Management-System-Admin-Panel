@@ -11,7 +11,7 @@ import apiClient from "../../url/index";
 import EditProductType from './EditProductType'
 import ConfirmModal from "../../components/ConfirmModal";
 import AddType from "./AddType";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 
 import classes from "./Products.module.css";
 
@@ -26,6 +26,7 @@ const ProductDetail = () => {
  const products = useSelector(state=>state.productDetail.productTypes)
   const dispatch = useDispatch()
   const {prId} = useParams()
+  const navigate = useNavigate()
 
   const featchProductDetails = async ()=>{
     dispatch(isLoadingAction.setIsLoading(true))
@@ -83,10 +84,11 @@ const ProductDetail = () => {
  
   return (
     <div ref={componentRef}>
+    <Button onClick={()=>navigate(-1)} variant='none' className={`${classes.boxShadow} fs-3 fw-bold`}><i className="fas fa-arrow-left"></i></Button> 
       <h5 className="text-bold">Product Details</h5>
       <p className={`${classes.titleP} fw-bold small`}>
         In the product Details section you can review and manage  product with
-        their type.You can view and edit product information, you can edit product types information, you can delete Product types
+        their type.You can view and edit product information, you can edit product types information, you can delete Product types and you can add new product type
         </p>
       <div className={classes.bottomBorder}>
        

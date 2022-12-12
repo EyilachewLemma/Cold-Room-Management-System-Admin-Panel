@@ -95,7 +95,7 @@ const AddColdRoom = (props) => {
       try {
         let response = await apiClient.put(`admin/coldRooms/${props.data.id}`,coldroomData);
         if (response.status === 200) {
-          dispatch(coldRoomAction.addColdRoom(response.data));
+          dispatch(coldRoomAction.editColdRoom(response.data));
           handleClose();
           setModalData({show:true,status:1,title:'Successful',message:'You edited cold room successfully'})
         }

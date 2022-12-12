@@ -87,7 +87,7 @@ const SalesOverviewChart = () =>{
         const datas = response.data.map(month=>{
           return {month:month.month.slice(0,3),sales:month.count}
         })
-        let results =salesOverviews.map(element1=>datas.find(element2=>element1.month===element2.month) || element1)
+        let results =salesOverviews.map(element1=>datas.find(element2=>element1.month===element2.month) || {month:element1.month,sales:0})
        
         setSalesOverview(results)
         

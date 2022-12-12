@@ -103,8 +103,8 @@ const OrderDetail = () => {
               <td className="p-3">{order.farmerProduct.productType?.title}</td>
               <td className="p-3">{order.farmerProduct.quality}</td>
               <td className="p-3">{order.quantity}</td>
-              <td className="p-3">{order.farmerProduct.pricePerKg}</td>
-              <td className="p-3 text-center">{order?.price}</td>
+              <td className="p-3">{order.price}</td>
+              <td className="p-3 text-center">{order.quantity*order?.price}</td>
             </tr>
             ))
           }

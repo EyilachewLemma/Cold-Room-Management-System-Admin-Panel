@@ -50,9 +50,10 @@ return err
         if(!errors.fName && !errors.lName){
             try{
                 dispatch(buttonAction.setBtnSpiner(true));
-                const response = await apiClient.put('admin/editAdminName',values)
+                const response = await apiClient.post(`admin/auth/change-profile/${user.id}`,values)
                 if(response.status === 200 || 201){
                     dispatch(userAction.editUserName({fName:values.fName,lName:values.lName}))
+                    closeHandler()
                 }
             }
             catch(err){

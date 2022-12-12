@@ -26,7 +26,7 @@ const ProductDetail = () => {
     const featchColdRoomProductDetails = async() =>{
       dispatch(isLoadingAction.setIsLoading(true))
       try{
-       var response = await apiClient.get(`admin/coldroom-products/product/${proId}?coldRoomId=${crId}&search=${searchBy.current.value}&date=${''}`)
+       var response = await apiClient.get(`admin/coldroom-products/product/${proId}?coldRoomId=${crId}&search=${searchBy.current.value}&date=${''}&page=${currentPage}`)
        if(response.status === 200){
         dispatch(crProAction.setProducts(response.data))
        }
@@ -37,17 +37,30 @@ const ProductDetail = () => {
     useEffect(()=>{
       featchColdRoomProductDetails()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
-    const filterByDateHandler = async(e) =>{
+    },[currentPage])
+    const searchByByHandler = async () =>{
       dispatch(isLoadingAction.setIsLoading(true))
       try{
-       const response = await apiClient.get(`admin/coldroom-products/product/${proId}?coldRoomId=${crId}&search=${searchBy.current.value}&date=${e.target.value}`)
+       var response = await apiClient.get(`admin/coldroom-products/product/${proId}?coldRoomId=${crId}&search=${searchBy.current.value}&date=${''}`)
        if(response.status === 200){
         dispatch(crProAction.setProducts(response.data))
        }
       }
       catch(err){}
       finally {dispatch(isLoadingAction.setIsLoading(false))}
+      setCurrentPage(1)
+    }
+    const filterByDateHandler = async(e) =>{
+      dispatch(isLoadingAction.setIsLoading(true))
+      try{
+       const response = await apiClient.get(`admin/coldroom-products/product/${proId}?coldRoomId=${crId}&search=${searchBy.current.value}&date=${e.target.value}&page=${1}`)
+       if(response.status === 200){
+        dispatch(crProAction.setProducts(response.data))
+       }
+      }
+      catch(err){}
+      finally {dispatch(isLoadingAction.setIsLoading(false))}
+      setCurrentPage(1)
     }
     const setPage = (nomber) =>{
       setCurrentPage(nomber)
@@ -60,11 +73,11 @@ const ProductDetail = () => {
     }
     const enterKeyHandler = (event) =>{
       if(event.key === 'Enter' || !event.target.value){
-        featchColdRoomProductDetails()
+        searchByByHandler()
       }
     }
     const searchHandler = () =>{
-      featchColdRoomProductDetails()
+      searchByByHandler()
     }
   return (
     <>
@@ -80,7 +93,7 @@ const ProductDetail = () => {
                 <span className="fw-bold">Product</span>: {products?.data_name[0]?.product?.name}
               </div>
               <div className="mt-3">
-                <span className="fw-bold">Total product in stock(kg)</span>: {amount}
+                <span className="fw-bold">Current Amount in stock(kg)</span>: {amount}
               </div>
             </div>
               <div className="mt-3 me-5">
@@ -150,7 +163,7 @@ const ProductDetail = () => {
                 <td className="p-2 text-center">{product.oldQuantity}</td>
                 <td className="p-2 text-center">{product.soldQuantity}</td>            
                 <td className="p-2 text-center">{product.currentQuantity}</td>
-                <td className="p-2 text-center">{'null'}</td>
+                <td className="p-2 text-center">{product.addedBy}</td>
               </tr>
               ))
             }

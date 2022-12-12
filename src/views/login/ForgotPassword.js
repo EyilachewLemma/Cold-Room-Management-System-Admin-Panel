@@ -6,6 +6,7 @@ import CancelButton from '../../components/CancelButton';
 import { buttonAction } from "../../store/slices/ButtonSpinerSlice";
 import {userAction} from '../../store/slices/UserSlice'
 import { useDispatch,useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 import classes from './Login.module.css'
 import apiClient from '../../url';
 
@@ -14,6 +15,8 @@ import apiClient from '../../url';
     const [errors,setErrors] = useState({newPassword:'',confirmPassword:''})
     const [notification,setNotification] = useState('')
     const user = useSelector(state=>state.user.data)
+    // eslint-disable-next-line no-unused-vars
+    const [query,setQuery] = useSearchParams()
     const dispatch = useDispatch()
     const changeHandler = (e) =>{
         const {name,value} =e.target
@@ -65,7 +68,7 @@ const saveUserData = (data) =>{
         if(!err?.newPassword && !err?.confirmPassword){
             try{
                 dispatch(buttonAction.setBtnSpiner(true));
-                const response = await apiClient.put(`admin/auth/change-password/${user.id}`,values)
+                const response = await apiClient.put(`admin/auth/change-password/${user.id}`,{newPassword:values.newPassword,email:query.get('email')})
                 if(response.status === 200){
                   saveUserData(response.data)                    
                   fetchUserData()

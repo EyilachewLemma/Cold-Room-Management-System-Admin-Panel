@@ -58,7 +58,7 @@ const OrderHistory = () => {
         <Table responsive="md">
           <thead className={classes.header}>
             <tr>
-              <th>Order id</th>
+              <th>Order-Code</th>
               <th>Order Date</th>
               <th>Cold room</th>
               <th>Order Price(ETB)</th>

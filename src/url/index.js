@@ -1,14 +1,16 @@
 import axios from "axios";
 let apiClient = axios.create({
-    baseURL: 'http://coldroomapinew.merahitechnologies.com/',
-    // baseURL:'https://rensys-coldroom.onrender.com/',
-    // baseURL:'http://192.168.0.9:3000/',
-    headers: {
+    baseURL: 'https://coldroomapinew.rensysengineering.com/',
+        
+})
+apiClient.interceptors.request.use(config=> {
+    config.headers={
         'Access-Control-Allow-Origin': '*',
         Accept: 'application/json',
         'Content-Type': 'application/json',
-
+        Authorization:`Bearer ${localStorage.getItem("tokenc")}`
     }
-})
+    return config
 
+});
 export default apiClient

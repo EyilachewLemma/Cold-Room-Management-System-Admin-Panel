@@ -25,43 +25,52 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   const currentYear = new Date().getFullYear()*1
   const [selectedValue,setSelectedValue] = useState(currentYear)
   const years = addYear() 
+
+
+  const rearrangeResponse =(response) =>{
+    const topSeller = response.sales.map(element=>{
+      return {
+        name:element.farmerProduct.product?.name,
+        value:element.soldQuantity
+      }
+    }) 
+    const topSells = []
+    for(let i = 0; i < topSeller?.length;i++){
+       if(i<2){
+        topSells[i] = topSeller[i]
+       }
+    }
+      
+     if(topSeller.length > 2){
+    const sum = (topSeller[0]?.value*1) + (topSeller[1]?.value*1)
+    const otherValue = response.total*1 - sum
+    if(otherValue > 0){
+    const other = {
+      name:'Other',
+      value:otherValue
+    }
+    topSells[2] = other
+  }    
+    setBestSelles(topSells)
+  }
+  else{
+    setBestSelles(topSells)
+  }
+  }
   
   useEffect(()=>{
     const fetchBestSells = async() =>{
       try{
         const response  = await apiClient.get(`admin/dashboard/pie?year=${currentYear}`)
         if(response.status === 200){
-          const topSeller = response.data.sales.map(element=>{
-            return {
-              name:element.farmerProduct.product?.name,
-              value:element.soldQuantity
-            }
-          }) 
-          const bestSells = []
-          topSeller.forEach((el,index)=>{
-            bestSells[index] = topSeller[index]
-          })
-           if(topSeller.length > 2){
-          const sum = (topSeller[0]?.value*1)+(topSeller[1]?.value*1)
-          const otherValue = response.data.total*1-sum
-          if(otherValue > 0){
-          const other = {
-            name:'Other',
-            value:otherValue
-          }
-          bestSells[2]=other
-        }    
-          setBestSelles(bestSells)
-        }
-        else{
-          setBestSelles(bestSells)
-        }
+          rearrangeResponse(response.data)
+        
       }
-      }
+    }
       catch(err){}
     }
     fetchBestSells()
-    setSelectedValue(preValue=>preValue)
+    // setSelectedValue(preValue=>preValue)
    
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
@@ -70,30 +79,9 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
     try{
       const response  = await apiClient.get(`admin/dashboard/pie?year=${e.target.value}`)
       if(response.status === 200){
-          console.log('piechart data=',response.data)
-        const topSeller= response.data.sales.map(element=>{
-          return {
-            name:element.farmerProduct.product?.name,
-            value:element.soldQuantity
+        rearrangeResponse(response.data)
           }
-        }) || []
-        const bestSells = []
-        for(let i =0;i<topSeller.length;i++){
-          bestSells.push(topSeller[i])
-         }
-         if(response.data.sales.length > 2){
-        const topeSale1 = response.data.sales[0]?.soldQuantity
-        const topeSale2 = response.data.sales[1]?.soldQuantity
-        const sum = topeSale1 + topeSale2
-        const otherValue = response.data.total-sum
-        const other = {
-          name:'Other',
-          value:otherValue
-        }
-        bestSells.push(other)
-        setBestSelles(bestSells)
-      }
-    }
+       
   }
   
     catch(err){}

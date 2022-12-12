@@ -62,8 +62,8 @@ const searchHandler = () =>{
     <div ref={componentRef}>
       <h5 className="text-bold">Farmers List</h5>
       <p className={`${classes.titleP} fw-bold small`}>
-        In the Farmers section you can view  all farmers related information with
-        their detail. 
+        In the Farmers list section you can view  all farmers related information with
+        their detail, their amount of product in cold room ,amount of balances the have and their product history.
       </p>
       <div className={`${classes.bottomBorder} mt-5`}></div>
         <div className={`${classes.grayBg} d-flex justify-content-between mt-3 p-2`}>
@@ -75,7 +75,7 @@ const searchHandler = () =>{
           </InputGroup.Text>
           <Form.Control
             className={classes.searchInput}
-            placeholder="search orders by wholsaler name"
+            placeholder="farmer name"
             ref={searchBy}
             aria-label="Username"
             aria-describedby="basic-addon1"
@@ -100,7 +100,7 @@ const searchHandler = () =>{
               <th>NO</th>
               <th>Farmer Name</th>
               <th>Location</th>
-              <th>Product stock in Cold room(Kg)</th>
+              <th>Current Product Quantity(Kg)</th>
               <th>Product Rent Fee(ETB)</th>
               <th>Balance(ETB)</th>
               <th className=""></th>

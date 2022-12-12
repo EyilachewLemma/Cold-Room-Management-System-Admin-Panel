@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button'
 import Spinner from "react-bootstrap/Spinner";
@@ -6,7 +6,8 @@ import { useSelector,useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
 import {buttonAction} from '../../store/slices/ButtonSpinerSlice'
 import { userAction } from '../../store/slices/UserSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
+import axios from 'axios';
 import apiClient from '../../url/index';
 import classes from './Login.module.css'
 
@@ -18,6 +19,13 @@ const LoginPage = () =>{
     const [notification,setNotification] = useState('')
     const dispatch = useDispatch()
    const navigate = useNavigate()
+   const location = useLocation()
+   useEffect(()=>{
+    if(localStorage.getItem('tokenc')){
+      navigate(location)
+    }
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+   },[])
         const changeHandler = (e) =>{
            const {name,value} = e.target
            setCridentials(prevValues=>{
@@ -46,16 +54,26 @@ const LoginPage = () =>{
          }
          return errorValues
         } 
-        const fetchUserData = async() =>{
-           try{
-            const response = await apiClient.get('admin/auth/my-account')
-            if(response.status === 200){
-               dispatch(userAction.setUser(response.data))
-               navigate('/dash-bord')
-            }
-           }
-           catch(err){}
+        const fetchUserData = async(data) =>{
+          try{
+           const response = await axios.get('https://coldroomapinew.rensysengineering.com/admin/auth/my-account',{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization:`Bearer ${data.token}`,    
+      
           }
+           })
+           if(response.status === 200 || 201){
+            dispatch(userAction.setUser(response.data))
+            navigate('/')
+         }
+          }
+          catch(err){
+            console.log('error')
+          }
+         }
         const saveUserData = (data) =>{
             apiClient.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
               localStorage.setItem("tokenc", data.token);
@@ -71,7 +89,7 @@ const LoginPage = () =>{
                     var response = await apiClient.post('admin/auth/login',cridentials)
                     if(response.status === 200){
                         saveUserData(response.data)
-                        fetchUserData()
+                        fetchUserData(response.data)
                         
                      }
                 }
@@ -115,7 +133,7 @@ Login  <span className="ms-2">
 </span>
 </Button>
 </Form>
-<p className={`${classes.errorText} mt-3`}>{notification}</p>
+<p className={`${classes.errorText} mt-3 text-center`}>{notification}</p>
 <div className='d-flex justify-content-end mt-4'>
 <Link to={'/forgot'}>Forgot Password</Link>
 </div>

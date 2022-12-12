@@ -71,7 +71,9 @@ const BalanceHistory = () => {
       </div>
     </div>
     <div className="ms-5 ps-5">
-    <div><span className="fw-bold">Cold Room</span>: null</div>
+    {
+      // <div><span className="fw-bold">Cold Room</span>: null</div>
+    }
     </div>  
    
   </div>

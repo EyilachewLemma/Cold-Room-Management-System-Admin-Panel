@@ -12,9 +12,9 @@ const productSlice = createSlice({
         },
         editProduct:(state,action)=>{
             const index = state.products.findIndex(product=>product.id*1===action.payload.id*1)
-            console.log('edited index=',index)
             const totalAmount = state.products[index].totalProduct
             const product ={
+                id:action.payload.id,
                 name:action.payload.name,
                 imageUrl:action.payload.imageUrl,
                 totalProduct:totalAmount,

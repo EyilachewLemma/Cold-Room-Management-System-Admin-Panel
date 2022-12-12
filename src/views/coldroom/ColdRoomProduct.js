@@ -87,7 +87,8 @@ const ColdRoomProducts = () => {
               <th>NO</th>
               <th>Product Name</th>
               <th>Product Image</th>
-              <th>Amount(kg)</th>
+              <th>Total Amount(kg)</th>
+              <th>Current Amount(kg)</th>
               <th className="sr-only">action</th>
             </tr>
           </thead>
@@ -103,8 +104,9 @@ const ColdRoomProducts = () => {
                 </div>
               </td>
               <td className="p-4">{product.totalProduct}</td>
+              <td className="p-4">{product.totalCurrentProduct}</td>
               <td className="p-4 onPrintDnone">
-             <Button className={classes.borderedBtn} variant="none" onClick={()=>viewProductDetail(product.productId,product.totalProduct)}>View Detail</Button>
+             <Button className={classes.borderedBtn} variant="none" onClick={()=>viewProductDetail(product.productId,product.totalCurrentProduct)}>View Detail</Button>
               </td>
             </tr>
             ))

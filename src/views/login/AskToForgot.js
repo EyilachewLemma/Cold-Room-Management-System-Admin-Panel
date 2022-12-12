@@ -67,7 +67,7 @@ const AskToForgot = () =>{
                localStorage.removeItem('token')
                apiClient.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
                localStorage.setItem("token", response.data.token);
-               navigate('/forgot-password')
+               navigate(`/forgot-password?email=${email}`)
             }
          }
          catch(err){
